@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+     "installCommand": "rm -rf node_modules && npm ci",
+  "buildCommand": "npx vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
