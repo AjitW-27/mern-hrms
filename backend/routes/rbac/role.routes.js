@@ -13,6 +13,7 @@ router.get("/:id", controller.getOne);
 router.post("/", controller.create);
 router.put("/:id", controller.update);
 router.patch("/:id/permissions", controller.updatePermissions);
+router.patch("/:id/status", controller.updateStatus);
 router.post("/:id/clone", controller.clone);
 router.delete("/:id", controller.deleteOne);
 

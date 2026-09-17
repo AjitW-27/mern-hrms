@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Box, Grid, Typography, Alert, Fade } from "@mui/material";
 import { NotificationsActive as NotificationsActiveIcon } from "@mui/icons-material";
 import useAuthStore from "../../strore/authStore";
+import api from "../../lib/api";
 
 import KpiCards from "../charts/KpiCards";
 import AttendanceTrendChart from "../charts/AttendanceTrendChart";
@@ -29,15 +30,7 @@ const Dashboard = () => {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`http://localhost:5000/api/dashboard/summary`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      if (!res.ok) throw new Error("Failed to fetch dashboard data");
-
-      const json = await res.json();
+      const { data: json } = await api.get("/dashboard/summary");
       setData(json);
     } catch (err) {
       setError(err.message);
@@ -49,10 +42,7 @@ const Dashboard = () => {
   // Fetch Latest Notification
   const fetchLatestNotification = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/notifications", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      const json = await res.json();
+      const { data: json } = await api.get("/notifications");
 
       if (json.success && json.data.length > 0) {
         // Find the most recent UNREAD notification
@@ -97,9 +87,10 @@ const Dashboard = () => {
         <Alert
           severity="error"
           sx={{
-            bgcolor: "#1e1e2e",
-            color: "#f87171",
-            border: "1px solid #ef4444",
+            bgcolor: "background.paper",
+            color: "error.main",
+            border: "1px solid",
+            borderColor: "error.main",
           }}
         >
           {error}
@@ -109,29 +100,29 @@ const Dashboard = () => {
   }
 
   return (
-    <Box sx={{ p: { xs: 1.5, md: 2.5 }, minHeight: "100vh" }}>
-     
-      <Box mb={3} sx={{ minHeight: "80px" }}>
+    <Box>
+      <Box mb={1} sx={{ minHeight: "80px" }}>
         {showNotification && latestNotification ? (
           <Fade in={showNotification}>
             <Alert
               icon={<NotificationsActiveIcon fontSize="inherit" />}
               severity="info"
               sx={{
-                bgcolor: "rgba(59, 130, 246, 0.15)",
-                color: "#60a5fa",
-                border: "1px solid rgba(59, 130, 246, 0.3)",
-                borderRadius: "12px",
+                bgcolor: "primary.light",
+                color: "text.primary",
+                border: "1px solid",
+                borderColor: "primary.main",
+                borderRadius: "8px",
                 alignItems: "center",
-                py: 1.5,
+                py: 1,
                 px: 3,
-                boxShadow: "0 4px 20px rgba(59, 130, 246, 0.1)",
+                boxShadow: "none",
               }}
             >
               <Typography variant="h6" fontWeight="bold">
                 {latestNotification.title}
               </Typography>
-              <Typography variant="body2" color="#94a3b8">
+              <Typography variant="body2" color="text.secondary">
                 {latestNotification.message}
               </Typography>
             </Alert>
@@ -139,15 +130,10 @@ const Dashboard = () => {
         ) : (
           <Fade in={!showNotification}>
             <Box>
-              <Typography
-                variant="h4"
-                color="#f1f5f9"
-                fontWeight={700}
-                fontFamily="'Poppins', sans-serif"
-              >
+              <Typography variant="h4" color="text.primary" fontWeight={600}>
                 {getGreeting()}, {user?.name || "Admin"} 👋
               </Typography>
-              <Typography color="#64748b" mt={0.5} fontSize={14}>
+              <Typography color="text.secondary" mt={0.5} fontSize={14}>
                 {new Date().toLocaleDateString("en-IN", {
                   weekday: "long",
                   year: "numeric",
@@ -162,7 +148,7 @@ const Dashboard = () => {
         )}
       </Box>
 
-      <Grid container spacing={2.5}>
+      <Grid container spacing={2}>
         {/* KPI Cards */}
         <Grid item xs={12}>
           <KpiCards data={data?.kpis} loading={loading} role={role} />

@@ -192,13 +192,41 @@ const LeaveManagement = () => {
   const formCalculatedDays = calculateDays(formData.fromDate, formData.toDate);
 
   const textFieldStyles = {
-    background: "#0f172a",
-    borderRadius: "8px",
-    input: { color: "#fff", colorScheme: "white" },
-    "& fieldset": { borderColor: "#334155" },
-    "&:hover fieldset": { borderColor: "#64748b !important" },
-    "&.Mui-focused fieldset": { borderColor: "#8b5cf6 !important" },
-    "& .MuiSelect-icon": { color: "#94a3b8" },
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "#ffffff",
+      borderRadius: "8px",
+      color: "#0f172a",
+      minHeight: 44,
+      "& fieldset": {
+        borderColor: "#e2e8f0",
+      },
+      "&:hover fieldset": {
+        borderColor: "#cbd5e1",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#8b5cf6",
+        borderWidth: "2px",
+      },
+    },
+    "& .MuiInputBase-input": {
+      color: "#0f172a",
+    },
+    "& .MuiInputBase-input::placeholder": {
+      color: "#94a3b8",
+      opacity: 1,
+    },
+    "& .MuiSelect-select": {
+      color: "#0f172a",
+    },
+    "& .MuiSelect-icon": {
+      color: "#64748b",
+    },
+    "& input[type='date']": {
+      colorScheme: "light",
+    },
+    "& textarea": {
+      color: "#0f172a",
+    },
   };
 
   const renderStatusChip = (status) => {
@@ -206,7 +234,7 @@ const LeaveManagement = () => {
       approved: { color: "#10b981", bg: "#10b98120" },
       pending: { color: "#f59e0b", bg: "#f59e0b20" },
       rejected: { color: "#ef4444", bg: "#ef444420" },
-      cancelled: { color: "#94a3b8", bg: "#334155" },
+      cancelled: { color: "#64748b", bg: "#f1f5f9" },
     };
     const style = statusMap[status?.toLowerCase()] || statusMap.pending;
     return (
@@ -228,9 +256,9 @@ const LeaveManagement = () => {
       <Box
         sx={{
           p: { xs: 2, md: 4 },
-          background: "#0f172a",
+          background: "#f8fafc",
           minHeight: "100vh",
-          color: "#fff",
+          color: "#0f172a",
         }}
       >
         <Box
@@ -240,10 +268,14 @@ const LeaveManagement = () => {
           mb={4}
         >
           <Box>
-            <Typography fontSize={26} fontWeight="bold">
+            <Typography
+              fontSize={{ xs: 22, sm: 26 }}
+              fontWeight={700}
+              color="#0f172a"
+            >
               Leave Management
             </Typography>
-            <Typography fontSize={14} color="#94a3b8" mt={0.5}>
+            <Typography fontSize={14} color="#64748b" mt={0.5}>
               Manage your leave balances and history
             </Typography>
           </Box>
@@ -253,10 +285,14 @@ const LeaveManagement = () => {
             onClick={() => setView("apply")}
             sx={{
               background: "#8b5cf6",
-              fontWeight: "bold",
+              fontWeight: 600,
               textTransform: "none",
               borderRadius: "8px",
-              "&:hover": { background: "#7c3aed" },
+              boxShadow: "none",
+              "&:hover": {
+                background: "#7c3aed",
+                boxShadow: "0 6px 16px rgba(139, 92, 246, 0.18)",
+              },
             }}
           >
             Apply Leave
@@ -274,9 +310,29 @@ const LeaveManagement = () => {
                   <Box
                     sx={{
                       p: 3,
-                      borderRadius: "16px",
-                      background: "#1e293b",
-                      border: "1px solid #334155",
+                      minHeight: 145,
+                      borderRadius: "8px",
+                      background: `
+                        radial-gradient(
+                          circle at 0% 0%,
+                          ${stat.color}18 0%,
+                          transparent 55%
+                        ),
+                        linear-gradient(
+                          135deg,
+                          #ffffff 0%,
+                          #f8fafc 100%
+                        )
+                      `,
+                      border: "1px solid #e5e7eb",
+                      boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+                      transition:
+                        "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
+                      "&:hover": {
+                        transform: "translateY(-6px) scale(1.015)",
+                        boxShadow: "0 12px 28px rgba(15, 23, 42, 0.10)",
+                        borderColor: `${stat.color}55`,
+                      },
                     }}
                   >
                     <Box
@@ -288,7 +344,7 @@ const LeaveManagement = () => {
                       <Typography
                         fontSize={16}
                         fontWeight="bold"
-                        color="#e2e8f0"
+                        color="#0f172a"
                       >
                         {stat.title}
                       </Typography>
@@ -313,17 +369,17 @@ const LeaveManagement = () => {
                       justifyContent="space-between"
                       mb={1}
                       fontSize={13}
-                      color="#94a3b8"
+                      color="#64748b"
                     >
                       <Typography fontSize="inherit">
                         Total:{" "}
-                        <span style={{ color: "#fff", fontWeight: "bold" }}>
+                        <span style={{ color: "#0f172a", fontWeight: "700" }}>
                           {stat.total}
                         </span>
                       </Typography>
                       <Typography fontSize="inherit">
                         Used:{" "}
-                        <span style={{ color: "#fff", fontWeight: "bold" }}>
+                        <span style={{ color: "#0f172a", fontWeight: "700" }}>
                           {stat.used}
                         </span>
                       </Typography>
@@ -334,7 +390,7 @@ const LeaveManagement = () => {
                       sx={{
                         height: 8,
                         borderRadius: 4,
-                        backgroundColor: "#334155",
+                        backgroundColor: "#e2e8f0",
                         "& .MuiLinearProgress-bar": {
                           backgroundColor: stat.color,
                         },
@@ -346,7 +402,7 @@ const LeaveManagement = () => {
             })
           ) : (
             <Grid item xs={12}>
-              <Typography color="#94a3b8">Loading leave balances...</Typography>
+              <Typography color="#64748b">Loading leave balances...</Typography>
             </Grid>
           )}
         </Grid>
@@ -354,29 +410,30 @@ const LeaveManagement = () => {
         {/* History Table */}
         <Paper
           sx={{
-            background: "#1e293b",
-            borderRadius: "12px",
-            border: "1px solid #334155",
+            background: "#ffffff",
+            borderRadius: "8px",
+            border: "1px solid #e5e7eb",
             overflow: "hidden",
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
           }}
         >
-          <Box p={2.5} borderBottom="1px solid #334155">
+          <Box p={2.5} borderBottom="1px solid #e5e7eb">
             <Typography fontSize={18} fontWeight="bold">
               Leave History
             </Typography>
           </Box>
           <TableContainer>
             <Table>
-              <TableHead sx={{ background: "#0f172a" }}>
+              <TableHead sx={{ background: "#f8fafc" }}>
                 <TableRow>
                   {["Leave Type", "From", "To", "Days", "Status", "Action"].map(
                     (head) => (
                       <TableCell
                         key={head}
                         sx={{
-                          color: "#94a3b8",
-                          fontWeight: "bold",
-                          borderBottom: "1px solid #334155",
+                          color: "#475569",
+                          fontWeight: 600,
+                          borderBottom: "1px solid #e5e7eb",
                         }}
                       >
                         {head}
@@ -390,12 +447,16 @@ const LeaveManagement = () => {
                   leaves.map((row) => (
                     <TableRow
                       key={row._id}
-                      sx={{ "&:hover": { backgroundColor: "#0f172a" } }}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "#f8fafc",
+                        },
+                      }}
                     >
                       <TableCell
                         sx={{
-                          color: "#fff",
-                          borderBottom: "1px solid #334155",
+                          color: "#0f172a",
+                          borderBottom: "1px solid #e5e7eb",
                           textTransform: "capitalize",
                           fontWeight: 500,
                         }}
@@ -404,8 +465,8 @@ const LeaveManagement = () => {
                       </TableCell>
                       <TableCell
                         sx={{
-                          color: "#e2e8f0",
-                          borderBottom: "1px solid #334155",
+                          color: "#334155",
+                          borderBottom: "1px solid #e5e7eb",
                         }}
                       >
                         {new Date(row.fromDate).toLocaleDateString("en-GB", {
@@ -416,8 +477,8 @@ const LeaveManagement = () => {
                       </TableCell>
                       <TableCell
                         sx={{
-                          color: "#e2e8f0",
-                          borderBottom: "1px solid #334155",
+                          color: "#334155",
+                          borderBottom: "1px solid #e5e7eb",
                         }}
                       >
                         {new Date(row.toDate).toLocaleDateString("en-GB", {
@@ -428,16 +489,16 @@ const LeaveManagement = () => {
                       </TableCell>
                       <TableCell
                         sx={{
-                          color: "#e2e8f0",
-                          borderBottom: "1px solid #334155",
+                          color: "#334155",
+                          borderBottom: "1px solid #e5e7eb",
                         }}
                       >
                         {calculateDays(row.fromDate, row.toDate)}
                       </TableCell>
-                      <TableCell sx={{ borderBottom: "1px solid #334155" }}>
+                      <TableCell sx={{ borderBottom: "1px solid #e5e7eb" }}>
                         {renderStatusChip(row.status)}
                       </TableCell>
-                      <TableCell sx={{ borderBottom: "1px solid #334155" }}>
+                      <TableCell sx={{ borderBottom: "1px solid #e5e7eb" }}>
                         {row.status === "pending" ? (
                           <Button
                             size="small"
@@ -463,7 +524,7 @@ const LeaveManagement = () => {
                     <TableCell
                       colSpan={6}
                       align="center"
-                      sx={{ py: 3, color: "#94a3b8", borderBottom: "none" }}
+                      sx={{ py: 4, color: "#64748b", borderBottom: "none" }}
                     >
                       No leave history available.
                     </TableCell>
@@ -484,23 +545,36 @@ const LeaveManagement = () => {
     <Box
       sx={{
         p: { xs: 2, md: 4 },
-        background: "#0f172a",
+        background: "#f8fafc",
         minHeight: "100vh",
-        color: "#fff",
+        color: "#0f172a",
       }}
     >
       <Box mb={4}>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={() => setView("dashboard")}
-          sx={{ color: "#94a3b8", mb: 2, textTransform: "none" }}
+          sx={{
+            color: "#475569",
+            mb: 2,
+            textTransform: "none",
+            fontWeight: 600,
+            borderRadius: "8px",
+            "&:hover": {
+              backgroundColor: "#f1f5f9",
+            },
+          }}
         >
           Back to Dashboard
         </Button>
-        <Typography fontSize={28} fontWeight="bold">
+        <Typography
+          fontSize={{ xs: 23, sm: 28 }}
+          fontWeight={700}
+          color="#0f172a"
+        >
           Apply Leave
         </Typography>
-        <Typography fontSize={14} color="#94a3b8" mt={0.5}>
+        <Typography fontSize={14} color="#64748b" mt={0.5}>
           Submit leave request with manager approval workflow
         </Typography>
       </Box>
@@ -509,15 +583,41 @@ const LeaveManagement = () => {
         <Grid item xs={12} md={8}>
           <Paper
             sx={{
-              p: 4,
-              background: "#1e293b",
-              borderRadius: "16px",
-              border: "1px solid #334155",
+              p: { xs: 2.5, sm: 3, md: 4 },
+              background: `
+                radial-gradient(
+                  circle at 0% 0%,
+                  rgba(139, 92, 246, 0.08) 0%,
+                  transparent 50%
+                ),
+                linear-gradient(
+                  135deg,
+                  #ffffff 0%,
+                  #f8fafc 100%
+                )
+              `,
+              borderRadius: "8px",
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
             }}
           >
-            <Grid container spacing={3}>
+            <Box mb={3}>
+              <Typography fontSize={18} fontWeight={700} color="#0f172a">
+                Leave Request Details
+              </Typography>
+              <Typography fontSize={13} color="#64748b" mt={0.5}>
+                Enter the details below to submit your leave request.
+              </Typography>
+            </Box>
+
+            <Grid container spacing={2.5}>
               <Grid item xs={12} md={6}>
-                <Typography fontSize={14} color="#94a3b8" mb={1}>
+                <Typography
+                  fontSize={14}
+                  color="#475569"
+                  fontWeight={600}
+                  mb={1}
+                >
                   Leave Type
                 </Typography>
                 <TextField
@@ -529,7 +629,7 @@ const LeaveManagement = () => {
                     setFormData({ ...formData, leaveType: e.target.value })
                   }
                   sx={textFieldStyles}
-                  SelectProps={{ sx: { color: "#fff" } }}
+                  SelectProps={{ sx: { color: "#0f172a" } }}
                 >
                   <MenuItem value="sick">Sick Leave</MenuItem>
                   <MenuItem value="casual">Casual Leave</MenuItem>
@@ -539,7 +639,12 @@ const LeaveManagement = () => {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Typography fontSize={14} color="#94a3b8" mb={1}>
+                <Typography
+                  fontSize={14}
+                  color="#475569"
+                  fontWeight={600}
+                  mb={1}
+                >
                   Reporting Manager
                 </Typography>
                 <TextField
@@ -551,7 +656,7 @@ const LeaveManagement = () => {
                     setFormData({ ...formData, managerId: e.target.value })
                   }
                   sx={textFieldStyles}
-                  SelectProps={{ sx: { color: "#fff" } }}
+                  SelectProps={{ sx: { color: "#0f172a" } }}
                 >
                   {managers.map((mgr) => (
                     <MenuItem key={mgr._id} value={mgr._id}>
@@ -563,7 +668,12 @@ const LeaveManagement = () => {
               </Grid>
 
               <Grid item xs={12} md={6}>
-                <Typography fontSize={14} color="#94a3b8" mb={1}>
+                <Typography
+                  fontSize={14}
+                  color="#475569"
+                  fontWeight={600}
+                  mb={1}
+                >
                   Start Date
                 </Typography>
                 <TextField
@@ -578,7 +688,12 @@ const LeaveManagement = () => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                <Typography fontSize={14} color="#94a3b8" mb={1}>
+                <Typography
+                  fontSize={14}
+                  color="#475569"
+                  fontWeight={600}
+                  mb={1}
+                >
                   End Date
                 </Typography>
                 <TextField
@@ -595,7 +710,12 @@ const LeaveManagement = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <Typography fontSize={14} color="#94a3b8" mb={1}>
+                <Typography
+                  fontSize={14}
+                  color="#475569"
+                  fontWeight={600}
+                  mb={1}
+                >
                   Leave Reason
                 </Typography>
                 <TextField
@@ -607,12 +727,17 @@ const LeaveManagement = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, reason: e.target.value })
                   }
-                  sx={{ ...textFieldStyles, textarea: { color: "#fff" } }}
+                  sx={textFieldStyles}
                 />
               </Grid>
 
               <Grid item xs={12}>
-                <Typography fontSize={14} color="#94a3b8" mb={1}>
+                <Typography
+                  fontSize={14}
+                  color="#475569"
+                  fontWeight={600}
+                  mb={1}
+                >
                   Supporting Document (Optional)
                 </Typography>
                 <Button
@@ -620,13 +745,18 @@ const LeaveManagement = () => {
                   component="label"
                   startIcon={<AttachFileIcon />}
                   sx={{
-                    color: "#e2e8f0",
-                    borderColor: "#334155",
+                    color: "#475569",
+                    borderColor: "#e2e8f0",
+                    backgroundColor: "#ffffff",
                     textTransform: "none",
                     width: "100%",
                     justifyContent: "flex-start",
                     p: 1.5,
                     borderRadius: "8px",
+                    "&:hover": {
+                      borderColor: "#cbd5e1",
+                      backgroundColor: "#f8fafc",
+                    },
                   }}
                 >
                   {formData.supportingDocument
@@ -657,13 +787,17 @@ const LeaveManagement = () => {
                   !formData.leaveType
                 }
                 sx={{
-                  background: "#10b981",
-                  fontWeight: "bold",
+                  background: "#8b5cf6",
+                  fontWeight: 600,
                   textTransform: "none",
-                  px: 4,
+                  px: 3,
                   py: 1.2,
                   borderRadius: "8px",
-                  "&:hover": { background: "#059669" },
+                  boxShadow: "none",
+                  "&:hover": {
+                    background: "#7c3aed",
+                    boxShadow: "0 6px 16px rgba(139, 92, 246, 0.18)",
+                  },
                 }}
               >
                 {loading ? "Submitting..." : "Submit Leave Request"}
@@ -672,11 +806,16 @@ const LeaveManagement = () => {
                 variant="outlined"
                 onClick={() => setView("dashboard")}
                 sx={{
-                  color: "#e2e8f0",
-                  borderColor: "#334155",
+                  color: "#475569",
+                  borderColor: "#e2e8f0",
+                  backgroundColor: "#ffffff",
                   textTransform: "none",
-                  px: 4,
+                  px: 3,
                   borderRadius: "8px",
+                  "&:hover": {
+                    borderColor: "#cbd5e1",
+                    backgroundColor: "#f8fafc",
+                  },
                 }}
               >
                 Cancel
@@ -689,13 +828,14 @@ const LeaveManagement = () => {
           <Paper
             sx={{
               p: 3,
-              background: "#1e293b",
-              borderRadius: "16px",
-              border: "1px solid #334155",
+              background: "#ffffff",
+              borderRadius: "8px",
+              border: "1px solid #e5e7eb",
+              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
               mb: 3,
             }}
           >
-            <Typography fontSize={20} fontWeight="bold" mb={3} color="#e2e8f0">
+            <Typography fontSize={18} fontWeight={700} mb={3} color="#0f172a">
               Leave Summary
             </Typography>
 
@@ -706,16 +846,16 @@ const LeaveManagement = () => {
               mb={3}
               p={2}
               sx={{
-                border: "1px solid #334155",
-                borderRadius: "12px",
-                background: "#0f172a",
+                border: "1px solid #e5e7eb",
+                borderRadius: "8px",
+                background: "#f8fafc",
               }}
             >
               <Box>
-                <Typography fontSize={13} color="#94a3b8">
+                <Typography fontSize={13} color="#64748b">
                   Total Available
                 </Typography>
-                <Typography fontSize={24} fontWeight="bold" color="#fff">
+                <Typography fontSize={24} fontWeight={700} color="#0f172a">
                   {totalAvailableLeaves} Days
                 </Typography>
               </Box>
@@ -745,12 +885,12 @@ const LeaveManagement = () => {
                 mb={3}
                 p={2}
                 sx={{
-                  border: "1px solid #334155",
-                  borderRadius: "12px",
-                  background: "#0f172a",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
+                  background: "#f8fafc",
                 }}
               >
-                <Typography fontSize={14} color="#94a3b8">
+                <Typography fontSize={14} color="#64748b">
                   Days Requested:
                 </Typography>
                 <Typography fontSize={16} fontWeight="bold" color="#8b5cf6">
@@ -762,13 +902,13 @@ const LeaveManagement = () => {
             <Box
               p={2}
               sx={{
-                border: "1px solid #334155",
-                borderRadius: "12px",
-                background: "#0f172a",
+                border: "1px solid #e5e7eb",
+                borderRadius: "8px",
+                background: "#f8fafc",
               }}
             >
               <Box display="flex" justifyContent="space-between" mb={1}>
-                <Typography fontSize={14} color="#94a3b8">
+                <Typography fontSize={14} color="#64748b">
                   Pending Approvals
                 </Typography>
                 <Typography fontSize={14} fontWeight="bold" color="#f59e0b">
@@ -781,7 +921,7 @@ const LeaveManagement = () => {
                 sx={{
                   height: 8,
                   borderRadius: 4,
-                  backgroundColor: "#334155",
+                  backgroundColor: "#e2e8f0",
                   "& .MuiLinearProgress-bar": { backgroundColor: "#f59e0b" },
                 }}
               />
@@ -791,19 +931,29 @@ const LeaveManagement = () => {
           <Box
             sx={{
               p: 3,
-         
-              
-              background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-              borderRadius: "16px",
-              color: "#fff",
-              boxShadow: "0 10px 15px -3px rgba(16, 185, 129, 0.3)",
+              background: `
+                radial-gradient(
+                  circle at 0% 0%,
+                  rgba(16, 185, 129, 0.10) 0%,
+                  transparent 55%
+                ),
+                linear-gradient(
+                  135deg,
+                  #ffffff 0%,
+                  #f8fafc 100%
+                )
+              `,
+              border: "1px solid #e5e7eb",
+              borderRadius: "8px",
+              color: "#0f172a",
+              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
             }}
           >
             <Typography
               fontSize={12}
               fontWeight="bold"
               sx={{
-                opacity: 0.9,
+                opacity: 1,
                 mb: 1,
                 textTransform: "uppercase",
                 letterSpacing: 1,
@@ -811,10 +961,16 @@ const LeaveManagement = () => {
             >
               HR Notice
             </Typography>
-            <Typography fontSize={20} fontWeight="bold" mb={2} lineHeight={1.3}>
+            <Typography
+              fontSize={18}
+              fontWeight={700}
+              mb={2}
+              lineHeight={1.3}
+              color="#0f172a"
+            >
               Apply leave 3 days in advance
             </Typography>
-            <Typography fontSize={14} sx={{ opacity: 0.9, lineHeight: 1.6 }}>
+            <Typography fontSize={14} color="#64748b" sx={{ lineHeight: 1.6 }}>
               Emergency leaves require immediate approval from your reporting
               manager and HR department.
             </Typography>

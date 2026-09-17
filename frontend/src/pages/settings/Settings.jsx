@@ -54,10 +54,11 @@ const Settings = () => {
     payrollAlerts: true,
     expenseApprovals: true,
   });
+  const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
     api
-      .get("/admin/settings")
+      .get("/settings")
       .then(({ data }) => {
         if (data?.data) setForm((prev) => ({ ...prev, ...data.data }));
       })
@@ -65,15 +66,31 @@ const Settings = () => {
   }, []);
 
   const save = async () => {
-    await api.put("/admin/settings", form).catch(() => {});
+    try {
+      await api.put("/settings", form);
+      setFeedback("Settings saved successfully.");
+    } catch (error) {
+      setFeedback(error?.response?.data?.message || "Unable to save settings.");
+    }
   };
 
   return (
-    <Box sx={{ p: { xs: 1.5, md: 2.5 } }}>
+    <Box>
       <PageHeader
         title="Settings"
         description="A central control panel for enterprise HRMS operations, security, payroll, notifications, and governance."
       />
+      {feedback && (
+        <Typography
+          variant="body2"
+          color={
+            feedback.includes("successfully") ? "success.main" : "error.main"
+          }
+          sx={{ mb: 2 }}
+        >
+          {feedback}
+        </Typography>
+      )}
 
       <Grid container spacing={2.5} sx={{ mb: 2.5 }}>
         {settingCards.map((card) => {
@@ -83,10 +100,9 @@ const Settings = () => {
               <Card
                 sx={{
                   height: "100%",
-                  borderRadius: 4,
-                  border: "1px solid rgba(148,163,184,.15)",
-                  background:
-                    "linear-gradient(135deg, rgba(65, 249, 203, 0.33), rgba(15,23,42,.92))",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  background: "background.paper",
                 }}
               >
                 <CardContent sx={{ p: 3 }}>
@@ -95,11 +111,11 @@ const Settings = () => {
                       sx={{
                         width: 44,
                         height: 44,
-                        borderRadius: 3,
+                        borderRadius: "8px",
                         display: "grid",
                         placeItems: "center",
-                        bgcolor: "rgba(56,189,248,.14)",
-                        color: "#38bdf8",
+                        bgcolor: "primary.light",
+                        color: "primary.main",
                       }}
                     >
                       <Icon />
@@ -121,9 +137,8 @@ const Settings = () => {
                       onClick={() => navigate(card.path)}
                       sx={{
                         alignSelf: "flex-start",
-                        color: "#eef6d59a",
-                        borderColor:
-                          "linear-gradient(135deg, #eef6d5f2, rgba(15,23,42,.92))",
+                        color: "primary.main",
+                        borderColor: "primary.main",
                         "&:hover": { borderColor: "primary.main" },
                       }}
                     >
@@ -137,7 +152,7 @@ const Settings = () => {
         })}
       </Grid>
 
-      <Card sx={{ borderRadius: 4, border: "1px solid rgba(148,163,184,.15)" }}>
+      <Card>
         <CardContent sx={{ p: { xs: 2, md: 3 } }}>
           <Stack
             direction={{ xs: "column", md: "row" }}
@@ -252,8 +267,9 @@ const Settings = () => {
                   alignItems="center"
                   sx={{
                     p: 2,
-                    borderRadius: 3,
-                    border: "1px solid rgba(148,163,184,.15)",
+                    borderRadius: "8px",
+                    border: "1px solid",
+                    borderColor: "divider",
                   }}
                 >
                   <Box>

@@ -30,6 +30,9 @@ const mainRoutes = require("./routes/routes");
 const app = express();
 const server = http.createServer(app);
 
+// Do not expose Express implementation details in response headers.
+app.disable("x-powered-by");
+
 // ─── Socket.io Setup ──────────────────────────────────────────────────────────
 const io = new Server(server, {
     cors: { origin: process.env.CLIENT_URL || "*", methods: ["GET", "POST"] }
@@ -64,6 +67,17 @@ const limiter = rateLimit({
     message: "Too many requests from this IP, please try again later."
 });
 app.use("/api/auth", limiter);
+
+// General API abuse protection. Authentication/authorization still remains
+// mandatory on protected routes; this only limits request flooding.
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: "Too many API requests from this IP, please try again later."
+});
+app.use("/api", apiLimiter);
 
 // ─── General Middleware ───────────────────────────────────────────────────────
 app.use(express.json({ limit: "10mb" }));
@@ -100,7 +114,9 @@ cron.schedule("59 23 * * *", () => {
 // ─── DB + Server Start ────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI)
+const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/hrms_db";
+
+mongoose.connect(MONGO_URI)
     .then(() => {
         logger.info("MongoDB Connected ✅");
         server.listen(PORT, () => {

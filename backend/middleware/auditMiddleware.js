@@ -19,7 +19,7 @@ const auditMiddleware = (req, res, next) => {
           body: req.method === "DELETE" ? undefined : req.body,
           responseMessage: payload?.message
         }
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     return originalJson(payload);

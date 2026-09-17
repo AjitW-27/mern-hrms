@@ -2,6 +2,7 @@ const Role = require("../../models/roleModel");
 const { buildAccess, getDefaultRolePermissions, MODULES, ACTIONS, createEmptyMatrix } = require("../../config/accessControl");
 const asyncHandler = require("../../utils/asyncHandler");
 const audit = require("../../utils/audit");
+const { clearRbacCache } = require("../../middleware/authMiddleware");
 
 const sanitizeRoleCode = (value) => String(value || "").trim().toLowerCase().replace(/\s+/g, "_");
 
@@ -131,6 +132,7 @@ const update = asyncHandler(async (req, res) => {
   role.updatedBy = req.user?._id;
 
   await role.save();
+  clearRbacCache();
 
   await audit({
     actor: req.user?._id,
@@ -178,14 +180,12 @@ const updatePermissions = asyncHandler(async (req, res) => {
   if (!role) {
     return res.status(404).json({ success: false, message: "Role not found" });
   }
-  if (role.isSystemRole) {
-    return res.status(400).json({ success: false, message: "System roles cannot be modified" });
-  }
 
   const before = role.toObject({ flattenMaps: true });
   role.permissions = normalizeMatrix(req.body.permissions || req.body.matrix, role.code);
   role.updatedBy = req.user?._id;
   await role.save();
+  clearRbacCache();
 
   await audit({
     actor: req.user?._id,
@@ -196,6 +196,28 @@ const updatePermissions = asyncHandler(async (req, res) => {
     after: role.toObject({ flattenMaps: true }),
     metadata: { module: "roles" },
     req
+  });
+
+  res.json({ success: true, data: roleToPlain(role) });
+});
+
+const updateStatus = asyncHandler(async (req, res) => {
+  const role = await Role.findById(req.params.id);
+  if (!role) return res.status(404).json({ success: false, message: "Role not found" });
+  if (typeof req.body.isActive !== "boolean") return res.status(400).json({ success: false, message: "isActive must be true or false" });
+  if (!req.body.isActive && String(role.code).toLowerCase() === String(req.user?.role || "").toLowerCase()) {
+    return res.status(400).json({ success: false, message: "You cannot deactivate your own active role." });
+  }
+
+  const before = role.toObject({ flattenMaps: true });
+  role.isActive = req.body.isActive;
+  role.updatedBy = req.user?._id;
+  await role.save();
+  clearRbacCache();
+
+  await audit({
+    actor: req.user?._id, action: "update_status", entityType: "Role", entityId: role._id,
+    before, after: role.toObject({ flattenMaps: true }), metadata: { module: "roles" }, req
   });
 
   res.json({ success: true, data: roleToPlain(role) });
@@ -250,6 +272,7 @@ module.exports = {
   update,
   deleteOne,
   updatePermissions,
+  updateStatus,
   clone,
   registry
 };

@@ -7,13 +7,13 @@ router.use(protect);
 
 router
   .route("/")
-  .get(permit("organization", "read"), controller.listOrganizations)
-  .post(authorize("superadmin", "admin"), permit("organization", "create"), controller.createOrganization);
+  .get(permit("organizations", "read"), controller.listOrganizations)
+  .post(authorize("superadmin", "admin"), permit("organizations", "create"), controller.createOrganization);
 
 router
   .route("/:id")
-  .get(permit("organization", "read"), controller.getOrganization)
-  .put(authorize("superadmin", "admin"), permit("organization", "update"), controller.updateOrganization)
-  .delete(authorize("superadmin"), permit("organization", "delete"), controller.deleteOrganization);
+  .get(permit("organizations", "read"), controller.getOrganization)
+  .put(authorize("superadmin", "admin"), permit("organizations", "update"), controller.updateOrganization)
+  .delete(authorize("superadmin"), permit("organizations", "delete"), controller.deleteOrganization);
 
 module.exports = router;

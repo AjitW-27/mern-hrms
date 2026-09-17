@@ -1,15 +1,21 @@
 import React from "react";
-import { Box, Typography, Skeleton } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import {
-  AreaChart,
   Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
 } from "recharts";
+import {
+  ChartCard,
+  ChartHeading,
+  ChartTooltip,
+  useChartTheme,
+} from "../../components/common/ChartComponents";
 
 const FALLBACK = [
   { date: "Mon", Present: 0, Absent: 0, Late: 0 },
@@ -17,164 +23,103 @@ const FALLBACK = [
   { date: "Wed", Present: 0, Absent: 0, Late: 0 },
 ];
 
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload?.length) {
-    return (
-      <Box
-        sx={{
-          bgcolor: "#1e293b",
-          border: "1px solid #334155",
-          borderRadius: "10px",
-          p: 1.5,
-          minWidth: 140,
-        }}
-      >
-        <Typography fontSize={12} color="#94a3b8" mb={0.5}>
-          {label}
-        </Typography>
-        {payload.map((p) => (
-          <Box
-            key={p.name}
-            display="flex"
-            justifyContent="space-between"
-            gap={2}
-          >
-            <Typography fontSize={13} color={p.color}>
-              {p.name}
-            </Typography>
-            <Typography fontSize={13} color="#f1f5f9" fontWeight={600}>
-              {p.value}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
-    );
-  }
-  return null;
-};
-
 const AttendanceTrendChart = ({ data, loading }) => {
+  const c = useChartTheme();
   const chartData = data?.length ? data : FALLBACK;
-
+  const series = [
+    { key: "Present", color: c.primary },
+    { key: "Absent", color: c.error },
+    { key: "Late", color: c.warning },
+  ];
   return (
-    <Box
-      sx={{
-        p: 2.5,
-        borderRadius: "16px",
-        background:
-          "linear-gradient(135deg, rgba(19,24,38,0.95), rgba(15,23,42,0.98))",
-        border: "1px solid rgba(255,255,255,0.06)",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-        height: "100%",
-        minHeight: 320,
-      }}
-    >
+    <ChartCard>
       <Box
         display="flex"
         justifyContent="space-between"
-        alignItems="center"
-        mb={2.5}
+        alignItems="flex-start"
       >
-        <Box>
-          <Typography fontSize={16} fontWeight={700} color="#f1f5f9">
-            Attendance Trend
-          </Typography>
-          <Typography fontSize={12} color="#64748b" mt={0.3}>
-            Last 7 days overview
-          </Typography>
-        </Box>
-        <Box
+        <ChartHeading
+          title="Attendance Trend"
+          subtitle="Last 7 days overview"
+        />
+        <Typography
           sx={{
-            px: 2,
-            py: 0.8,
-            bgcolor: "#1e293b",
+            px: 1,
+            py: 0.5,
+            border: "1px solid",
+            borderColor: "divider",
             borderRadius: "8px",
-            border: "1px solid #334155",
+            fontSize: 12,
+            color: "text.secondary",
           }}
         >
-          <Typography fontSize={12} color="#94a3b8">
-            This Week
-          </Typography>
-        </Box>
+          This Week
+        </Typography>
       </Box>
-
       {loading ? (
         <Skeleton
           variant="rectangular"
-          height={220}
-          sx={{ bgcolor: "#1e293b", borderRadius: "8px" }}
+          height={260}
+          sx={{ bgcolor: "action.hover", borderRadius: "8px" }}
         />
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={275}>
           <AreaChart
             data={chartData}
             margin={{ top: 5, right: 0, left: -20, bottom: 0 }}
           >
             <defs>
-              <linearGradient id="gradPresent" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="gradAbsent" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="gradLate" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
-              </linearGradient>
+              {series.map((item) => (
+                <linearGradient
+                  key={item.key}
+                  id={`attendance-${item.key}`}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="5%" stopColor={item.color} stopOpacity={0.22} />
+                  <stop offset="95%" stopColor={item.color} stopOpacity={0} />
+                </linearGradient>
+              ))}
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="#1e293b"
+              stroke={c.grid}
               vertical={false}
             />
             <XAxis
               dataKey="date"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#64748b", fontSize: 12 }}
+              tick={{ fill: c.muted, fontSize: 12 }}
               dy={8}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#64748b", fontSize: 12 }}
+              tick={{ fill: c.muted, fontSize: 12 }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<ChartTooltip />} />
             <Legend
-              wrapperStyle={{ paddingTop: 12, fontSize: 12, color: "#94a3b8" }}
+              wrapperStyle={{ paddingTop: 12, fontSize: 12, color: c.text }}
               iconType="circle"
             />
-            <Area
-              type="monotone"
-              dataKey="Present"
-              stroke="#10b981"
-              strokeWidth={2}
-              fill="url(#gradPresent)"
-              activeDot={{ r: 5 }}
-            />
-            <Area
-              type="monotone"
-              dataKey="Absent"
-              stroke="#ef4444"
-              strokeWidth={2}
-              fill="url(#gradAbsent)"
-              activeDot={{ r: 5 }}
-            />
-            <Area
-              type="monotone"
-              dataKey="Late"
-              stroke="#f59e0b"
-              strokeWidth={2}
-              fill="url(#gradLate)"
-              activeDot={{ r: 5 }}
-            />
+            {series.map((item) => (
+              <Area
+                key={item.key}
+                type="monotone"
+                dataKey={item.key}
+                stroke={item.color}
+                strokeWidth={2}
+                fill={`url(#attendance-${item.key})`}
+                activeDot={{ r: 4, fill: item.color }}
+              />
+            ))}
           </AreaChart>
         </ResponsiveContainer>
       )}
-    </Box>
+    </ChartCard>
   );
 };
-
 export default AttendanceTrendChart;

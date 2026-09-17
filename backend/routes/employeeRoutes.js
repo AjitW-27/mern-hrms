@@ -25,7 +25,7 @@ router.post("/bulk-import", protect, authorize("admin", "hr"), bulkImportEmploye
 
 router.route("/")
     // GET /api/employees -> Everyone can see the employee directory
-    .get(protect, getEmployees)
+    .get(protect, require("../middleware/authMiddleware").permit("employees", "read"), getEmployees)
 
     // POST /api/employees -> Only Admin/HR can add. Expects 'avatar' file upload
     .post(protect, authorize("admin", "hr"), upload.single("avatar"), addEmployee);
@@ -33,7 +33,7 @@ router.route("/")
 
 router.route("/:id")
     // GET /api/employees/:id -> Everyone can view a specific employee's profile
-    .get(protect, getEmployeeById)
+    .get(protect, require("../middleware/authMiddleware").permit("employees", "read"), getEmployeeById)
 
     // PUT /api/employees/:id -> Only Admin/HR can edit. Expects 'avatar' file upload
     .put(protect, authorize("admin", "hr"), upload.single("avatar"), updateEmployee)

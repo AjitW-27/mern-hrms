@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const AddDepartment = () => {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     head: "",
@@ -43,17 +44,19 @@ const AddDepartment = () => {
         body: JSON.stringify(formData),
       });
 
-      // Safely handle errors if the backend doesn't return JSON
       if (!response.ok) {
         const errorData = await response.json().catch(() => null);
+
         alert(
           errorData?.error ||
             `Error: ${response.status} ${response.statusText}`,
         );
+
         return;
       }
 
-      const data = await response.json();
+      await response.json();
+
       alert("Department added successfully!");
       navigate("/dashboard/departments");
     } catch (error) {
@@ -62,57 +65,111 @@ const AddDepartment = () => {
     }
   };
 
+  // Light theme input styles
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#fff",
-      backgroundColor: "#1e293b",
+      color: "#0f172a",
+      backgroundColor: "#ffffff",
       borderRadius: "8px",
-      "& fieldset": { borderColor: "#334155" },
-      "&:hover fieldset": { borderColor: "#64748b" },
-      "&.Mui-focused fieldset": { borderColor: "#8b5cf6", borderWidth: "2px" },
+
+      "& fieldset": {
+        borderColor: "#e5e7eb",
+      },
+
+      "&:hover fieldset": {
+        borderColor: "#cbd5e1",
+      },
+
+      "&.Mui-focused fieldset": {
+        borderColor: "#8b5cf6",
+        borderWidth: "2px",
+      },
     },
-    "& .MuiInputLabel-root": { color: "#94a3b8" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "#8b5cf6" },
+
+    "& .MuiInputLabel-root": {
+      color: "#64748b",
+    },
+
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: "#8b5cf6",
+    },
+
+    "& textarea": {
+      color: "#0f172a",
+    },
   };
 
   return (
     <Box
       sx={{
-        p: { xs: 2, md: 4 },
-        background: "#0f172a",
+        p: { xs: 2, md: 3 },
+        background: "#f8fafc",
         minHeight: "100vh",
-        color: "#fff",
+        color: "#0f172a",
         display: "flex",
         justifyContent: "center",
       }}
     >
-      <Box sx={{ width: "100%", maxWidth: 800 }}>
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 800,
+        }}
+      >
+        {/* Header */}
         <Box display="flex" alignItems="center" mb={4}>
           <IconButton
-            sx={{ color: "#94a3b8", mr: 2 }}
+            sx={{
+              color: "#64748b",
+              mr: 2,
+              "&:hover": {
+                background: "#f1f5f9",
+                color: "#0f172a",
+              },
+            }}
             onClick={() => navigate("/dashboard/departments")}
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography fontSize={24} fontWeight="bold">
+
+          <Typography fontSize={24} fontWeight={600} color="#0f172a">
             Add Department
           </Typography>
         </Box>
 
+        {/* Form Card */}
         <Box
           component="form"
           onSubmit={handleSubmit}
           sx={{
-            background: "#131826",
             p: { xs: 3, md: 4 },
-            borderRadius: "16px",
-            border: "1px solid #1e293b",
+            borderRadius: "8px",
+
+            // Same soft gradient style as Department cards
+            background: `
+              radial-gradient(
+                circle at 0% 0%,
+                rgba(139, 92, 246, 0.12) 0%,
+                transparent 55%
+              ),
+              linear-gradient(
+                135deg,
+                #ffffff 0%,
+                #f8fafc 100%
+              )
+            `,
+
+            border: "1px solid #e5e7eb",
+
+            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
           }}
         >
-          <Typography fontSize={18} fontWeight="bold" mb={3} color="#e2e8f0">
+          <Typography fontSize={18} fontWeight={600} mb={3} color="#0f172a">
             Department Details
           </Typography>
+
           <Grid container spacing={3}>
+            {/* Department Name */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -124,6 +181,8 @@ const AddDepartment = () => {
                 sx={inputStyles}
               />
             </Grid>
+
+            {/* Head of Department */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -134,6 +193,8 @@ const AddDepartment = () => {
                 sx={inputStyles}
               />
             </Grid>
+
+            {/* Description */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -147,18 +208,30 @@ const AddDepartment = () => {
               />
             </Grid>
           </Grid>
+
+          {/* Buttons */}
           <Box display="flex" justifyContent="flex-end" gap={2} mt={5}>
             <Button
               variant="outlined"
               onClick={() => navigate("/dashboard/departments")}
               sx={{
-                color: "#94a3b8",
-                borderColor: "#334155",
+                color: "#475569",
+                borderColor: "#e5e7eb",
+                background: "#ffffff",
                 textTransform: "none",
+                fontWeight: 600,
+                borderRadius: "8px",
+                px: 2.5,
+
+                "&:hover": {
+                  borderColor: "#cbd5e1",
+                  background: "#f8fafc",
+                },
               }}
             >
               Cancel
             </Button>
+
             <Button
               variant="contained"
               type="submit"
@@ -166,7 +239,15 @@ const AddDepartment = () => {
               sx={{
                 background: "#8b5cf6",
                 textTransform: "none",
-                "&:hover": { background: "#7c3aed" },
+                fontWeight: 600,
+                borderRadius: "8px",
+                px: 2.5,
+                boxShadow: "none",
+
+                "&:hover": {
+                  background: "#7c3aed",
+                  boxShadow: "0 6px 16px rgba(139, 92, 246, 0.20)",
+                },
               }}
             >
               Save Department
@@ -177,4 +258,5 @@ const AddDepartment = () => {
     </Box>
   );
 };
+
 export default AddDepartment;

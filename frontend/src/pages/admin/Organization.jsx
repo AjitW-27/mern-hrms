@@ -18,8 +18,8 @@ const Organization = () => {
   return (
     <Box>
       <PageHeader title="Organization" description="Manage company profile, contact details, and operational settings." />
-      <Card sx={{ borderRadius: 4 }}>
-        <CardContent sx={{ p: 4 }}>
+      <Card>
+        <CardContent sx={{ p: 3 }}>
           <Grid container spacing={2}>
             {[
               ["name", "Organization Name"],

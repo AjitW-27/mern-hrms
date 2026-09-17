@@ -15,10 +15,10 @@ const upload = require("../middleware/uploadMiddleware");
 // Base route is /api/projects (configured in server.js)
 
 router.post("/", protect, authorize("admin", "manager"), addProject);
-router.get("/", protect, getProjects);
+router.get("/", protect, require("../middleware/authMiddleware").permit("projects", "read"), getProjects);
 
 // ---- NEW ROUTES BELOW ----
-router.get("/:id", protect, getProjectById);
+router.get("/:id", protect, require("../middleware/authMiddleware").permit("projects", "read"), getProjectById);
 router.put("/:id", protect, authorize("admin", "manager"), updateProject);
 router.delete("/:id", protect, authorize("admin"), deleteProject);
 

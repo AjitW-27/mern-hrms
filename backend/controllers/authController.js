@@ -156,7 +156,7 @@ const loginUser = async (req, res) => {
 
         const roleDoc = await Role.findOne({
             $or: [{ code: user.role }, { name: user.role }]
-        }).lean();
+        }).lean({ flattenMaps: true });
 
         res.status(200).json({
             success: true,
@@ -242,8 +242,13 @@ const getProfile = async (req, res) => {
         const employee = await Employee.findOne({ userId: req.user._id })
             .populate("reportsTo", "fullName designation")
             .populate("department");
+        const roleDoc = await Role.findOne({ $or: [{ code: user.role }, { name: user.role }] }).lean({ flattenMaps: true });
 
-        res.json({ success: true, user, employee });
+        res.json({
+            success: true,
+            user: { ...user.toObject(), rolePermissions: roleDoc?.permissions || null, roleMeta: roleDoc ? { id: roleDoc._id, code: roleDoc.code, name: roleDoc.name, level: roleDoc.level } : null },
+            employee
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

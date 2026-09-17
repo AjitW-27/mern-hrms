@@ -50,12 +50,15 @@ const userSchema = new mongoose.Schema({
 
     department: {
         type: String,
-        required: true,
+        required: false,
+        default: "",
+        trim: true,
     },
 
     role: {
         type: String,
-        enum: ["superadmin", "admin", "hr", "manager", "employee"],
+        trim: true,
+        lowercase: true,
         default: "employee",
     },
 

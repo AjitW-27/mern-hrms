@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Box, CssBaseline, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Appbar from "./appbar";
-import Sidebar from "./sidebar";
+// import Sidebar from "./sidebar";
 import { Outlet } from "react-router-dom";
 import SessionManager from "../../strore/sessionManager";
+import PageSetup from "../common/PageSetup";
+import Sidebar from "./Sidebar";
 
 const DashboardLayout = () => {
   const [open, setOpen] = useState(() =>
@@ -17,14 +19,14 @@ const DashboardLayout = () => {
     <Box
       sx={{
         display: "flex",
-        backgroundColor: "#020617",
+        backgroundColor: "background.default",
         height: "100vh",
         overflowY: "auto",
         overflowX: "hidden",
 
         /* Firefox */
         scrollbarWidth: "2px",
-        scrollbarColor: "#022447 transparent",
+        scrollbarColor: "divider transparent",
 
         /* Chrome, Edge */
         "&::-webkit-scrollbar": {
@@ -34,11 +36,11 @@ const DashboardLayout = () => {
           background: "transparent",
         },
         "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#021e3966",
-          borderRadius: "2px",
+          backgroundColor: "divider",
+          borderRadius: "8px",
         },
         "&::-webkit-scrollbar-thumb:hover": {
-          backgroundColor: "#1565c0",
+          backgroundColor: "primary.main",
         },
       }}
     >
@@ -67,12 +69,14 @@ const DashboardLayout = () => {
           component="main"
           sx={{
             flexGrow: 1,
-            p: { xs: 1, sm: 1.5 },
+            p: { xs: 0.75, sm: 1, md: 1.25, lg: 1.5 },
             overflowY: "auto",
             overflowX: "hidden",
           }}
         >
-          <Outlet />
+          <PageSetup>
+            <Outlet />
+          </PageSetup>
         </Box>
       </Box>
     </Box>

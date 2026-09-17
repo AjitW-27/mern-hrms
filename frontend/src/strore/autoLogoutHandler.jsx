@@ -29,7 +29,10 @@ const AutoLogoutHandler = () => {
     const handleLogout = (reason) => {
       console.log(reason);
       sessionStorage.clear();
-      localStorage.removeItem("user"); // User info delete
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("hrms_token");
+      localStorage.removeItem("hrms_user");
       navigate("/");
     };
 

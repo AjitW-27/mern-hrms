@@ -1,6 +1,6 @@
 // src/pages/auth/Login.jsx
+
 import React, { useState } from "react";
-import AuthLayout from "../../components/layout/authLayout";
 import {
   Box,
   Typography,
@@ -13,19 +13,23 @@ import {
   Checkbox,
   Alert,
 } from "@mui/material";
+
 import {
   MailOutline as MailOutlineIcon,
   LockOutlined as LockOutlinedIcon,
   VisibilityOutlined as VisibilityOutlinedIcon,
   VisibilityOffOutlined as VisibilityOffOutlinedIcon,
   ArrowForward as ArrowForwardIcon,
-  Login as LoginIcon,
+  PeopleOutline as PeopleOutlineIcon,
+  SecurityOutlined as SecurityOutlinedIcon,
   KeyboardBackspaceOutlined as KeyboardBackspaceOutlinedIcon,
 } from "@mui/icons-material";
+
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import useAuthStore from "../../strore/authStore";
-
+import LoginImage from "../../assets/LoginImg.png"; // Import the image
+// Google Icon
 const GoogleIconLogo = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
     <path
@@ -53,19 +57,25 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    if (error) setError("");
+
+    if (error) {
+      setError("");
+    }
   };
 
   const validateForm = () => {
@@ -73,19 +83,23 @@ const Login = () => {
       setError("Email is required");
       return false;
     }
+
     if (!/\S+@\S+\.\S+/.test(formData.email)) {
       setError("Please enter a valid email address");
       return false;
     }
+
     if (!formData.password) {
       setError("Password is required");
       return false;
     }
+
     return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
     setLoading(true);
@@ -99,11 +113,15 @@ const Login = () => {
           password: formData.password,
           rememberMe: formData.rememberMe,
         },
-        { headers: { "Content-Type": "application/json" } },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
       );
 
-      // ✅ Backend sends "accessToken" (not "token")
       const payload = response.data?.data || response.data;
+
       const accessToken = payload.accessToken || payload.token;
       const user = payload.user;
 
@@ -111,7 +129,6 @@ const Login = () => {
         throw new Error("Login response is missing token or user details.");
       }
 
-      // Save token based on rememberMe
       if (formData.rememberMe) {
         localStorage.setItem("rememberMe", "true");
         localStorage.setItem("token", accessToken);
@@ -121,12 +138,14 @@ const Login = () => {
         sessionStorage.setItem("token", accessToken);
         localStorage.setItem("hrms_token", accessToken);
       }
+
       localStorage.setItem("hrms_user", JSON.stringify(user));
 
-      // ✅ Store in Zustand - pass accessToken so setAuth picks it up
-      setAuth({ user, accessToken });
+      setAuth({
+        user,
+        accessToken,
+      });
 
-      // Set default axios header for future requests
       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
       navigate("/dashboard");
@@ -143,316 +162,675 @@ const Login = () => {
 
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      height: "54px",
-      borderRadius: "14px",
-      color: "#fff",
-      backgroundColor: "transparent",
-      "& fieldset": { borderColor: "rgba(255, 255, 255, 0.3)" },
-      "&:hover fieldset": { borderColor: "rgba(255, 255, 255, 0.6)" },
+      height: "56px",
+      borderRadius: "10px",
+      backgroundColor: "#ffffff",
+      color: "#172033",
+
+      "& fieldset": {
+        borderColor: "#d9e0ea",
+        borderWidth: "1px",
+      },
+
+      "&:hover fieldset": {
+        borderColor: "#93b4ff",
+      },
+
       "&.Mui-focused fieldset": {
-        borderColor: "#8b5cf6",
+        borderColor: "#3b82f6",
         borderWidth: "1.5px",
       },
     },
-    "& .MuiInputBase-input::placeholder": { color: "#9ca3af", opacity: 1 },
+
+    "& .MuiInputBase-input": {
+      fontSize: "15px",
+    },
+
+    "& .MuiInputBase-input::placeholder": {
+      color: "#94a3b8",
+      opacity: 1,
+    },
   };
 
   return (
-    <AuthLayout>
+    <Box
+      sx={{
+        width: "100%",
+        minHeight: "100vh",
+        background: "#f6f8fc",
+        display: "flex",
+        alignItems: "stretch",
+        justifyContent: "center",
+        overflow: "hidden",
+        p: 0,
+      }}
+    >
+      {/* =====================================================
+          MAIN CONTAINER
+          DESKTOP = 65% IMAGE + 35% FORM
+          MOBILE/TABLET = 100% FORM
+      ====================================================== */}
+
       <Box
-        component="form"
-        onSubmit={handleSubmit}
         sx={{
           width: "100%",
-          maxWidth: 440,
-          minHeight: 690,
-          height:690,
-         // height: "auto",
-          transform: "rotateY(-18deg) rotateX(2deg)",
-          transformStyle: "preserve-3d",
-          transition: "transform 0.3s ease",
-          "&:hover": { transform: "rotateY(-8deg) rotateX(1deg)" },
-          p: { xs: 4, md: 5 },
-          borderRadius: "28px",
-          background:
-            "linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%)",
-          backdropFilter: "blur(30px)",
-          WebkitBackdropFilter: "blur(30px)",
-          borderTop: "1.5px solid rgba(255, 255, 255, 0.6)",
-          borderLeft: "1.5px solid rgba(255, 255, 255, 0.6)",
-          borderRight: "1px solid rgba(255, 255, 255, 0.1)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-          boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.4)",
-          color: "#fff",
-          display: "flex",
-          flexDirection: "column",
+          height: "100vh",
+          minHeight: "100vh",
+
+          display: "grid",
+
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr",
+            md: "1fr",
+            lg: "65% 35%",
+          },
+
+          background: "#ffffff",
+          overflow: "hidden",
+          borderRadius: 0,
+          border: "none",
+          boxShadow: "none",
         }}
       >
-        {/* Header */}
-        <Box
-          textAlign="center"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-        >
-          <IconButton
-            onClick={() => navigate("/")}
-            sx={{ position: "absolute", top: 20, left: 20, color: "#fff" }}
-          >
-            <KeyboardBackspaceOutlinedIcon />
-          </IconButton>
-          <Box
-            sx={{
-              width: 54,
-              height: 54,
-              borderRadius: "14px",
-              background: "rgba(255, 255, 255, 0.1)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              mb: 2,
-              border: "1px solid rgba(255, 255, 255, 0.4)",
-            }}
-          >
-            <LoginIcon sx={{ color: "#fff", fontSize: 28 }} />
-          </Box>
-          <Typography
-            variant="h4"
-            fontWeight="500"
-            mb={1}
-            sx={{ letterSpacing: 0.5 }}
-          >
-            Welcome Back
-          </Typography>
-          <Typography variant="body1" sx={{ color: "#e5e7eb", opacity: 0.8 }}>
-            Sign in to your account
-          </Typography>
-        </Box>
+        {/* =====================================================
+            LEFT IMAGE
+            DESKTOP ONLY
+        ====================================================== */}
 
-        {/* Error Alert */}
         <Box
           sx={{
-            minHeight: 15,
-            mt: 1,
-             mb: 1.5,
+            display: {
+              xs: "none",
+              sm: "none",
+              md: "none",
+              lg: "block",
+            },
+
+            position: "relative",
+            width: "100%",
+            height: "100vh",
+            overflow: "hidden",
+            background: "#ffffff",
           }}
         >
-          {error && (
-            <Alert
-              severity="error"
+          <Box
+            component="img"
+            src={LoginImage}
+            alt="HRMS Dashboard"
+            sx={{
+              width: "100%",
+              height: "100%",
+              display: "block",
+
+              objectFit: "cover",
+
+              // Keeps the complete HRMS design visually balanced
+              objectPosition: "center center",
+            }}
+          />
+        </Box>
+
+        {/* =====================================================
+            RIGHT LOGIN FORM
+        ====================================================== */}
+
+        <Box
+          sx={{
+            width: "100%",
+            height: "100vh",
+            minHeight: "100vh",
+
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+
+            px: {
+              xs: 3,
+              sm: 5,
+              md: 8,
+              lg: 5,
+              xl: 6,
+            },
+
+            py: {
+              xs: 4,
+              sm: 5,
+              md: 5,
+              lg: 4,
+            },
+
+            background: "#ffffff",
+
+            overflowY: "auto",
+          }}
+        >
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              width: "100%",
+
+              maxWidth: {
+                xs: "440px",
+                sm: "480px",
+                md: "500px",
+                lg: "430px",
+                xl: "470px",
+              },
+
+              mx: "auto",
+            }}
+          >
+            {/* =================================================
+                MOBILE / TABLET LOGO
+            ================================================= */}
+
+            <Box
               sx={{
-                borderRadius: "12px",
-                bgcolor: "rgba(244,67,54,0.12)",
-                color: "#ff6b6b",
-                "& .MuiAlert-icon": {
-                  color: "#ff6b6b",
+                display: {
+                  xs: "flex",
+                  sm: "flex",
+                  md: "flex",
+                  lg: "none",
+                },
+
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+
+                mb: {
+                  xs: 4,
+                  sm: 5,
+                  md: 4,
                 },
               }}
             >
-              {error}
-            </Alert>
-          )}
-        </Box>
+              <Box
+                sx={{
+                  width: 58,
+                  height: 58,
+                  borderRadius: "16px",
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2.5,
-            mt: 3,
-          }}
-        >
-          {/* Email */}
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, display: "block", color: "#e5e7eb", ml: 0.5 }}
-            >
-              Email Address
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Enter your email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MailOutlineIcon sx={{ color: "#d1d5db", fontSize: 22 }} />
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyles}
-            />
-          </Box>
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
 
-          {/* Password */}
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, display: "block", color: "#e5e7eb", ml: 0.5 }}
-            >
-              Password
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Enter your password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockOutlinedIcon sx={{ color: "#d1d5db", fontSize: 22 }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                      sx={{ color: "#d1d5db" }}
-                    >
-                      {showPassword ? (
-                        <VisibilityOffOutlinedIcon fontSize="small" />
-                      ) : (
-                        <VisibilityOutlinedIcon fontSize="small" />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyles}
-            />
-          </Box>
+                  background:
+                    "linear-gradient(135deg, #4f46e5 0%, #2563eb 100%)",
 
-          {/* Remember Me + Forgot Password */}
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mt: -0.5,
-            }}
-          >
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleChange}
-                  sx={{
-                    color: "rgba(255,255,255,0.6)",
-                    "&.Mui-checked": { color: "#8b5cf6" },
-                  }}
-                />
-              }
-              label={
-                <Typography variant="body2" sx={{ color: "#e5e7eb" }}>
-                  Remember me
-                </Typography>
-              }
-            />
-            <Typography
-              component={Link}
-              to="/forgot-password"
-              variant="body2"
-              sx={{
-                color: "#8b5cf6",
-                textDecoration: "none",
-                "&:hover": { textDecoration: "underline" },
-                cursor: "pointer",
-              }}
-            >
-              Forgot password?
-            </Typography>
-          </Box>
-        </Box>
-
-        {/* Sign In Button */}
-
-        <Button
-          fullWidth
-          type="submit"
-          endIcon={<ArrowForwardIcon />}
-          disabled={loading}
-          sx={{
-            height: "54px",
-            mt: 2,
-            borderRadius: "14px",
-            background: "linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)",
-            color: "#fff",
-            fontSize: "1.05rem",
-            fontWeight: "600",
-            textTransform: "none",
-            boxShadow: "0 8px 20px rgba(139, 92, 246, 0.3)",
-            "&:hover": {
-              background: "linear-gradient(90deg, #2563eb 0%, #7c3aed 100%)",
-            },
-            flexShrink: 0,
-          }}
-        >
-          {loading ? "Signing in..." : "Sign In"}
-        </Button>
-
-        <Divider
-          sx={{
-            mt: 1.5,
-            "&::before, &::after": { borderColor: "rgba(255, 255, 255, 0.2)" },
-            color: "#d1d5db",
-            fontSize: "0.9rem",
-            flexShrink: 0,
-          }}
-        >
-          or
-        </Divider>
-        <Box sx={{ mt: "auto", }}>
-          <Button
-            fullWidth
-            startIcon={<GoogleIconLogo />}
-            sx={{
-              height: "54px",
-              mt: 1,
-              borderRadius: "14px",
-              border: "1px solid rgba(255, 255, 255, 0.3)",
-              color: "#fff",
-              textTransform: "none",
-              fontSize: "1rem",
-              backgroundColor: "transparent",
-              "&:hover": {
-                backgroundColor: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.6)",
-              },
-              flexShrink: 0,
-            }}
-            onClick={() => {
-              window.location.href = "http://localhost:5000/api/auth/google";
-            }}
-          >
-            Sign in with Google
-          </Button>
-
-          <Box textAlign="center">
-            <Typography variant="body1" sx={{ color: "#d1d5db" }}>
-              Don't have an account?{" "}
-              <span
-                onClick={() => navigate("/register")}
-                style={{
-                  color: "#8b5cf6",
-                  cursor: "pointer",
-                  fontWeight: "600",
+                  boxShadow: "0 10px 25px rgba(37, 99, 235, 0.22)",
                 }}
               >
-                Sign up
-              </span>
+                <PeopleOutlineIcon
+                  sx={{
+                    fontSize: 36,
+                    color: "#ffffff",
+                  }}
+                />
+              </Box>
+
+              <Typography
+                sx={{
+                  mt: 1.5,
+                  fontSize: "25px",
+                  fontWeight: 700,
+                  color: "#172033",
+                }}
+              >
+                HRMS
+              </Typography>
+
+              <Typography
+                sx={{
+                  mt: 0.3,
+                  color: "#64748b",
+                  fontSize: "13px",
+                  textAlign: "center",
+                }}
+              >
+                Human Resource Management System
+              </Typography>
+            </Box>
+
+            {/* =================================================
+                BACK BUTTON
+            ================================================= */}
+
+            <IconButton
+              type="button"
+              onClick={() => navigate("/")}
+              sx={{
+                mb: {
+                  xs: 2,
+                  sm: 2,
+                  md: 2,
+                  lg: 2,
+                },
+
+                color: "#64748b",
+                borderRadius: "10px",
+
+                "&:hover": {
+                  background: "#f1f5f9",
+                  color: "#2563eb",
+                },
+              }}
+            >
+              <KeyboardBackspaceOutlinedIcon />
+            </IconButton>
+
+            {/* =================================================
+                HEADER
+            ================================================= */}
+
+            <Box
+              sx={{
+                mb: {
+                  xs: 3.5,
+                  sm: 4,
+                  md: 4,
+                  lg: 3.5,
+                },
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: {
+                    xs: "30px",
+                    sm: "34px",
+                    md: "36px",
+                    lg: "32px",
+                    xl: "36px",
+                  },
+
+                  lineHeight: 1.2,
+                  fontWeight: 700,
+                  color: "#172033",
+                  letterSpacing: "-0.8px",
+                }}
+              >
+                Welcome Back!
+              </Typography>
+
+              <Typography
+                sx={{
+                  color: "#64748b",
+                  fontSize: "15px",
+                  mt: 1,
+                }}
+              >
+                Sign in to your HRMS account
+              </Typography>
+            </Box>
+
+            {/* =================================================
+                ERROR
+            ================================================= */}
+
+            {error && (
+              <Alert
+                severity="error"
+                sx={{
+                  mb: 3,
+                  borderRadius: "10px",
+                  background: "#fef2f2",
+                  color: "#b91c1c",
+                  border: "1px solid #fecaca",
+
+                  "& .MuiAlert-icon": {
+                    color: "#ef4444",
+                  },
+                }}
+              >
+                {error}
+              </Alert>
+            )}
+
+            {/* =================================================
+                EMAIL
+            ================================================= */}
+
+            <Box sx={{ mb: 3 }}>
+              <Typography
+                sx={{
+                  color: "#1e293b",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                Email / Employee ID
+              </Typography>
+
+              <TextField
+                fullWidth
+                name="email"
+                type="text"
+                placeholder="Enter your email or employee ID"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="username"
+                sx={inputStyles}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MailOutlineIcon
+                        sx={{
+                          color: "#64748b",
+                          fontSize: 21,
+                        }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+
+            {/* =================================================
+                PASSWORD
+            ================================================= */}
+
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                sx={{
+                  color: "#1e293b",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  mb: 1,
+                }}
+              >
+                Password
+              </Typography>
+
+              <TextField
+                fullWidth
+                name="password"
+                placeholder="Enter your password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                sx={inputStyles}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockOutlinedIcon
+                        sx={{
+                          color: "#64748b",
+                          fontSize: 21,
+                        }}
+                      />
+                    </InputAdornment>
+                  ),
+
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        edge="end"
+                        sx={{
+                          color: "#64748b",
+
+                          "&:hover": {
+                            color: "#2563eb",
+                            background: "#eff6ff",
+                          },
+                        }}
+                      >
+                        {showPassword ? (
+                          <VisibilityOffOutlinedIcon />
+                        ) : (
+                          <VisibilityOutlinedIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Box>
+
+            {/* =================================================
+                REMEMBER + FORGOT
+            ================================================= */}
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+
+                mb: 3.5,
+
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleChange}
+                    sx={{
+                      p: 0.5,
+                      mr: 0.5,
+                      color: "#94a3b8",
+
+                      "&.Mui-checked": {
+                        color: "#2563eb",
+                      },
+                    }}
+                  />
+                }
+                label={
+                  <Typography
+                    sx={{
+                      color: "#475569",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Remember me
+                  </Typography>
+                }
+              />
+
+              <Typography
+                component={Link}
+                to="/forgot-password"
+                sx={{
+                  color: "#2563eb",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  fontWeight: 600,
+
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Forgot password?
+              </Typography>
+            </Box>
+
+            {/* =================================================
+                SIGN IN
+            ================================================= */}
+
+            <Button
+              fullWidth
+              type="submit"
+              disabled={loading}
+              endIcon={<ArrowForwardIcon />}
+              sx={{
+                height: "56px",
+                borderRadius: "10px",
+
+                background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)",
+
+                color: "#ffffff",
+                fontSize: "16px",
+                fontWeight: 600,
+                textTransform: "none",
+
+                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.20)",
+
+                transition: "all 0.2s ease",
+
+                "&:hover": {
+                  background:
+                    "linear-gradient(90deg, #4338ca 0%, #1d4ed8 100%)",
+
+                  boxShadow: "0 10px 25px rgba(37, 99, 235, 0.28)",
+
+                  transform: "translateY(-1px)",
+                },
+
+                "&.Mui-disabled": {
+                  color: "#ffffff",
+                  background: "#94a3b8",
+                },
+              }}
+            >
+              {loading ? "Signing in..." : "Sign In"}
+            </Button>
+
+            {/* =================================================
+                DIVIDER
+            ================================================= */}
+
+            <Divider
+              sx={{
+                my: 3,
+                color: "#94a3b8",
+                fontSize: "13px",
+
+                "&::before, &::after": {
+                  borderColor: "#e2e8f0",
+                },
+              }}
+            >
+              OR
+            </Divider>
+
+            {/* =================================================
+                GOOGLE LOGIN
+            ================================================= */}
+
+            <Button
+              fullWidth
+              type="button"
+              startIcon={<GoogleIconLogo />}
+              onClick={() => {
+                window.location.href = "http://localhost:5000/api/auth/google";
+              }}
+              sx={{
+                height: "54px",
+                borderRadius: "10px",
+
+                border: "1px solid #d9e0ea",
+
+                color: "#334155",
+                textTransform: "none",
+                fontSize: "15px",
+                fontWeight: 500,
+
+                background: "#ffffff",
+
+                "&:hover": {
+                  background: "#f8fafc",
+                  borderColor: "#93b4ff",
+                },
+              }}
+            >
+              Sign in with Google
+            </Button>
+
+            {/* =================================================
+                CONTACT ADMIN
+            ================================================= */}
+
+            <Typography
+              sx={{
+                textAlign: "center",
+                mt: 4,
+                color: "#64748b",
+                fontSize: "14px",
+                lineHeight: 1.6,
+              }}
+            >
+              Don't have an account?{" "}
+              <Box
+                component="span"
+                onClick={() => navigate("/register")}
+                sx={{
+                  color: "#2563eb",
+                  cursor: "pointer",
+                  fontWeight: 600,
+
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Contact HR Administrator
+              </Box>
+            </Typography>
+
+            {/* =================================================
+                SECURITY
+            ================================================= */}
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 0.8,
+
+                mt: 4,
+
+                color: "#94a3b8",
+
+                textAlign: "center",
+              }}
+            >
+              <SecurityOutlinedIcon
+                sx={{
+                  fontSize: 16,
+                  color: "#64748b",
+                  flexShrink: 0,
+                }}
+              />
+
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                }}
+              >
+                Your data is protected with enterprise-grade security.
+              </Typography>
+            </Box>
+
+            {/* =================================================
+                COPYRIGHT
+            ================================================= */}
+
+            <Typography
+              sx={{
+                textAlign: "center",
+                mt: 1.5,
+                color: "#94a3b8",
+                fontSize: "12px",
+              }}
+            >
+              © 2026 HRMS. All rights reserved.
             </Typography>
           </Box>
         </Box>
       </Box>
-    </AuthLayout>
+    </Box>
   );
 };
 

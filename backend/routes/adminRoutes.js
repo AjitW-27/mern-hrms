@@ -9,6 +9,7 @@ const {
   getRoles,
   createRole,
   updateRole,
+  updateRoleStatus,
   deleteRole,
   getOrganization,
   updateOrganization,
@@ -27,6 +28,7 @@ router.patch("/users/:id/role", assignRole);
 router.get("/roles", getRoles);
 router.post("/roles", createRole);
 router.put("/roles/:id", updateRole);
+router.patch("/roles/:id/status", updateRoleStatus);
 router.delete("/roles/:id", deleteRole);
 
 router.get("/organization", getOrganization);

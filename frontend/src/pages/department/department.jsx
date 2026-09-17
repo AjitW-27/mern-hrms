@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+
 import {
   Box,
   Typography,
@@ -9,75 +10,98 @@ import {
   IconButton,
   Divider,
 } from "@mui/material";
+
 import {
   Add as AddIcon,
   MoreVert as MoreVertIcon,
   Folder as FolderIcon,
 } from "@mui/icons-material";
+
 import { useNavigate } from "react-router-dom";
 
 const Department = () => {
   const navigate = useNavigate();
-  const [departments, setDepartments] = React.useState([]);
+
+  const [departments, setDepartments] = useState([]);
+
+  // Fetch departments
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/departments", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      const data = await response.json();
+
+      setDepartments(Array.isArray(data) ? data : data.data || []);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchDepartments = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/api/departments", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-
-        const data = await response.json();
-        setDepartments(Array.isArray(data) ? data : data.departments || []);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-      }
-    };
-
     fetchDepartments();
   }, []);
 
   return (
     <Box
       sx={{
-        p: { xs: 2, md: 4 },
-        background: "#0f172a",
+        p: { xs: 2, md: 3 },
+        background: "#f8fafc",
+        color: "#0f172a",
         minHeight: "100vh",
-        color: "#fff",
       }}
     >
-      {/* Header */}
+      {/* ================= HEADER ================= */}
       <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={4}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 4,
+
+          "@media (max-width: 600px)": {
+            flexDirection: "column",
+            alignItems: "stretch",
+            gap: 2,
+          },
+        }}
       >
+        {/* Title */}
         <Box>
-          <Typography fontSize={24} fontWeight="bold" color="#fff">
+          <Typography fontSize={20} fontWeight={700} color="#0f172a">
             Departments
           </Typography>
-          <Typography fontSize={14} color="#94a3b8" mt={0.5}>
+
+          <Typography fontSize={14} color="#64748b" mt={0.5}>
             Manage your organization's departments and teams
           </Typography>
         </Box>
 
+        {/* Add Department Button */}
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => navigate("/dashboard/add-department")}
           sx={{
+            height: 44,
+            px: 2.5,
+
             background: "#8b5cf6",
+
             textTransform: "none",
-            fontWeight: "bold",
-            borderRadius: "10px",
-            px: 3,
-            py: 1,
-            boxShadow: "0 4px 12px rgba(139, 92, 246, 0.3)",
+            fontSize: 14,
+            fontWeight: 600,
+
+            borderRadius: "8px",
+
+            boxShadow: "0 4px 12px rgba(139, 92, 246, 0.20)",
+
             "&:hover": {
               background: "#7c3aed",
+              boxShadow: "0 6px 16px rgba(139, 92, 246, 0.25)",
             },
           }}
         >
@@ -85,98 +109,167 @@ const Department = () => {
         </Button>
       </Box>
 
-      {/* Grid */}
+      {/* ================= DEPARTMENT GRID ================= */}
       <Grid container spacing={3}>
         {departments.map((dept) => {
           const color = dept.color || "#8b5cf6";
 
           return (
             <Grid item xs={12} sm={6} md={4} key={dept._id}>
+              {/* ================= CARD ================= */}
               <Box
                 sx={{
                   p: 3,
-                  borderRadius: "16px",
-                  background: "#131826",
-                  border: "1px solid #1e293b",
-                  transition: "all 0.3s ease",
+
+                  borderRadius: "8px",
+
+                  /*
+                   * Soft pastel gradient
+                   * Department color is used only
+                   * as a very light background glow.
+                   */
+                  background: `
+                    radial-gradient(
+                      circle at 0% 0%,
+                      ${color}18 0%,
+                      transparent 55%
+                    ),
+                    linear-gradient(
+                      135deg,
+                      #ffffff 0%,
+                      #f8fafc 100%
+                    )
+                  `,
+
+                  border: "1px solid #e5e7eb",
+
+                  boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+
+                  transition:
+                    "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
+
                   "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
-                    borderColor: color,
+                    transform: "translateY(-6px) scale(1.015)",
+
+                    boxShadow: "0 12px 28px rgba(15, 23, 42, 0.10)",
+
+                    borderColor: `${color}55`,
                   },
                 }}
               >
-                {/* Header */}
+                {/* ================= CARD HEADER ================= */}
                 <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="flex-start"
-                  mb={3}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    mb: 3,
+                  }}
                 >
-                  <Box display="flex" alignItems="center">
+                  {/* Department Name */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {/* Folder Icon */}
                     <Box
                       sx={{
                         width: 40,
                         height: 40,
-                        borderRadius: "10px",
-                        background: `${color}20`,
+
+                        borderRadius: "8px",
+
+                        background: `${color}15`,
+
                         color: color,
+
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+
                         mr: 2,
+
+                        border: `1px solid ${color}20`,
                       }}
                     >
                       <FolderIcon fontSize="small" />
                     </Box>
-                    <Typography fontSize={18} fontWeight="bold">
+
+                    {/* Department Name */}
+                    <Typography fontSize={18} fontWeight={600} color="#0f172a">
                       {dept.name}
                     </Typography>
                   </Box>
-                  <IconButton sx={{ color: "#94a3b8" }} size="small">
-                    <MoreVertIcon />
+
+                  {/* More Button */}
+                  <IconButton
+                    size="small"
+                    sx={{
+                      color: "#64748b",
+
+                      "&:hover": {
+                        background: `${color}10`,
+                        color: color,
+                      },
+                    }}
+                  >
+                    <MoreVertIcon fontSize="small" />
                   </IconButton>
                 </Box>
 
-                {/* Head */}
+                {/* ================= HEAD OF DEPARTMENT ================= */}
                 <Box mb={3}>
                   <Typography
                     fontSize={12}
                     color="#64748b"
                     textTransform="uppercase"
-                    fontWeight="bold"
+                    fontWeight={600}
                     letterSpacing={0.5}
                     mb={0.5}
                   >
                     Head of Department
                   </Typography>
-                  <Typography fontSize={15} color="#e2e8f0" fontWeight={500}>
+
+                  <Typography fontSize={15} color="#334155" fontWeight={500}>
                     {dept.head || "Not Assigned"}
                   </Typography>
                 </Box>
 
-                <Divider sx={{ borderColor: "#1e293b", mb: 2 }} />
+                {/* ================= DIVIDER ================= */}
+                <Divider
+                  sx={{
+                    borderColor: "#e5e7eb",
+                    mb: 2,
+                  }}
+                />
 
-                {/* Footer */}
+                {/* ================= CARD FOOTER ================= */}
                 <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
                 >
+                  {/* Employee Count */}
                   <Box>
                     <Typography
                       fontSize={20}
-                      fontWeight="bold"
-                      color="#fff"
+                      fontWeight={700}
+                      color="#0f172a"
                       lineHeight={1.2}
                     >
                       {dept.count || 0}
                     </Typography>
-                    <Typography fontSize={13} color="#94a3b8">
+
+                    <Typography fontSize={13} color="#64748b">
                       Employees
                     </Typography>
                   </Box>
 
+                  {/* Members */}
                   <AvatarGroup
                     max={4}
                     sx={{
@@ -184,9 +277,12 @@ const Department = () => {
                         width: 32,
                         height: 32,
                         fontSize: 14,
-                        borderColor: "#131826",
+
+                        borderColor: "#ffffff",
                         borderWidth: 2,
-                        background: "#334155",
+
+                        background: "#e2e8f0",
+                        color: "#475569",
                       },
                     }}
                   >
@@ -194,7 +290,11 @@ const Department = () => {
                       <Avatar
                         key={index}
                         sx={{
-                          bgcolor: index === 0 ? color : "#334155",
+                          bgcolor: index === 0 ? color : "#e2e8f0",
+
+                          color: index === 0 ? "#ffffff" : "#475569",
+
+                          fontWeight: 600,
                         }}
                       >
                         {initial}
@@ -206,6 +306,31 @@ const Department = () => {
             </Grid>
           );
         })}
+
+        {/* ================= EMPTY STATE ================= */}
+        {departments.length === 0 && (
+          <Grid item xs={12}>
+            <Box
+              sx={{
+                textAlign: "center",
+                py: 8,
+                color: "#64748b",
+              }}
+            >
+              <FolderIcon
+                sx={{
+                  fontSize: 48,
+                  color: "#cbd5e1",
+                  mb: 1,
+                }}
+              />
+
+              <Typography fontSize={15} fontWeight={500}>
+                No departments found
+              </Typography>
+            </Box>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

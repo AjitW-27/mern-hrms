@@ -1,9 +1,28 @@
 const crypto = require("crypto");
 const User = require("../models/userModel");
+const Role = require("../models/roleModel");
 const asyncHandler = require("../utils/asyncHandler");
 const { sendEmail } = require("../utils/emailService");
 
 const safeSelect = "-password -refreshToken -refreshTokenVersion -resetPasswordToken -emailVerificationToken -twoFactorSecret";
+
+const normalizeRole = (value) => String(value || "employee").trim().toLowerCase().replace(/\s+/g, "_");
+
+const validateAssignedRole = async (value) => {
+  const roleCode = normalizeRole(value);
+  const role = await Role.findOne({ $or: [{ code: roleCode }, { name: roleCode }] }).select("code name isActive").lean();
+  if (role && role.isActive === false) {
+    const error = new Error("Cannot assign an inactive role");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (!role && !["superadmin", "admin", "hr", "manager", "employee"].includes(roleCode)) {
+    const error = new Error("Selected role does not exist");
+    error.statusCode = 400;
+    throw error;
+  }
+  return roleCode;
+};
 
 const listUsers = asyncHandler(async (req, res) => {
   const { role, isActive, search, page = 1, limit = 20 } = req.query;
@@ -25,7 +44,9 @@ const listUsers = asyncHandler(async (req, res) => {
 });
 
 const createUser = asyncHandler(async (req, res) => {
-  const user = await User.create(req.body);
+  const payload = { ...req.body };
+  payload.role = await validateAssignedRole(payload.role);
+  const user = await User.create(payload);
   res.status(201).json({ success: true, message: "User created", data: user });
 });
 
@@ -36,6 +57,7 @@ const getUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
+  if (req.body.role !== undefined) req.body.role = await validateAssignedRole(req.body.role);
   const blocked = ["password", "refreshToken", "resetPasswordToken", "emailVerificationToken"];
   blocked.forEach((key) => delete req.body[key]);
   const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).select(safeSelect);
@@ -50,7 +72,8 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 const assignRole = asyncHandler(async (req, res) => {
-  const user = await User.findByIdAndUpdate(req.params.id, { role: req.body.role }, { new: true, runValidators: true }).select(safeSelect);
+  const role = await validateAssignedRole(req.body.role);
+  const user = await User.findByIdAndUpdate(req.params.id, { role }, { new: true, runValidators: true }).select(safeSelect);
   if (!user) return res.status(404).json({ success: false, message: "User not found" });
   res.json({ success: true, message: "Role assigned", data: user });
 });

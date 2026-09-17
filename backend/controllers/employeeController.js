@@ -1,5 +1,6 @@
 const Employee = require("../models/employeeModel");
 const User = require("../models/userModel");
+const Role = require("../models/roleModel");
 const { createNotification } = require("../utils/notificationHelper");
 const { sendEmail } = require("../utils/emailService");
 const bcrypt = require("bcryptjs");
@@ -19,10 +20,19 @@ const addEmployee = asyncHandler(async (req, res) => {
     const exists = await Employee.findOne({ email });
     if (exists) return res.status(400).json({ success: false, message: "Employee with this email already exists" });
 
+    const normalizedRole = String(role || "employee").trim().toLowerCase().replace(/\s+/g, "_");
+    const roleDoc = await Role.findOne({ $or: [{ code: normalizedRole }, { name: normalizedRole }] }).select("code name isActive").lean();
+    if (!roleDoc && !["employee", "manager", "hr", "admin", "superadmin"].includes(normalizedRole)) {
+        return res.status(400).json({ success: false, message: "Invalid role" });
+    }
+    if (roleDoc?.isActive === false) {
+        return res.status(400).json({ success: false, message: "Selected role is inactive" });
+    }
+
     const avatarPath = req.file ? `/uploads/employees/${req.file.filename}` : null;
 
     const employee = await Employee.create({
-        fullName, email, mobileNo, designation, role, department,
+        fullName, email, mobileNo, designation, role: normalizedRole, department,
         dateOfBirth, gender, joiningDate: joiningDate || new Date(),
         employmentType: employmentType || "Full-time",
         salary, bankDetails, address, emergencyContact, biometricId,
@@ -38,7 +48,7 @@ const addEmployee = asyncHandler(async (req, res) => {
         password: tempPassword,
         mobileNo,
         department,
-        role: role || "employee",
+        role: normalizedRole,
         employeeRef: employee._id
     });
 
@@ -115,8 +125,39 @@ const getEmployeeById = asyncHandler(async (req, res) => {
 });
 
 const updateEmployee = asyncHandler(async (req, res) => {
-    const employee = await Employee.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const employee = await Employee.findById(req.params.id);
     if (!employee) return res.status(404).json({ success: false, message: "Employee not found" });
+
+    const patch = { ...req.body };
+    delete patch._id;
+    delete patch.userId;
+    delete patch.employeeId;
+    delete patch.createdAt;
+    delete patch.updatedAt;
+
+    if (patch.role !== undefined) {
+        patch.role = String(patch.role).trim().toLowerCase().replace(/\s+/g, "_");
+        const roleDoc = await Role.findOne({ $or: [{ code: patch.role }, { name: patch.role }] }).select("code name isActive").lean();
+        if (!roleDoc && !["employee", "manager", "hr", "admin", "superadmin"].includes(patch.role)) {
+            return res.status(400).json({ success: false, message: "Invalid role" });
+        }
+        if (roleDoc?.isActive === false) return res.status(400).json({ success: false, message: "Selected role is inactive" });
+    }
+
+    Object.assign(employee, patch);
+    await employee.save();
+
+    if (employee.userId) {
+        const userPatch = {};
+        if (patch.fullName !== undefined) userPatch.name = patch.fullName;
+        if (patch.email !== undefined) userPatch.email = patch.email;
+        if (patch.mobileNo !== undefined) userPatch.mobileNo = patch.mobileNo;
+        if (patch.department !== undefined) userPatch.department = patch.department;
+        if (patch.role !== undefined) userPatch.role = patch.role;
+        if (patch.isActive !== undefined) userPatch.isActive = patch.isActive;
+        if (Object.keys(userPatch).length) await User.findByIdAndUpdate(employee.userId, userPatch, { runValidators: true });
+    }
+
     res.json({ success: true, data: employee });
 });
 

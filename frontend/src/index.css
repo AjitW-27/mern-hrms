@@ -11,6 +11,43 @@ body,
 }
 
 body {
-  background: #020617;
+  background: #f7f8fc;
   font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+/* Responsive safeguards: keep existing page structure intact while preventing
+   horizontal overflow on phones and tablets. */
+#root {
+  overflow-x: hidden;
+}
+
+img, svg, canvas {
+  max-width: 100%;
+}
+
+@media (max-width: 899px) {
+  .MuiDialog-paper {
+    margin: 12px;
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+  }
+
+  .MuiTableContainer-root {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 599px) {
+  .MuiCardContent-root {
+    padding: 12px;
+  }
+
+  .MuiDialogContent-root {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .MuiTableCell-root {
+    white-space: nowrap;
+  }
 }

@@ -33,11 +33,11 @@ const Logo = ({ open = true }) => {
       />
 
       {/* Text */}
-      <text x="95" y="48" fontSize="26" fontWeight="800" fill="#fff">
+      <text x="95" y="48" fontSize="26" fontWeight="800" fill="#fffdf">
         AJIT
       </text>
 
-      <text x="95" y="70" fontSize="14" fill="#9fb3ff" letterSpacing="3">
+      <text x="95" y="70" fontSize="20" fill="#9fb3ff" fontWeight="800" letterSpacing="3">
         WADIKAR
       </text>
     </svg>

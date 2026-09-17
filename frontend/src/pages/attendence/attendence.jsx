@@ -16,6 +16,7 @@ import {
   InputAdornment,
   Avatar,
 } from "@mui/material";
+
 import {
   Search as SearchIcon,
   Download as DownloadIcon,
@@ -23,30 +24,50 @@ import {
   Cancel as AbsentIcon,
   AccessTime as LateIcon,
 } from "@mui/icons-material";
+
 import { io } from "socket.io-client";
 
 const Attendance = () => {
   const [searchTerm, setSearchTerm] = useState("");
+
   const [filterDate, setFilterDate] = useState(
-    new Date().toISOString().split("T")[0], // Defaults to today: YYYY-MM-DD
+    new Date().toISOString().split("T")[0],
   );
+
   const [attendanceRecords, setAttendanceRecords] = useState([]);
 
   // Dynamic Stats State
-  const [stats, setStats] = useState({ present: 0, absent: 0, late: 0 });
+  const [stats, setStats] = useState({
+    present: 0,
+    absent: 0,
+    late: 0,
+  });
 
   // 1. Calculate Stats function
   const calculateStats = (records) => {
-    let present = 0,
-      absent = 0,
-      late = 0;
+    let present = 0;
+    let absent = 0;
+    let late = 0;
+
     records.forEach((record) => {
-      if (record.status === "Present" || record.status === "Half Day")
+      if (record?.status === "Present" || record?.status === "Half Day") {
         present++;
-      if (record.status === "Absent") absent++;
-      if (record.status === "Late") late++;
+      }
+
+      if (record?.status === "Absent") {
+        absent++;
+      }
+
+      if (record?.status === "Late") {
+        late++;
+      }
     });
-    setStats({ present, absent, late });
+
+    setStats({
+      present,
+      absent,
+      late,
+    });
   };
 
   useEffect(() => {
@@ -61,9 +82,10 @@ const Attendance = () => {
             },
           },
         );
+
         const result = await response.json();
 
-        if (result.success && Array.isArray(result.data)) {
+        if (result?.success && Array.isArray(result?.data)) {
           setAttendanceRecords(result.data);
           calculateStats(result.data);
         } else {
@@ -72,6 +94,7 @@ const Attendance = () => {
         }
       } catch (error) {
         console.error("Failed to fetch attendance:", error);
+
         setAttendanceRecords([]);
         calculateStats([]);
       }
@@ -84,30 +107,34 @@ const Attendance = () => {
 
     socket.on("attendance_updated", (newRecord) => {
       // Only process live update if it matches our currently viewed date
-      if (newRecord.date !== filterDate) return;
+      if (newRecord?.date !== filterDate) return;
 
       setAttendanceRecords((prevRecords) => {
         const safeRecords = Array.isArray(prevRecords) ? prevRecords : [];
-        const exists = safeRecords.find((r) => r._id === newRecord._id);
+
+        const exists = safeRecords.find((r) => r?._id === newRecord?._id);
 
         let updatedRecords;
+
         if (exists) {
           // Update Check-Out
           updatedRecords = safeRecords.map((r) =>
-            r._id === newRecord._id ? newRecord : r,
+            r?._id === newRecord?._id ? newRecord : r,
           );
         } else {
           // Add new Check-In at the top
           updatedRecords = [newRecord, ...safeRecords];
         }
 
-        calculateStats(updatedRecords); // Update stats cards instantly
+        // Update stats cards instantly
+        calculateStats(updatedRecords);
+
         return updatedRecords;
       });
     });
 
     return () => socket.disconnect();
-  }, [filterDate]); // Re-run fetch and socket listener when date changes
+  }, [filterDate]);
 
   // Dynamic Array for Stats UI
   const attendanceStatsData = [
@@ -134,34 +161,39 @@ const Attendance = () => {
     },
   ];
 
-  // Enhanced Status Chip based on your Backend Enum
+  // Enhanced Status Chip based on Backend Enum
   const renderStatusChip = (status) => {
-    let color = "#94a3b8",
-      bgColor = "#334155"; // Default
+    let color = "#64748b";
+    let bgColor = "#f1f5f9";
 
     switch (status) {
       case "Present":
         color = "#10b981";
         bgColor = "#10b98120";
         break;
+
       case "Absent":
         color = "#ef4444";
         bgColor = "#ef444420";
         break;
+
       case "Late":
         color = "#f59e0b";
         bgColor = "#f59e0b20";
         break;
+
       case "Half Day":
         color = "#8b5cf6";
         bgColor = "#8b5cf620";
         break;
+
       case "On Leave":
       case "Holiday":
       case "Weekend":
         color = "#3b82f6";
         bgColor = "#3b82f620";
         break;
+
       default:
         break;
     }
@@ -173,8 +205,9 @@ const Attendance = () => {
         sx={{
           background: bgColor,
           color: color,
-          fontWeight: "bold",
+          fontWeight: 600,
           borderRadius: "6px",
+          fontSize: "12px",
         }}
       />
     );
@@ -183,10 +216,10 @@ const Attendance = () => {
   return (
     <Box
       sx={{
-        p: { xs: 2, md: 4 },
-        background: "#0f172a",
+        p: { xs: 2, md: 3 },
+        background: "#f8fafc",
         minHeight: "100vh",
-        color: "#fff",
+        color: "#0f172a",
       }}
     >
       {/* Header Section */}
@@ -195,27 +228,35 @@ const Attendance = () => {
         justifyContent="space-between"
         alignItems="center"
         mb={4}
+        gap={2}
+        flexWrap="wrap"
       >
         <Box>
-          <Typography fontSize={24} fontWeight="bold">
+          <Typography fontSize={24} fontWeight={600} color="#0f172a">
             Attendance Overview
           </Typography>
-          <Typography fontSize={14} color="#94a3b8" mt={0.5}>
+
+          <Typography fontSize={14} color="#64748b" mt={0.5}>
             Monitor daily employee check-ins and working hours
           </Typography>
         </Box>
+
         <Button
           variant="outlined"
           startIcon={<DownloadIcon />}
           sx={{
-            color: "#e2e8f0",
-            borderColor: "#334155",
+            color: "#334155",
+            borderColor: "#e5e7eb",
+            background: "#ffffff",
             textTransform: "none",
-            fontWeight: "bold",
+            fontWeight: 600,
             borderRadius: "8px",
+            height: 42,
+            px: 2,
+
             "&:hover": {
-              borderColor: "#94a3b8",
-              backgroundColor: "rgba(255,255,255,0.05)",
+              borderColor: "#cbd5e1",
+              backgroundColor: "#f8fafc",
             },
           }}
         >
@@ -224,24 +265,55 @@ const Attendance = () => {
       </Box>
 
       {/* Summary Cards */}
-      <Grid container spacing={3} mb={4}>
+      <Grid container spacing={3} mb={3}>
         {attendanceStatsData.map((stat, index) => (
           <Grid item xs={12} sm={4} key={index}>
             <Box
               sx={{
-                p: 3,
-                borderRadius: "16px",
-                background: "#131826",
-                border: "1px solid #1e293b",
+                p: 2,
+                minHeight: 130,
+                borderRadius: "8px",
+
+                // Same soft gradient style as Department
+                background: `
+                  radial-gradient(
+                    circle at 0% 0%,
+                    ${stat.color}18 0%,
+                    transparent 55%
+                  ),
+                  linear-gradient(
+                    135deg,
+                    #ffffff 0%,
+                    #f8fafc 100%
+                  )
+                `,
+
+                border: "1px solid #e5e7eb",
+
+                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+
                 display: "flex",
                 alignItems: "center",
+
+                transition:
+                  "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
+
+                "&:hover": {
+                  transform: "translateY(-6px) scale(1.015)",
+
+                  boxShadow: "0 12px 28px rgba(15, 23, 42, 0.10)",
+
+                  borderColor: `${stat.color}55`,
+                },
               }}
             >
+              {/* Icon */}
               <Box
                 sx={{
                   width: 50,
                   height: 50,
-                  borderRadius: "12px",
+                  flexShrink: 0,
+                  borderRadius: "8px",
                   background: stat.bg,
                   color: stat.color,
                   display: "flex",
@@ -252,11 +324,19 @@ const Attendance = () => {
               >
                 {stat.icon}
               </Box>
+
+              {/* Content */}
               <Box>
-                <Typography fontSize={24} fontWeight="bold" lineHeight={1.2}>
+                <Typography
+                  fontSize={24}
+                  fontWeight={600}
+                  lineHeight={1.2}
+                  color="#0f172a"
+                >
                   {stat.count}
                 </Typography>
-                <Typography fontSize={14} color="#94a3b8">
+
+                <Typography fontSize={14} color="#64748b" mt={0.5}>
                   {stat.title}
                 </Typography>
               </Box>
@@ -266,7 +346,16 @@ const Attendance = () => {
       </Grid>
 
       {/* Filters & Search */}
-      <Box display="flex" gap={2} mb={3}>
+      <Box
+        display="flex"
+        gap={2}
+        mb={3}
+        flexDirection={{
+          xs: "column",
+          sm: "row",
+        }}
+      >
+        {/* Search */}
         <TextField
           placeholder="Search employee by name..."
           variant="outlined"
@@ -276,32 +365,85 @@ const Attendance = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: "#94a3b8" }} />
+                <SearchIcon
+                  sx={{
+                    color: "#64748b",
+                  }}
+                />
               </InputAdornment>
             ),
           }}
           sx={{
             flexGrow: 1,
-            background: "#1e293b",
+            background: "#ffffff",
             borderRadius: "8px",
-            input: { color: "#fff" },
-            "& fieldset": { border: "none" },
+
+            "& .MuiInputBase-root": {
+              height: 44,
+              borderRadius: "8px",
+            },
+
+            "& input": {
+              color: "#0f172a",
+              fontSize: 14,
+            },
+
+            "& input::placeholder": {
+              color: "#64748b",
+              opacity: 1,
+            },
+
+            "& fieldset": {
+              border: "1px solid #e5e7eb",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#cbd5e1",
+            },
+
+            "& .Mui-focused fieldset": {
+              borderColor: "#8b5cf6 !important",
+            },
           }}
         />
-        {/* Date Filter (Triggers API call dynamically) */}
+
+        {/* Date Filter */}
         <TextField
           type="date"
+          variant="outlined"
           size="small"
           value={filterDate}
           onChange={(e) => setFilterDate(e.target.value)}
           sx={{
-            background: "#1e293b",
+            flexGrow: 1,
+            background: "#ffffff",
             borderRadius: "8px",
-            width: "180px",
-            input: { color: "#fff" },
-            "& fieldset": { border: "none" },
-            "& input[type='date']::-webkit-calendar-picker-indicator": {
-              filter: "invert(1)",
+
+            "& .MuiInputBase-root": {
+              height: 44,
+              borderRadius: "8px",
+            },
+
+            "& input": {
+              color: "#0f172a",
+              fontSize: 14,
+            },
+
+            "& fieldset": {
+              border: "1px solid #e5e7eb",
+            },
+
+            "&:hover fieldset": {
+              borderColor: "#cbd5e1",
+            },
+
+            "& .Mui-focused fieldset": {
+              borderColor: "#8b5cf6 !important",
+            },
+
+            "& input::-webkit-calendar-picker-indicator": {
+              opacity: 0.7,
+              cursor: "pointer",
             },
           }}
         />
@@ -311,13 +453,20 @@ const Attendance = () => {
       <TableContainer
         component={Paper}
         sx={{
-          background: "#131826",
+          background: "#ffffff",
           borderRadius: "8px",
-          border: "1px solid #1e293b",
+          border: "1px solid #e5e7eb",
+          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+          overflow: "hidden",
         }}
       >
         <Table>
-          <TableHead sx={{ background: "#1e293b" }}>
+          {/* Table Header */}
+          <TableHead
+            sx={{
+              background: "#f8fafc",
+            }}
+          >
             <TableRow>
               {[
                 "Employee",
@@ -330,9 +479,10 @@ const Attendance = () => {
                 <TableCell
                   key={head}
                   sx={{
-                    color: "#94a3b8",
-                    fontWeight: "bold",
-                    borderBottom: "none",
+                    color: "#475569",
+                    fontWeight: 600,
+                    fontSize: 13,
+                    borderBottom: "1px solid #e5e7eb",
                   }}
                 >
                   {head}
@@ -340,21 +490,37 @@ const Attendance = () => {
               ))}
             </TableRow>
           </TableHead>
+
+          {/* Table Body */}
           <TableBody>
             {attendanceRecords
               .filter((row) => {
-                const fullName = (row.employeeId?.fullName || "").toLowerCase();
+                const fullName = (
+                  row?.employeeId?.fullName || ""
+                ).toLowerCase();
+
                 return fullName.includes(searchTerm.toLowerCase());
               })
               .map((row) => (
                 <TableRow
-                  key={row._id}
-                  sx={{ "&:hover": { backgroundColor: "#1e293b" } }}
+                  key={row?._id}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#f8fafc",
+                    },
+
+                    transition: "background-color 0.2s ease",
+                  }}
                 >
-                  <TableCell sx={{ borderBottom: "1px solid #1e293b" }}>
+                  {/* Employee */}
+                  <TableCell
+                    sx={{
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
                     <Box display="flex" alignItems="center">
                       <Avatar
-                        src={row.employeeId?.avatar}
+                        src={row?.employeeId?.avatar}
                         sx={{
                           mr: 2,
                           bgcolor: "#8b5cf6",
@@ -363,66 +529,82 @@ const Attendance = () => {
                           fontSize: 14,
                         }}
                       >
-                        {row.employeeId?.fullName?.[0] || "?"}
+                        {row?.employeeId?.fullName?.[0] || "?"}
                       </Avatar>
+
                       <Box>
                         <Typography
-                          fontWeight="bold"
-                          color="#fff"
+                          fontWeight={600}
+                          color="#0f172a"
                           fontSize={14}
                         >
-                          {row.employeeId?.fullName || "Unknown"}
+                          {row?.employeeId?.fullName || "Unknown"}
                         </Typography>
+
                         <Typography fontSize={12} color="#64748b">
-                          {row.employeeId?.designation || "N/A"}
+                          {row?.employeeId?.designation || "N/A"}
                         </Typography>
                       </Box>
                     </Box>
                   </TableCell>
+
+                  {/* Date */}
                   <TableCell
                     sx={{
-                      color: "#e2e8f0",
-                      borderBottom: "1px solid #1e293b",
+                      color: "#334155",
+                      borderBottom: "1px solid #e5e7eb",
                       fontSize: 14,
                     }}
                   >
-                    {row.date}
+                    {row?.date}
                   </TableCell>
-                  <TableCell sx={{ borderBottom: "1px solid #1e293b" }}>
-                    {renderStatusChip(row.status)}
-                  </TableCell>
+
+                  {/* Status */}
                   <TableCell
                     sx={{
-                      color: "#e2e8f0",
-                      borderBottom: "1px solid #1e293b",
+                      borderBottom: "1px solid #e5e7eb",
+                    }}
+                  >
+                    {renderStatusChip(row?.status)}
+                  </TableCell>
+
+                  {/* Check In */}
+                  <TableCell
+                    sx={{
+                      color: "#334155",
+                      borderBottom: "1px solid #e5e7eb",
                       fontSize: 14,
                     }}
                   >
-                    {row.checkIn}
+                    {row?.checkIn}
                   </TableCell>
+
+                  {/* Check Out */}
                   <TableCell
                     sx={{
-                      color: "#e2e8f0",
-                      borderBottom: "1px solid #1e293b",
+                      color: "#334155",
+                      borderBottom: "1px solid #e5e7eb",
                       fontSize: 14,
                     }}
                   >
-                    {row.checkOut}
+                    {row?.checkOut}
                   </TableCell>
+
+                  {/* Total Hours */}
                   <TableCell
                     sx={{
-                      color: "#fff",
-                      fontWeight: "bold",
-                      borderBottom: "1px solid #1e293b",
+                      color: "#0f172a",
+                      fontWeight: 600,
+                      borderBottom: "1px solid #e5e7eb",
                       fontSize: 14,
                     }}
                   >
-                    {row.totalHours}
+                    {row?.totalHours}
                   </TableCell>
                 </TableRow>
               ))}
 
-            {/* Show empty state if no records exist for the date */}
+            {/* Empty State */}
             {attendanceRecords.length === 0 && (
               <TableRow>
                 <TableCell
@@ -430,8 +612,9 @@ const Attendance = () => {
                   sx={{
                     textAlign: "center",
                     py: 4,
-                    color: "#94a3b8",
+                    color: "#64748b",
                     borderBottom: "none",
+                    fontSize: 14,
                   }}
                 >
                   No attendance records found for this date.

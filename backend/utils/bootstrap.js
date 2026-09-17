@@ -1,6 +1,7 @@
 const Organization = require("../models/organizationModel");
 const Role = require("../models/roleModel");
 const User = require("../models/userModel");
+const Settings = require("../models/settingModel");
 const { buildAccess, getDefaultRolePermissions } = require("../config/accessControl");
 
 const defaultRoles = [
@@ -32,7 +33,7 @@ const bootstrap = async () => {
     await Role.findOneAndUpdate(
       { code: role.code },
       {
-        $set: {
+        $setOnInsert: {
           name: role.name,
           code: role.code,
           description: role.description,
@@ -44,6 +45,15 @@ const bootstrap = async () => {
       },
       { upsert: true, new: true }
     );
+  }
+
+  let settings = await Settings.findOne();
+  if (!settings) {
+    await Settings.create({ rbacEnabled: false, rbacModeInitialized: true });
+  } else if (settings.rbacModeInitialized !== true) {
+    settings.rbacEnabled = false;
+    settings.rbacModeInitialized = true;
+    await settings.save();
   }
 
   const adminRole = await Role.findOne({ code: "superadmin" });

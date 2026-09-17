@@ -8,12 +8,23 @@ const AppLayout = () => {
   const [open, setOpen] = useState(true);
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#08111f" }}>
+    <Box
+      sx={{
+        display: "flex",
+        minHeight: "100vh",
+        bgcolor: "background.default",
+      }}
+    >
       <CssBaseline />
       <Sidebar open={open} />
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+      <Box
+        sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}
+      >
         <Topbar open={open} setOpen={setOpen} />
-        <Box component="main" sx={{ flex: 1, p: { xs: 2, md: 3 }, overflow: "auto" }}>
+        <Box
+          component="main"
+          sx={{ flex: 1, p: { xs: 1, md: 1 }, overflow: "auto" }}
+        >
           <Outlet />
         </Box>
       </Box>

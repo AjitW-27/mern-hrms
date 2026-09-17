@@ -1,123 +1,105 @@
 import React from "react";
-import { Box, Typography, Skeleton, Chip } from "@mui/material";
+import { Box, Chip, Skeleton, Typography } from "@mui/material";
 import { Campaign as CampaignIcon } from "@mui/icons-material";
-
-const AUDIENCE_COLORS = {
-  All: { bg: "#6366f122", text: "#818cf8", border: "#6366f144" },
-  Department: { bg: "#10b98122", text: "#34d399", border: "#10b98144" },
-  Role: { bg: "#f59e0b22", text: "#fbbf24", border: "#f59e0b44" },
+import {
+  ChartCard,
+  ChartHeading,
+  useChartTheme,
+} from "../../components/common/ChartComponents";
+const timeAgo = (date) => {
+  const minutes = Math.floor((Date.now() - new Date(date).getTime()) / 60000);
+  return minutes < 60
+    ? `${minutes}m ago`
+    : minutes < 1440
+      ? `${Math.floor(minutes / 60)}h ago`
+      : `${Math.floor(minutes / 1440)}d ago`;
 };
-
-const timeAgo = (dateStr) => {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return `${Math.floor(hrs / 24)}d ago`;
-};
-
 const AnnouncementsWidget = ({ announcements, loading }) => {
+  const c = useChartTheme();
   return (
-    <Box sx={{
-      p: 2.5, borderRadius: "16px",
-      background: "linear-gradient(135deg, rgba(19,24,38,0.95), rgba(15,23,42,0.98))",
-      border: "1px solid rgba(255,255,255,0.06)",
-      boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
-      height: "100%", minHeight: 300,
-      display: "flex", flexDirection: "column",
-    }}>
-      {/* Header */}
-      <Box display="flex" alignItems="center" gap={1.5} mb={2.5}>
-        <Box sx={{
-          width: 42, height: 42, borderRadius: "12px",
-          background: "linear-gradient(135deg, #7c3aed, #6366f1)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 4px 15px rgba(99,102,241,0.4)",
-        }}>
-          <CampaignIcon sx={{ color: "#fff", fontSize: 22 }} />
+    <ChartCard minHeight={300}>
+      <Box display="flex" alignItems="center" gap={1.5} mb={2}>
+        <Box
+          sx={{
+            width: 42,
+            height: 42,
+            borderRadius: "8px",
+            bgcolor: "primary.light",
+            display: "grid",
+            placeItems: "center",
+          }}
+        >
+          <CampaignIcon sx={{ color: "primary.main" }} />
         </Box>
-        <Box>
-          <Typography fontSize={16} fontWeight={700} color="#f1f5f9">Announcements</Typography>
-          <Typography fontSize={12} color="#64748b">Latest updates</Typography>
-        </Box>
+        <ChartHeading title="Announcements" subtitle="Latest updates" />
       </Box>
-
-      {/* Content */}
-      <Box sx={{ flexGrow: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 2 }}>
-        {loading ? (
-          [1, 2, 3].map((i) => (
-            <Box key={i} display="flex" gap={1.5}>
-              <Skeleton variant="circular" width={8} height={8} sx={{ bgcolor: "#1e293b", mt: 0.8, flexShrink: 0 }} />
-              <Box flexGrow={1}>
-                <Skeleton variant="text" width="80%" height={18} sx={{ bgcolor: "#1e293b" }} />
-                <Skeleton variant="text" width="100%" height={14} sx={{ bgcolor: "#1e293b", mt: 0.5 }} />
-              </Box>
-            </Box>
-          ))
-        ) : !announcements?.length ? (
-          <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" flexGrow={1} gap={1}>
-            <CampaignIcon sx={{ color: "#334155", fontSize: 40 }} />
-            <Typography color="#475569" fontSize={13}>No announcements yet</Typography>
-          </Box>
-        ) : (
-          announcements.map((ann) => {
-            const colors = AUDIENCE_COLORS[ann.audience] || AUDIENCE_COLORS.All;
-            return (
-              <Box key={ann._id} display="flex" gap={1.5}
-                sx={{
-                  p: 1.5, borderRadius: "10px",
-                  bgcolor: "rgba(30,41,59,0.4)",
-                  border: "1px solid rgba(255,255,255,0.04)",
-                  transition: "all 0.2s",
-                  "&:hover": { bgcolor: "rgba(30,41,59,0.7)", border: "1px solid rgba(99,102,241,0.2)" }
-                }}>
-                <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: "#8b5cf6", mt: 0.8, flexShrink: 0 }} />
-                <Box flexGrow={1}>
-                  <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={0.4}>
-                    <Typography fontSize={13} fontWeight={600} color="#f1f5f9" lineHeight={1.3}>
-                      {ann.title}
-                    </Typography>
-                    <Chip
-                      label={ann.audience}
-                      size="small"
-                      sx={{
-                        height: 18, fontSize: 10, ml: 1, flexShrink: 0,
-                        bgcolor: colors.bg, color: colors.text,
-                        border: `1px solid ${colors.border}`,
-                        "& .MuiChip-label": { px: 0.8 }
-                      }}
-                    />
-                  </Box>
-                  <Typography fontSize={12} color="#64748b" lineHeight={1.5} mb={0.5}>
-                    {ann.message?.length > 80 ? ann.message.slice(0, 80) + "…" : ann.message}
-                  </Typography>
-                  <Box display="flex" justifyContent="space-between">
-                    <Typography fontSize={11} color="#475569">by {ann.postedBy}</Typography>
-                    <Typography fontSize={11} color="#475569">{timeAgo(ann.createdAt)}</Typography>
-                  </Box>
-                </Box>
-              </Box>
-            );
-          })
-        )}
-      </Box>
-
-      {/* Footer */}
-      {!loading && announcements?.length > 0 && (
-        <Box display="flex" justifyContent="center" mt={2}>
-          <Typography sx={{
-            color: "#8b5cf6", fontSize: 13, fontWeight: 600,
-            cursor: "pointer", display: "flex", alignItems: "center", gap: 0.5,
-            "&:hover": { textDecoration: "underline" }
-          }}>
-            View All Announcements
-            <span style={{ fontSize: 16 }}>→</span>
+      {loading ? (
+        <Skeleton
+          variant="rectangular"
+          height={180}
+          sx={{ bgcolor: "action.hover", borderRadius: "8px" }}
+        />
+      ) : !announcements?.length ? (
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          height={180}
+        >
+          <CampaignIcon sx={{ color: "text.secondary", fontSize: 36 }} />
+          <Typography sx={{ mt: 1, fontSize: 13, color: "text.secondary" }}>
+            No announcements yet
           </Typography>
         </Box>
+      ) : (
+        <Box display="flex" flexDirection="column" gap={1}>
+          {announcements.map((ann) => (
+            <Box
+              key={ann._id}
+              sx={{
+                p: 1.5,
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: "8px",
+                bgcolor: "background.paper",
+                "&:hover": { bgcolor: "action.hover" },
+              }}
+            >
+              <Box display="flex" justifyContent="space-between" gap={1}>
+                <Typography
+                  sx={{ fontSize: 13, fontWeight: 600, color: "text.primary" }}
+                >
+                  {ann.title}
+                </Typography>
+                <Chip
+                  label={ann.audience}
+                  size="small"
+                  sx={{
+                    height: 18,
+                    borderRadius: "8px",
+                    bgcolor: "primary.light",
+                    color: "primary.dark",
+                  }}
+                />
+              </Box>
+              <Typography
+                sx={{ mt: 0.5, fontSize: 12, color: "text.secondary" }}
+              >
+                {ann.message?.length > 80
+                  ? `${ann.message.slice(0, 80)}…`
+                  : ann.message}
+              </Typography>
+              <Typography
+                sx={{ mt: 0.5, fontSize: 11, color: "text.secondary" }}
+              >
+                by {ann.postedBy} · {timeAgo(ann.createdAt)}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
       )}
-    </Box>
+    </ChartCard>
   );
 };
-
 export default AnnouncementsWidget;

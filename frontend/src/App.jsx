@@ -12,6 +12,7 @@ import AddDepartment from "./pages/department/addDepartment";
 import AddProject from "./pages/project/addProject";
 import Project from "./pages/projects/Projects";
 import Settings from "./pages/settings/Settings";
+import ProfileSettings from "./pages/auth/ProfileSettings";
 import Attendance from "./pages/attendence/attendence";
 import Employee from "./pages/employee/employee";
 import EmployeeDetails from "./pages/employee/employeeDetails";
@@ -25,6 +26,8 @@ import Goals from "./pages/goals/Goals";
 import Users from "./pages/admin/Users";
 import Roles from "./pages/admin/Roles";
 import Organization from "./pages/admin/Organization";
+import RBAC from "./pages/admin/RBAC";
+import AdminLayout, { AdminIndex } from "./components/admin/AdminLayout";
 import Branches from "./pages/enterprise/Branches";
 import Shifts from "./pages/enterprise/Shifts";
 import LeavePolicies from "./pages/enterprise/LeavePolicies";
@@ -50,16 +53,13 @@ const App = () => {
             <Route path="payroll" element={<Payroll />} />
             <Route path="projects" element={<Project />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="profile" element={<ProfileSettings />} />
             <Route path="leave" element={<LeaveManagement />} />
             <Route path="expenses" element={<ExpenseManagement />} />
             <Route path="goals" element={<Goals />} />
 
-            {/* HR + Admin only */}
-            <Route
-              element={
-                <ProtectedRoute allowedRoles={["superadmin", "admin", "hr", "manager"]} />
-              }
-            >
+            {/* Module access is controlled by the RBAC permission matrix. */}
+            <Route>
               <Route path="employees" element={<Employee />} />
               <Route path="add-employee" element={<AddEmployee />} />
               <Route path="edit-employee/:id" element={<AddEmployee />} />
@@ -76,9 +76,16 @@ const App = () => {
               <Route path="enterprise/leave-policies" element={<LeavePolicies />} />
               <Route path="reports" element={<Reports />} />
               <Route path="audit-logs" element={<AuditLogs />} />
-              <Route path="admin/users" element={<Users />} />
-              <Route path="admin/roles" element={<Roles />} />
-              <Route path="admin/organization" element={<Organization />} />
+              <Route path="admin" element={<AdminLayout />}>
+                <Route index element={<AdminIndex />} />
+                <Route path="users" element={<Users />} />
+                <Route path="roles" element={<Roles />} />
+                <Route path="rbac" element={<RBAC />} />
+                <Route path="departments" element={<Department />} />
+                <Route path="locations" element={<Branches />} />
+                <Route path="organization" element={<Organization />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
             </Route>
           </Route>
         </Route>

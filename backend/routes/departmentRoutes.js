@@ -5,7 +5,7 @@ const { protect, authorize } = require("../middleware/authMiddleware");
 
 // Routes will now be mounted at /api/departments
 router.post("/", protect, authorize("admin", "hr"), addDepartment);
-router.get("/", protect, getDepartments);
+router.get("/", protect, require("../middleware/authMiddleware").permit("departments", "read"), getDepartments);
 router.put("/:id", protect, authorize("admin", "hr"), updateDepartment);
 router.delete("/:id", protect, authorize("admin", "hr"), deleteDepartment);
 

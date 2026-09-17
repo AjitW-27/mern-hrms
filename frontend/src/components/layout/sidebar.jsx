@@ -14,14 +14,13 @@ import {
   Avatar,
   Chip,
 } from "@mui/material";
+
 import {
   Dashboard as DashboardIcon,
   People as PeopleIcon,
-  Business as BusinessIcon,
   Work as WorkIcon,
   Event as EventIcon,
   Payment as PaymentIcon,
-  Settings as SettingsIcon,
   Logout as LogoutIcon,
   BeachAccess as LeaveIcon,
   Devices as AssetIcon,
@@ -29,32 +28,34 @@ import {
   School as TrainingIcon,
   TrendingUp as PerformanceIcon,
   Flag as GoalIcon,
-  AdminPanelSettings as AdminIcon,
   Assessment as ReportIcon,
   History as AuditIcon,
   Schedule as ShiftIcon,
 } from "@mui/icons-material";
+
 import { useNavigate, useLocation } from "react-router-dom";
 import Logo from "../comps/logo";
 import useAuthStore from "../../strore/authStore";
+import api from "../../lib/api";
 
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ open }) => ({
+})(({ open, theme }) => ({
   width: open ? drawerWidth : 72,
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
+
   "& .MuiDrawer-paper": {
     width: open ? drawerWidth : 72,
     overflowX: "hidden",
     transition: "width 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    background: "linear-gradient(180deg, #0f172a 0%, #1a1040 100%)",
-    color: "#fff",
-    borderRight: "1px solid rgba(139,92,246,0.15)",
-    boxShadow: "4px 0 20px rgba(0,0,0,0.4)",
+    background: theme.palette.background.paper,
+    color: theme.palette.text.primary,
+    borderRight: `1px solid ${theme.palette.divider}`,
+    boxShadow: "none",
     display: "flex",
     flexDirection: "column",
   },
@@ -72,12 +73,6 @@ const ALL_MENU = [
     icon: PeopleIcon,
     path: "/dashboard/employees",
     roles: ["superadmin", "admin", "hr", "manager"],
-  },
-  {
-    text: "Departments",
-    icon: BusinessIcon,
-    path: "/dashboard/departments",
-    roles: ["superadmin", "admin", "hr"],
   },
   {
     text: "Projects",
@@ -140,12 +135,6 @@ const ALL_MENU = [
     roles: ["superadmin", "admin", "hr", "manager", "employee"],
   },
   {
-    text: "Branches",
-    icon: BusinessIcon,
-    path: "/dashboard/enterprise/branches",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
     text: "Shifts",
     icon: ShiftIcon,
     path: "/dashboard/enterprise/shifts",
@@ -169,76 +158,355 @@ const ALL_MENU = [
     path: "/dashboard/audit-logs",
     roles: ["superadmin", "admin", "hr"],
   },
-  {
-    text: "Admin Users",
-    icon: AdminIcon,
-    path: "/dashboard/admin/users",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
-    text: "Admin Roles",
-    icon: AdminIcon,
-    path: "/dashboard/admin/roles",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
-    text: "Organization",
-    icon: BusinessIcon,
-    path: "/dashboard/admin/organization",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
-    text: "Settings",
-    icon: SettingsIcon,
-    path: "/dashboard/settings",
-    roles: ["superadmin", "admin"],
-  },
 ];
 
-const ROLE_COLORS = {
-  admin: "#ef4444",
-  superadmin: "#f43f5e",
-  hr: "#f59e0b",
-  manager: "#3b82f6",
-  employee: "#10b981",
-};
+/*
+|--------------------------------------------------------------------------
+| Normalize Role
+|--------------------------------------------------------------------------
+*/
+
+const normalizeRole = (value) =>
+  String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "_");
+
+/*
+|--------------------------------------------------------------------------
+| Sidebar
+|--------------------------------------------------------------------------
+*/
 
 export default function Sidebar({ open, variant = "permanent", onClose }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useAuthStore();
-  const role = user?.role || "employee";
+
+  /*
+  |--------------------------------------------------------------------------
+  | Zustand
+  |--------------------------------------------------------------------------
+  |
+  | When Access.jsx updates setUser(), this component automatically
+  | rerenders because it subscribes to user.
+  |
+  */
+
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+
+  const role = normalizeRole(user?.role || "employee");
+
   const expanded = variant === "temporary" ? true : open;
 
-  const menuItems = ALL_MENU.filter((item) => item.roles.includes(role));
+  /*
+  |--------------------------------------------------------------------------
+  | RBAC Enabled State
+  |--------------------------------------------------------------------------
+  |
+  | First read cached value so the menu does not wait for API.
+  |
+  */
+
+  const [rbacEnabled, setRbacEnabled] = React.useState(() => {
+    try {
+      const cached = localStorage.getItem("hrms_rbac_enabled");
+
+      if (cached !== null) {
+        return cached === "true";
+      }
+    } catch (error) {
+      console.error("Failed to read RBAC state:", error);
+    }
+
+    return false;
+  });
+
+  /*
+  |--------------------------------------------------------------------------
+  | Load / Sync RBAC Settings
+  |--------------------------------------------------------------------------
+  */
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    const syncRbac = async () => {
+      /*
+      |--------------------------------------------------------------------------
+      | Immediately use cached value
+      |--------------------------------------------------------------------------
+      */
+
+      try {
+        const cached = localStorage.getItem("hrms_rbac_enabled");
+
+        if (mounted && cached !== null) {
+          setRbacEnabled(cached === "true");
+        }
+      } catch (error) {
+        console.error("Failed to read cached RBAC state:", error);
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | Get latest value from backend
+      |--------------------------------------------------------------------------
+      */
+
+      try {
+        const { data } = await api.get("/settings");
+
+        const enabled = data?.data?.rbacEnabled === true;
+
+        if (!mounted) return;
+
+        setRbacEnabled(enabled);
+
+        localStorage.setItem("hrms_rbac_enabled", String(enabled));
+      } catch (error) {
+        console.error("Failed to load RBAC settings:", error);
+      }
+    };
+
+    /*
+    |--------------------------------------------------------------------------
+    | Listen for permission/RBAC changes
+    |--------------------------------------------------------------------------
+    |
+    | Access.jsx dispatches:
+    |
+    | window.dispatchEvent(
+    |   new CustomEvent("hrms-rbac-updated")
+    | );
+    |
+    | This makes the sidebar update immediately.
+    |
+    */
+
+    const handleRbacUpdated = () => {
+      syncRbac();
+    };
+
+    window.addEventListener("hrms-rbac-updated", handleRbacUpdated);
+
+    syncRbac();
+
+    return () => {
+      mounted = false;
+
+      window.removeEventListener("hrms-rbac-updated", handleRbacUpdated);
+    };
+  }, []);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Permission Module Resolver
+  |--------------------------------------------------------------------------
+  */
+
+  const permissionModule = (path) => {
+    if (path === "/dashboard") {
+      return "dashboard";
+    }
+
+    if (path.includes("/employees")) {
+      return "employees";
+    }
+
+    if (path.includes("/projects")) {
+      return "projects";
+    }
+
+    if (path.includes("/attendance")) {
+      return "attendance";
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shifts
+    |--------------------------------------------------------------------------
+    |
+    | Keep your existing mapping.
+    |
+    */
+
+    if (path.includes("/shifts")) {
+      return "attendance";
+    }
+
+    if (path.includes("/leave-policies")) {
+      return "leave";
+    }
+
+    if (path.includes("/leave")) {
+      return "leave";
+    }
+
+    if (path.includes("/payroll")) {
+      return "payroll";
+    }
+
+    if (path.includes("/assets")) {
+      return "assets";
+    }
+
+    if (path.includes("/expenses")) {
+      return "expenses";
+    }
+
+    if (path.includes("/onboarding")) {
+      return "onboarding";
+    }
+
+    if (path.includes("/training")) {
+      return "training";
+    }
+
+    if (path.includes("/performance")) {
+      return "performance";
+    }
+
+    if (path.includes("/goals")) {
+      return "goals";
+    }
+
+    if (path.includes("/reports")) {
+      return "reports";
+    }
+
+    if (path.includes("/audit-logs")) {
+      return "audit";
+    }
+
+    return "dashboard";
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | READ Permission Check
+  |--------------------------------------------------------------------------
+  */
+
+  const hasReadPermission = (module) => {
+    /*
+    |--------------------------------------------------------------------------
+    | RBAC disabled
+    |--------------------------------------------------------------------------
+    |
+    | When RBAC is disabled, permissions should not control
+    | the drawer. Existing role-based access remains.
+    |
+    */
+
+    if (!rbacEnabled) {
+      return true;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RBAC enabled
+    |--------------------------------------------------------------------------
+    |
+    | IMPORTANT:
+    |
+    | Do NOT give SUPER_ADMIN automatic access here.
+    |
+    | The permission matrix controls the drawer.
+    |
+    | Example:
+    |
+    | dashboard.read = false
+    |
+    | => Dashboard is hidden.
+    |
+    */
+
+    return user?.rolePermissions?.[module]?.read === true;
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Build Menu
+  |--------------------------------------------------------------------------
+  */
+
+  const menuItems = ALL_MENU.filter((item) => {
+    /*
+    |--------------------------------------------------------------------------
+    | RBAC Disabled
+    |--------------------------------------------------------------------------
+    |
+    | Preserve your original role based behavior.
+    |
+    */
+
+    if (!rbacEnabled) {
+      return (
+        item.roles.includes(role) ||
+        role === "superadmin" ||
+        role === "super_admin"
+      );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RBAC Enabled
+    |--------------------------------------------------------------------------
+    |
+    | READ permission decides whether menu appears.
+    |
+    */
+
+    const module = permissionModule(item.path);
+
+    return hasReadPermission(module);
+  });
+
+  /*
+  |--------------------------------------------------------------------------
+  | Logout
+  |--------------------------------------------------------------------------
+  */
 
   const handleLogout = () => {
     logout();
+
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
+
     navigate("/");
   };
+
+  /*
+  |--------------------------------------------------------------------------
+  | UI
+  |--------------------------------------------------------------------------
+  */
 
   return (
     <Drawer
       variant={variant}
       open={open}
       onClose={onClose}
-      ModalProps={{ keepMounted: true }}
+      ModalProps={{
+        keepMounted: true,
+      }}
       PaperProps={{
         sx: {
           overflow: "hidden",
         },
       }}
     >
-      {/* LOGO - sticky, does not scroll */}
+      {/* LOGO */}
+
       <Box
         sx={{
           position: "sticky",
           top: 0,
           zIndex: 2,
           flexShrink: 0,
-          background: "linear-gradient(180deg, #0f172a 0%, #1a1040 100%)",
+          background: "background.paper",
         }}
       >
         <Box
@@ -252,44 +520,67 @@ export default function Sidebar({ open, variant = "permanent", onClose }) {
         >
           <Logo open={expanded} />
         </Box>
-        <Divider sx={{ borderColor: "rgba(139,92,246,0.2)" }} />
+
+        <Divider />
       </Box>
 
       {/* SCROLLABLE CONTENT */}
+
       <Box
         sx={{
           flex: 1,
           overflowY: "auto",
           overflowX: "hidden",
-          "&::-webkit-scrollbar": { width: 2 },
+
+          "&::-webkit-scrollbar": {
+            width: 2,
+          },
+
           "&::-webkit-scrollbar-thumb": {
-            background: "rgba(179, 177, 182, 0.29)",
+            background: "divider",
             borderRadius: 4,
           },
-          "&::-webkit-scrollbar-track": { background: "transparent" },
+
+          "&::-webkit-scrollbar-track": {
+            background: "transparent",
+          },
+
           display: "flex",
           flexDirection: "column",
         }}
       >
-        {/* User Info */}
+        {/* USER INFO */}
+
         {expanded && user && (
-          <Box sx={{ px: 2, py: 1.5 }}>
+          <Box
+            sx={{
+              px: 2,
+              py: 1.5,
+            }}
+          >
             <Box display="flex" alignItems="center" gap={1.5}>
               <Avatar
                 sx={{
                   width: 36,
                   height: 36,
-                  bgcolor: "#8b5cf6",
+                  bgcolor: "primary.main",
                   fontSize: 14,
                   fontWeight: "bold",
                 }}
               >
                 {user.name?.charAt(0)?.toUpperCase()}
               </Avatar>
+
               <Box>
-                <Typography fontSize={13} fontWeight={600} color="#fff" noWrap>
+                <Typography
+                  fontSize={13}
+                  fontWeight={600}
+                  color="text.primary"
+                  noWrap
+                >
                   {user.name}
                 </Typography>
+
                 <Chip
                   label={role.toUpperCase()}
                   size="small"
@@ -297,9 +588,10 @@ export default function Sidebar({ open, variant = "permanent", onClose }) {
                     height: 16,
                     fontSize: 9,
                     fontWeight: "bold",
-                    bgcolor: ROLE_COLORS[role] + "22",
-                    color: ROLE_COLORS[role],
-                    border: `1px solid ${ROLE_COLORS[role]}44`,
+                    bgcolor: "primary.light",
+                    color: "primary.dark",
+                    border: "1px solid",
+                    borderColor: "primary.light",
                   }}
                 />
               </Box>
@@ -307,69 +599,94 @@ export default function Sidebar({ open, variant = "permanent", onClose }) {
           </Box>
         )}
 
-        {expanded && <Divider sx={{ borderColor: "rgba(139,92,246,0.1)" }} />}
+        {expanded && <Divider />}
 
         {/* MENU */}
-        <List sx={{ px: 1, pt: 1 }}>
+
+        <List
+          sx={{
+            px: 1,
+            pt: 1,
+          }}
+        >
           {menuItems.map((item) => {
             const Icon = item.icon;
+
             const isActive =
               location.pathname === item.path ||
               (item.path !== "/dashboard" &&
                 location.pathname.startsWith(item.path));
 
             return (
-              <ListItem key={item.text} disablePadding sx={{ mb: 0.3 }}>
+              <ListItem
+                key={item.text}
+                disablePadding
+                sx={{
+                  mb: 0.3,
+                }}
+              >
                 <Tooltip title={!expanded ? item.text : ""} placement="right">
                   <ListItemButton
                     onClick={() => {
                       navigate(item.path);
-                      if (variant === "temporary") onClose?.();
+
+                      if (variant === "temporary") {
+                        onClose?.();
+                      }
                     }}
                     sx={{
-                      borderRadius: "10px",
+                      borderRadius: "4px",
                       minHeight: 44,
+
                       justifyContent: expanded ? "initial" : "center",
+
                       px: expanded ? 1.5 : 1,
+
                       background: isActive
-                        ? "linear-gradient(90deg, rgba(139,92,246,0.3), rgba(59,130,246,0.2))"
+                        ? "linear-gradient(90deg, rgba(0, 255, 255, 0.10), rgba(0, 255, 255, 0.01))"
                         : "transparent",
-                      border: isActive
-                        ? "1px solid rgba(139,92,246,0.3)"
-                        : "1px solid transparent",
+
+                      border: isActive ? "1px solid" : "1px solid transparent",
+
+                      borderColor: isActive ? "primary.light" : "transparent",
+
                       "&:hover": {
-                        background:
-                          "linear-gradient(90deg, rgba(139,92,246,0.2), rgba(59,130,246,0.1))",
+                        background: "action.hover",
                       },
                     }}
                   >
                     <ListItemIcon
                       sx={{
-                        color: isActive ? "#a78bfa" : "#94a3b8",
+                        color: isActive ? "primary.main" : "text.secondary",
+
                         minWidth: 0,
+
                         mr: expanded ? 1.5 : 0,
+
                         justifyContent: "center",
                       }}
                     >
                       <Icon fontSize="small" />
                     </ListItemIcon>
+
                     {expanded && (
                       <ListItemText
                         primary={item.text}
                         primaryTypographyProps={{
-                          fontSize: 13,
-                          fontWeight: isActive ? 600 : 400,
-                          color: isActive ? "#e2e8f0" : "#94a3b8",
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: isActive ? "primary.dark" : "text.primary",
                         }}
                       />
                     )}
+
                     {isActive && expanded && (
                       <Box
                         sx={{
                           width: 4,
                           height: 20,
-                          borderRadius: 2,
-                          bgcolor: "#8b5cf6",
+                          borderRadius: 1,
+                          bgcolor: "primary.main",
                           ml: "auto",
                         }}
                       />
@@ -381,40 +698,64 @@ export default function Sidebar({ open, variant = "permanent", onClose }) {
           })}
         </List>
 
-        <Box sx={{ flexGrow: 1 }} />
+        <Box
+          sx={{
+            flexGrow: 1,
+          }}
+        />
 
-        <Divider sx={{ borderColor: "rgba(139,92,246,0.1)", mx: 2 }} />
+        <Divider
+          sx={{
+            mx: 2,
+          }}
+        />
 
         {/* LOGOUT */}
-        <List sx={{ px: 1, pb: 1 }}>
+
+        <List
+          sx={{
+            px: 1,
+            pb: 1,
+          }}
+        >
           <ListItem disablePadding>
             <Tooltip title={!expanded ? "Logout" : ""} placement="right">
               <ListItemButton
                 onClick={handleLogout}
                 sx={{
-                  borderRadius: "10px",
+                  borderRadius: "4px",
                   minHeight: 44,
+
                   justifyContent: expanded ? "initial" : "center",
+
                   px: expanded ? 1.5 : 1,
+
                   "&:hover": {
-                    background: "rgba(239,68,68,0.15)",
+                    background: "action.hover",
                   },
                 }}
               >
                 <ListItemIcon
                   sx={{
-                    color: "#f87171",
+                    color: "error.main",
                     minWidth: 0,
+
                     mr: expanded ? 1.5 : 0,
+
                     justifyContent: "center",
                   }}
                 >
                   <LogoutIcon fontSize="small" />
                 </ListItemIcon>
+
                 {expanded && (
                   <ListItemText
                     primary="Logout"
-                    primaryTypographyProps={{ fontSize: 13, color: "#f87171" }}
+                    primaryTypographyProps={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "error.main",
+                    }}
                   />
                 )}
               </ListItemButton>

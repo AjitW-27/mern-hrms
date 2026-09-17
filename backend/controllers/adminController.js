@@ -78,15 +78,19 @@ const getUsers = asyncHandler(async (req, res) => {
 });
 
 const createUser = asyncHandler(async (req, res) => {
-  const { name, email, password, mobileNo, role, organization, department, employeeRef, avatar, isActive = true } = req.body;
+  const { name, email, password, mobileNo, role, roleId, organization, department, employeeRef, avatar, isActive = true } = req.body;
   if (!name || !email || !mobileNo) {
     return res.status(400).json({ success: false, message: "name, email and mobileNo are required" });
   }
 
-  const normalizedRole = sanitizeRoleCode(role || "employee");
+  let normalizedRole = sanitizeRoleCode(role || "employee");
+  if (roleId) { const selectedRole = await Role.findById(roleId).select("code name"); if (!selectedRole) return res.status(400).json({ success:false, message:"Invalid role" }); normalizedRole = sanitizeRoleCode(selectedRole.code || selectedRole.name); }
   const validRole = await Role.findOne({ $or: [{ code: normalizedRole }, { name: normalizedRole }] });
   if (!validRole && !["superadmin","admin","hr","manager","employee"].includes(normalizedRole)) {
     return res.status(400).json({ success: false, message: "Invalid role" });
+  }
+  if (validRole && validRole.isActive === false) {
+    return res.status(400).json({ success: false, message: "Selected role is inactive" });
   }
 
   const exists = await User.findOne({ email: String(email).toLowerCase() });
@@ -134,8 +138,17 @@ const updateUser = asyncHandler(async (req, res) => {
     if (req.body[field] !== undefined) user[field] = req.body[field];
   });
 
-  if (req.body.role !== undefined) {
-    user.role = sanitizeRoleCode(req.body.role);
+  if (req.body.roleId) {
+    const selectedRole = await Role.findById(req.body.roleId).select("code name isActive");
+    if (!selectedRole) return res.status(400).json({ success:false, message:"Invalid role" });
+    if (selectedRole.isActive === false) return res.status(400).json({ success:false, message:"Selected role is inactive" });
+    user.role = sanitizeRoleCode(selectedRole.code || selectedRole.name);
+  } else if (req.body.role !== undefined) {
+    const requestedRole = sanitizeRoleCode(req.body.role);
+    const selectedRole = await Role.findOne({ $or: [{ code: requestedRole }, { name: requestedRole }] }).select("code name isActive");
+    if (!selectedRole && !["superadmin","admin","hr","manager","employee"].includes(requestedRole)) return res.status(400).json({ success:false, message:"Invalid role" });
+    if (selectedRole?.isActive === false) return res.status(400).json({ success:false, message:"Selected role is inactive" });
+    user.role = sanitizeRoleCode(selectedRole?.code || selectedRole?.name || requestedRole);
   }
 
   if (req.body.password) {
@@ -328,6 +341,29 @@ const deleteRole = asyncHandler(async (req, res) => {
   res.json({ success: true, message: "Role deactivated" });
 });
 
+const updateRoleStatus = asyncHandler(async (req, res) => {
+  const role = await Role.findById(req.params.id);
+  if (!role) return res.status(404).json({ success: false, message: "Role not found" });
+
+  const isActive = req.body.isActive;
+  if (typeof isActive !== "boolean") return res.status(400).json({ success: false, message: "isActive must be true or false" });
+  if (!isActive && String(role.code).toLowerCase() === String(req.user?.role || "").toLowerCase()) {
+    return res.status(400).json({ success: false, message: "You cannot deactivate your own active role." });
+  }
+
+  const before = role.toObject({ flattenMaps: true });
+  role.isActive = isActive;
+  role.updatedBy = req.user?._id;
+  await role.save();
+
+  await audit({
+    actor: req.user?._id, action: "update_status", entityType: "Role", entityId: role._id,
+    before, after: role.toObject({ flattenMaps: true }), metadata: { module: "roles" }, req
+  });
+
+  res.json({ success: true, data: roleToPlain(role) });
+});
+
 const getOrganization = asyncHandler(async (req, res) => {
   const org = await Organization.findOne().sort({ createdAt: -1 }).lean();
   res.json({ success: true, data: org });
@@ -395,6 +431,7 @@ module.exports = {
   getRoles,
   createRole,
   updateRole,
+  updateRoleStatus,
   deleteRole,
   getOrganization,
   updateOrganization,

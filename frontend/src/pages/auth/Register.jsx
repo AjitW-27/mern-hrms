@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import AuthLayout from "../../components/layout/authLayout";
 import {
   Box,
   Typography,
   TextField,
   Button,
-  Divider,
   IconButton,
   InputAdornment,
   MenuItem,
@@ -30,8 +28,11 @@ import {
   CalendarTodayOutlined as CalendarTodayOutlinedIcon,
   PhoneOutlined as PhoneOutlinedIcon,
 } from "@mui/icons-material";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+import LoginImage from "../../assets/LoginImg.png";
 
 // Google Logo Component
 const GoogleIconLogo = () => (
@@ -83,50 +84,85 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState("");
-  const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-    if (apiError) setApiError("");
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+
+    if (apiError) {
+      setApiError("");
+    }
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Email address is invalid";
+    }
 
-    if (!formData.mobileNo.trim())
+    if (!formData.mobileNo.trim()) {
       newErrors.mobileNo = "Mobile number is required";
-    else if (!/^\d{10}$/.test(formData.mobileNo))
+    } else if (!/^\d{10}$/.test(formData.mobileNo)) {
       newErrors.mobileNo = "Mobile number must be 10 digits";
+    }
 
-    if (!formData.employeeId.trim())
+    if (!formData.employeeId.trim()) {
       newErrors.employeeId = "Employee ID is required";
-    if (!formData.designation.trim())
+    }
+
+    if (!formData.designation.trim()) {
       newErrors.designation = "Designation is required";
-    if (!formData.joiningDate)
+    }
+
+    if (!formData.joiningDate) {
       newErrors.joiningDate = "Joining date is required";
+    }
 
-    if (!formData.department) newErrors.department = "Department is required";
-    if (!formData.role) newErrors.role = "Role is required";
+    if (!formData.department) {
+      newErrors.department = "Department is required";
+    }
 
-    if (!formData.password) newErrors.password = "Password is required";
-    else if (formData.password.length < 6)
+    if (!formData.role) {
+      newErrors.role = "Role is required";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters";
+    }
 
-    if (!formData.confirmPassword)
+    if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Please confirm your password";
-    else if (formData.password !== formData.confirmPassword)
+    } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
+    }
 
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   };
 
@@ -139,519 +175,945 @@ const Register = () => {
     setApiError("");
 
     const { confirmPassword, ...dataToSend } = formData;
-    if (dataToSend.role) dataToSend.role = dataToSend.role.toLowerCase();
+
+    if (dataToSend.role) {
+      dataToSend.role = dataToSend.role.toLowerCase();
+    }
 
     try {
       await axios.post("http://localhost:5000/api/auth/register", dataToSend, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
       alert("Registration successful! Please login with your credentials.");
       navigate("/");
     } catch (err) {
       setApiError(
-        err.response?.data?.message || "Registration failed. Please try again.",
+        err?.response?.data?.message ||
+          "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
     }
   };
 
+  // Common input styles
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
       height: "54px",
-      borderRadius: "14px",
-      color: "#fff",
-      backgroundColor: "transparent",
-      "& fieldset": { borderColor: "rgba(255, 255, 255, 0.3)" },
-      "&:hover fieldset": { borderColor: "rgba(255, 255, 255, 0.6)" },
+      borderRadius: "10px",
+      backgroundColor: "#ffffff",
+      color: "#172033",
+
+      "& fieldset": {
+        borderColor: "#d9e0ea",
+        borderWidth: "1px",
+      },
+
+      "&:hover fieldset": {
+        borderColor: "#93b4ff",
+      },
+
       "&.Mui-focused fieldset": {
-        borderColor: "#8b5cf6",
+        borderColor: "#3b82f6",
         borderWidth: "1.5px",
       },
     },
-    "& .MuiInputBase-input::placeholder": { color: "#9ca3af", opacity: 1 },
-    "& .MuiFormHelperText-root": { color: "#f44336", marginLeft: "8px" },
+
+    "& .MuiInputBase-input": {
+      fontSize: "14px",
+      color: "#172033",
+    },
+
+    "& .MuiInputBase-input::placeholder": {
+      color: "#94a3b8",
+      opacity: 1,
+    },
+
+    "& .MuiFormHelperText-root": {
+      marginLeft: "4px",
+      marginTop: "4px",
+      fontSize: "11px",
+    },
+
     "& input[type='date']::-webkit-calendar-picker-indicator": {
-      filter: "invert(1)",
+      opacity: 0.6,
     },
   };
 
-  // Fixed Select Styles to perfectly match inputStyles
+  // Select styles
   const selectStyles = {
     height: "54px",
-    borderRadius: "14px",
-    color: "#fff",
-    backgroundColor: "transparent",
-    "& fieldset": { borderColor: "rgba(255, 255, 255, 0.3)" },
-    "&:hover fieldset": { borderColor: "rgba(255, 255, 255, 0.6)" },
+    borderRadius: "10px",
+    backgroundColor: "#ffffff",
+    color: "#172033",
+
+    "& fieldset": {
+      borderColor: "#d9e0ea",
+      borderWidth: "1px",
+    },
+
+    "&:hover fieldset": {
+      borderColor: "#93b4ff",
+    },
+
     "&.Mui-focused fieldset": {
-      borderColor: "#8b5cf6",
+      borderColor: "#3b82f6",
       borderWidth: "1.5px",
     },
+
     "& .MuiSelect-select": {
       display: "flex",
       alignItems: "center",
-      color: "#fff",
+      color: "#172033",
+      fontSize: "14px",
     },
-    "& .MuiSvgIcon-root": { color: "#d1d5db" },
+
+    "& .MuiSvgIcon-root": {
+      color: "#64748b",
+    },
   };
 
   return (
-    <AuthLayout>
+    <Box
+      sx={{
+        width: "100vw",
+        height: "100vh",
+        minHeight: "100vh",
+        overflow: "hidden",
+        background: "#f6f8fc",
+
+        display: "grid",
+
+        gridTemplateColumns: {
+          xs: "1fr",
+          lg: "65% 35%",
+        },
+      }}
+    >
+      {/* =====================================================
+          LEFT IMAGE - 65%
+      ====================================================== */}
+
       <Box
-        component="form"
-        onSubmit={handleSubmit}
-        noValidate
         sx={{
+          display: {
+            xs: "none",
+            lg: "block",
+          },
+
+          position: "relative",
           width: "100%",
-          maxWidth: 450,
-          height: 690,
-          transform: "rotateY(-18deg) rotateX(2deg)",
-          transformStyle: "preserve-3d",
-          transition: "transform 0.3s ease",
-          "&:hover": { transform: "rotateY(-8deg) rotateX(1deg)" },
-          p: { xs: 4, md: 5 },
-          borderRadius: "28px",
-          background:
-            "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 100%)",
-          backdropFilter: "blur(30px)",
-          borderTop: "1.5px solid rgba(255,255,255,0.6)",
-          borderLeft: "1.5px solid rgba(255,255,255,0.6)",
-          borderRight: "1px solid rgba(255,255,255,0.1)",
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
-          boxShadow: "0 20px 40px -10px rgba(0,0,0,0.4)",
-          color: "#fff",
-          display: "flex",
-          flexDirection: "column",
+          height: "100vh",
+          overflow: "hidden",
+          background: "#f8fafc",
         }}
       >
-        {/* Header */}
         <Box
-          textAlign="center"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          position="relative"
-        >
-          <IconButton
-            onClick={() => navigate("/")}
-            sx={{ position: "absolute", top: -30, left: -20, color: "#fff" }}
-          >
-            <KeyboardBackspaceOutlinedIcon />
-          </IconButton>
-          <Box
-            sx={{
-              width: 54,
-              height: 54,
-              borderRadius: "14px",
-              background: "rgba(255,255,255,0.1)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              mb: 2,
-              border: "1px solid rgba(255,255,255,0.4)",
-            }}
-          >
-            <GroupAddIcon sx={{ color: "#fff", fontSize: 28 }} />
-          </Box>
-          <Typography variant="h5" fontWeight="600" mb={1}>
-            Create Account
-          </Typography>
-        </Box>
+          component="img"
+          src={LoginImage}
+          alt="HRMS Dashboard"
+          sx={{
+            width: "100%",
+            height: "100%",
+            display: "block",
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
+      </Box>
 
-        {apiError && (
-          <Alert
-            severity="error"
-            sx={{
-              mt: 1,
-              mb: 1,
-              borderRadius: "12px",
-              bgcolor: "rgba(244,67,54,0.1)",
-              color: "#ff6b6b",
-            }}
-          >
-            {apiError}
-          </Alert>
-        )}
+      {/* =====================================================
+          RIGHT REGISTER PANEL - 35%
+      ====================================================== */}
 
+      <Box
+        sx={{
+          width: "100%",
+          height: "100vh",
+          minWidth: 0,
+
+          background: "#ffffff",
+
+          display: "flex",
+          flexDirection: "column",
+
+          overflow: "hidden",
+        }}
+      >
+        {/* Scrollable Register Area */}
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            maxHeight: "460px",
-            gap: 2.5,
-            mt: 2,
-            flexGrow: 1,
+            width: "100%",
+            height: "100%",
             overflowY: "auto",
-            pr: 1.5,
-            pb: 2,
-            "&::-webkit-scrollbar": { width: "5px" },
-            "&::-webkit-scrollbar-track": { background: "transparent" },
+
+            display: "flex",
+            justifyContent: "center",
+
+            px: {
+              xs: 3,
+              sm: 5,
+              md: 5,
+              lg: 4,
+              xl: 5,
+            },
+
+            py: {
+              xs: 4,
+              sm: 5,
+              lg: 4,
+            },
+
+            "&::-webkit-scrollbar": {
+              width: "6px",
+            },
+
+            "&::-webkit-scrollbar-track": {
+              background: "#f8fafc",
+            },
+
             "&::-webkit-scrollbar-thumb": {
-              background: "rgba(255,255,255,0.15)",
+              background: "#cbd5e1",
               borderRadius: "10px",
             },
           }}
         >
-          {/* Full Name */}
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
-            >
-              Full Name *
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Enter your full name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              error={!!errors.name}
-              helperText={errors.name}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonOutlineIcon sx={{ color: "#d1d5db" }} />
-                  </InputAdornment>
-                ),
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{
+              width: "100%",
+              maxWidth: "430px",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {/* =================================================
+                HEADER
+            ================================================= */}
+
+            <Box
+              sx={{
+                position: "relative",
+                mb: 3,
               }}
-              sx={inputStyles}
-            />
-          </Box>
-
-          {/* Email */}
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
             >
-              Email Address *
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Enter your email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              error={!!errors.email}
-              helperText={errors.email}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <MailOutlineIcon sx={{ color: "#d1d5db" }} />
-                  </InputAdornment>
-                ),
+              {/* Back Button */}
+
+              <IconButton
+                onClick={() => navigate("/")}
+                sx={{
+                  position: "absolute",
+                  top: -5,
+                  left: -10,
+
+                  color: "#64748b",
+
+                  borderRadius: "8px",
+
+                  "&:hover": {
+                    background: "#f1f5f9",
+                    color: "#2563eb",
+                  },
+                }}
+              >
+                <KeyboardBackspaceOutlinedIcon />
+              </IconButton>
+
+              {/* Header Content */}
+
+              <Box
+                sx={{
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  pt: 1,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 52,
+                    height: 52,
+
+                    borderRadius: "14px",
+
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    background:
+                      "linear-gradient(135deg, #4f46e5 0%, #2563eb 100%)",
+
+                    boxShadow: "0 8px 20px rgba(37, 99, 235, 0.20)",
+
+                    mb: 1.5,
+                  }}
+                >
+                  <GroupAddIcon
+                    sx={{
+                      color: "#ffffff",
+                      fontSize: 27,
+                    }}
+                  />
+                </Box>
+
+                <Typography
+                  sx={{
+                    fontSize: {
+                      xs: "26px",
+                      lg: "28px",
+                    },
+
+                    fontWeight: 700,
+                    color: "#172033",
+                    lineHeight: 1.2,
+                  }}
+                >
+                  Create Account
+                </Typography>
+
+                <Typography
+                  sx={{
+                    mt: 0.7,
+                    color: "#64748b",
+                    fontSize: "13px",
+                  }}
+                >
+                  Create your HRMS employee account
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* =================================================
+                API ERROR
+            ================================================= */}
+
+            {apiError && (
+              <Alert
+                severity="error"
+                sx={{
+                  mb: 2.5,
+                  borderRadius: "10px",
+                  background: "#fef2f2",
+                  color: "#b91c1c",
+                  border: "1px solid #fecaca",
+
+                  "& .MuiAlert-icon": {
+                    color: "#ef4444",
+                  },
+                }}
+              >
+                {apiError}
+              </Alert>
+            )}
+
+            {/* =================================================
+                FORM FIELDS
+            ================================================= */}
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
               }}
-              sx={inputStyles}
-            />
-          </Box>
-
-          {/* Employee ID & Mobile Number (Row) */}
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Box flex={1}>
-              <Typography
-                variant="body2"
-                sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
-              >
-                Employee ID *
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="EMP123"
-                name="employeeId"
-                value={formData.employeeId}
-                onChange={handleChange}
-                error={!!errors.employeeId}
-                helperText={errors.employeeId}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <BadgeOutlinedIcon sx={{ color: "#d1d5db" }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={inputStyles}
-              />
-            </Box>
-            <Box flex={1}>
-              <Typography
-                variant="body2"
-                sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
-              >
-                Mobile No *
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="10 digits"
-                name="mobileNo"
-                value={formData.mobileNo}
-                onChange={handleChange}
-                error={!!errors.mobileNo}
-                helperText={errors.mobileNo}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PhoneOutlinedIcon sx={{ color: "#d1d5db" }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={inputStyles}
-              />
-            </Box>
-          </Box>
-
-          {/* Designation & Joining Date (Row) */}
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Box flex={1}>
-              <Typography
-                variant="body2"
-                sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
-              >
-                Designation *
-              </Typography>
-              <TextField
-                fullWidth
-                placeholder="e.g. Developer"
-                name="designation"
-                value={formData.designation}
-                onChange={handleChange}
-                error={!!errors.designation}
-                helperText={errors.designation}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <WorkOutlineIcon sx={{ color: "#d1d5db" }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={inputStyles}
-              />
-            </Box>
-            <Box flex={1}>
-              <Typography
-                variant="body2"
-                sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
-              >
-                Joining Date *
-              </Typography>
-              <TextField
-                fullWidth
-                type="date"
-                name="joiningDate"
-                value={formData.joiningDate}
-                onChange={handleChange}
-                error={!!errors.joiningDate}
-                helperText={errors.joiningDate}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <CalendarTodayOutlinedIcon sx={{ color: "#d1d5db" }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={inputStyles}
-              />
-            </Box>
-          </Box>
-
-          {/* Department */}
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
             >
-              Department *
-            </Typography>
-            <FormControl fullWidth error={!!errors.department}>
-              <Select
-                name="department"
-                value={formData.department}
-                onChange={handleChange}
-                displayEmpty
-                sx={selectStyles} // Added sx prop here
-                renderValue={(selected) =>
-                  !selected ? (
-                    <span style={{ color: "#9ca3af" }}>Select department</span>
-                  ) : (
-                    selected
-                  )
-                }
+              {/* Full Name */}
+
+              <Box>
+                <Typography
+                  sx={{
+                    mb: 0.7,
+                    ml: 0.3,
+                    color: "#1e293b",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Full Name *
+                </Typography>
+
+                <TextField
+                  fullWidth
+                  placeholder="Enter your full name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  error={!!errors.name}
+                  helperText={errors.name}
+                  sx={inputStyles}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonOutlineIcon
+                          sx={{
+                            color: "#64748b",
+                            fontSize: 20,
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+
+              {/* Email */}
+
+              <Box>
+                <Typography
+                  sx={{
+                    mb: 0.7,
+                    ml: 0.3,
+                    color: "#1e293b",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Email Address *
+                </Typography>
+
+                <TextField
+                  fullWidth
+                  placeholder="Enter your email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                  sx={inputStyles}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <MailOutlineIcon
+                          sx={{
+                            color: "#64748b",
+                            fontSize: 20,
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+
+              {/* Employee ID + Mobile */}
+
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr",
+                  },
+                  gap: 1.5,
+                }}
               >
-                {DEPARTMENT_OPTIONS.map((dept) => (
-                  <MenuItem key={dept} value={dept}>
-                    {dept}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.department && (
-                <FormHelperText>{errors.department}</FormHelperText>
+                <Box>
+                  <Typography
+                    sx={{
+                      mb: 0.7,
+                      ml: 0.3,
+                      color: "#1e293b",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Employee ID *
+                  </Typography>
+
+                  <TextField
+                    fullWidth
+                    placeholder="EMP123"
+                    name="employeeId"
+                    value={formData.employeeId}
+                    onChange={handleChange}
+                    error={!!errors.employeeId}
+                    helperText={errors.employeeId}
+                    sx={inputStyles}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <BadgeOutlinedIcon
+                            sx={{
+                              color: "#64748b",
+                              fontSize: 20,
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+
+                <Box>
+                  <Typography
+                    sx={{
+                      mb: 0.7,
+                      ml: 0.3,
+                      color: "#1e293b",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Mobile No *
+                  </Typography>
+
+                  <TextField
+                    fullWidth
+                    placeholder="10 digits"
+                    name="mobileNo"
+                    value={formData.mobileNo}
+                    onChange={handleChange}
+                    error={!!errors.mobileNo}
+                    helperText={errors.mobileNo}
+                    sx={inputStyles}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PhoneOutlinedIcon
+                            sx={{
+                              color: "#64748b",
+                              fontSize: 20,
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+              </Box>
+
+              {/* Designation + Joining Date */}
+
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr",
+                  },
+                  gap: 1.5,
+                }}
+              >
+                <Box>
+                  <Typography
+                    sx={{
+                      mb: 0.7,
+                      ml: 0.3,
+                      color: "#1e293b",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Designation *
+                  </Typography>
+
+                  <TextField
+                    fullWidth
+                    placeholder="e.g. Developer"
+                    name="designation"
+                    value={formData.designation}
+                    onChange={handleChange}
+                    error={!!errors.designation}
+                    helperText={errors.designation}
+                    sx={inputStyles}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <WorkOutlineIcon
+                            sx={{
+                              color: "#64748b",
+                              fontSize: 20,
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+
+                <Box>
+                  <Typography
+                    sx={{
+                      mb: 0.7,
+                      ml: 0.3,
+                      color: "#1e293b",
+                      fontSize: "13px",
+                      fontWeight: 600,
+                    }}
+                  >
+                    Joining Date *
+                  </Typography>
+
+                  <TextField
+                    fullWidth
+                    type="date"
+                    name="joiningDate"
+                    value={formData.joiningDate}
+                    onChange={handleChange}
+                    error={!!errors.joiningDate}
+                    helperText={errors.joiningDate}
+                    sx={inputStyles}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <CalendarTodayOutlinedIcon
+                            sx={{
+                              color: "#64748b",
+                              fontSize: 18,
+                            }}
+                          />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </Box>
+              </Box>
+
+              {/* Department */}
+
+              <Box>
+                <Typography
+                  sx={{
+                    mb: 0.7,
+                    ml: 0.3,
+                    color: "#1e293b",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Department *
+                </Typography>
+
+                <FormControl fullWidth error={!!errors.department}>
+                  <Select
+                    name="department"
+                    value={formData.department}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={selectStyles}
+                    renderValue={(selected) =>
+                      !selected ? (
+                        <span
+                          style={{
+                            color: "#94a3b8",
+                          }}
+                        >
+                          Select department
+                        </span>
+                      ) : (
+                        selected
+                      )
+                    }
+                  >
+                    {DEPARTMENT_OPTIONS.map((dept) => (
+                      <MenuItem key={dept} value={dept}>
+                        {dept}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  {errors.department && (
+                    <FormHelperText>{errors.department}</FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Role */}
+
+              <Box>
+                <Typography
+                  sx={{
+                    mb: 0.7,
+                    ml: 0.3,
+                    color: "#1e293b",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Role *
+                </Typography>
+
+                <FormControl fullWidth error={!!errors.role}>
+                  <Select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    displayEmpty
+                    sx={selectStyles}
+                    renderValue={(selected) =>
+                      !selected ? (
+                        <span
+                          style={{
+                            color: "#94a3b8",
+                          }}
+                        >
+                          Select role
+                        </span>
+                      ) : (
+                        selected
+                      )
+                    }
+                  >
+                    <MenuItem value="employee">Employee</MenuItem>
+
+                    <MenuItem value="hr">HR</MenuItem>
+
+                    <MenuItem value="manager">Manager</MenuItem>
+
+                    <MenuItem value="admin">Admin</MenuItem>
+                  </Select>
+
+                  {errors.role && (
+                    <FormHelperText>{errors.role}</FormHelperText>
+                  )}
+                </FormControl>
+              </Box>
+
+              {/* Password */}
+
+              <Box>
+                <Typography
+                  sx={{
+                    mb: 0.7,
+                    ml: 0.3,
+                    color: "#1e293b",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Password *
+                </Typography>
+
+                <TextField
+                  fullWidth
+                  placeholder="Min. 6 characters"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  error={!!errors.password}
+                  helperText={errors.password}
+                  sx={inputStyles}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockOutlinedIcon
+                          sx={{
+                            color: "#64748b",
+                            fontSize: 20,
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
+
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                          sx={{
+                            color: "#64748b",
+
+                            "&:hover": {
+                              color: "#2563eb",
+                              background: "#eff6ff",
+                            },
+                          }}
+                        >
+                          {showPassword ? (
+                            <VisibilityOffOutlinedIcon fontSize="small" />
+                          ) : (
+                            <VisibilityOutlinedIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+
+              {/* Confirm Password */}
+
+              <Box>
+                <Typography
+                  sx={{
+                    mb: 0.7,
+                    ml: 0.3,
+                    color: "#1e293b",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Confirm Password *
+                </Typography>
+
+                <TextField
+                  fullWidth
+                  placeholder="Confirm password"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  error={!!errors.confirmPassword}
+                  helperText={errors.confirmPassword}
+                  sx={inputStyles}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockOutlinedIcon
+                          sx={{
+                            color: "#64748b",
+                            fontSize: 20,
+                          }}
+                        />
+                      </InputAdornment>
+                    ),
+
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          edge="end"
+                          sx={{
+                            color: "#64748b",
+
+                            "&:hover": {
+                              color: "#2563eb",
+                              background: "#eff6ff",
+                            },
+                          }}
+                        >
+                          {showConfirmPassword ? (
+                            <VisibilityOffOutlinedIcon fontSize="small" />
+                          ) : (
+                            <VisibilityOutlinedIcon fontSize="small" />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
+            </Box>
+
+            {/* =================================================
+                SIGN UP BUTTON
+            ================================================= */}
+
+            <Button
+              fullWidth
+              type="submit"
+              disabled={loading}
+              endIcon={!loading && <ArrowForwardIcon />}
+              sx={{
+                height: "54px",
+                mt: 2.5,
+
+                borderRadius: "10px",
+
+                background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)",
+
+                color: "#ffffff",
+
+                fontSize: "15px",
+                fontWeight: 600,
+
+                textTransform: "none",
+
+                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.20)",
+
+                transition: "all 0.2s ease",
+
+                "&:hover": {
+                  background:
+                    "linear-gradient(90deg, #4338ca 0%, #1d4ed8 100%)",
+
+                  boxShadow: "0 10px 25px rgba(37, 99, 235, 0.28)",
+
+                  transform: "translateY(-1px)",
+                },
+
+                "&.Mui-disabled": {
+                  color: "#ffffff",
+                  background: "#94a3b8",
+                },
+              }}
+            >
+              {loading ? (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    color: "#ffffff",
+                  }}
+                />
+              ) : (
+                "Create Account"
               )}
-            </FormControl>
-          </Box>
+            </Button>
 
-          {/* Role */}
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
+            {/* =================================================
+                LOGIN LINK
+            ================================================= */}
+
+            <Box
+              sx={{
+                textAlign: "center",
+                mt: 2.5,
+                pb: 1,
+              }}
             >
-              Role *
-            </Typography>
-            <FormControl fullWidth error={!!errors.role}>
-              <Select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                displayEmpty
-                sx={selectStyles}
-                renderValue={(selected) =>
-                  !selected ? (
-                    <span style={{ color: "#9ca3af" }}>Select role</span>
-                  ) : (
-                    selected
-                  )
-                }
+              <Typography
+                sx={{
+                  color: "#64748b",
+                  fontSize: "13px",
+                }}
               >
-                <MenuItem value="employee">Employee</MenuItem>
-                <MenuItem value="hr">HR</MenuItem>
-                <MenuItem value="manager">Manager</MenuItem>
-                <MenuItem value="admin">Admin</MenuItem>
-              </Select>
-              {errors.role && <FormHelperText>{errors.role}</FormHelperText>}
-            </FormControl>
-          </Box>
+                Already have an account?{" "}
+                <Box
+                  component="span"
+                  onClick={() => navigate("/")}
+                  sx={{
+                    color: "#2563eb",
+                    cursor: "pointer",
+                    fontWeight: 600,
 
-          {/* Passwords */}
-          <Box>
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  Sign in
+                </Box>
+              </Typography>
+            </Box>
+
+            {/* =================================================
+                SECURITY
+            ================================================= */}
+
             <Typography
-              variant="body2"
-              sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
-            >
-              Password *
-            </Typography>
-            <TextField
-              fullWidth
-              placeholder="Min. 6 characters"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={handleChange}
-              error={!!errors.password}
-              helperText={errors.password}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockOutlinedIcon sx={{ color: "#d1d5db" }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() => setShowPassword(!showPassword)}
-                      edge="end"
-                      sx={{ color: "#d1d5db" }}
-                    >
-                      {showPassword ? (
-                        <VisibilityOffOutlinedIcon fontSize="small" />
-                      ) : (
-                        <VisibilityOutlinedIcon fontSize="small" />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              sx={{
+                textAlign: "center",
+                color: "#94a3b8",
+                fontSize: "11px",
+                pb: 1,
               }}
-              sx={inputStyles}
-            />
-          </Box>
-
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, color: "#e5e7eb", ml: 0.5 }}
             >
-              Confirm Password *
+              © 2026 HRMS. All rights reserved.
             </Typography>
-            <TextField
-              fullWidth
-              placeholder="Confirm password"
-              name="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LockOutlinedIcon sx={{ color: "#d1d5db" }} />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      edge="end"
-                      sx={{ color: "#d1d5db" }}
-                    >
-                      {showConfirmPassword ? (
-                        <VisibilityOffOutlinedIcon fontSize="small" />
-                      ) : (
-                        <VisibilityOutlinedIcon fontSize="small" />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={inputStyles}
-            />
           </Box>
-        </Box>
-
-        <Button
-          fullWidth
-          type="submit"
-          disabled={loading}
-          endIcon={!loading && <ArrowForwardIcon />}
-          sx={{
-            height: "54px",
-            mt: 2,
-            borderRadius: "14px",
-            background: "linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)",
-            color: "#fff",
-            fontSize: "1.05rem",
-            fontWeight: "600",
-            textTransform: "none",
-            boxShadow: "0 8px 20px rgba(139, 92, 246, 0.3)",
-            "&:hover": {
-              background: "linear-gradient(90deg, #2563eb 0%, #7c3aed 100%)",
-            },
-            flexShrink: 0,
-          }}
-        >
-          {loading ? (
-            <CircularProgress size={28} sx={{ color: "#fff" }} />
-          ) : (
-            "Sign Up"
-          )}
-        </Button>
-
-        <Box textAlign="center" mt={2} mb={1}>
-          <Typography variant="body2" sx={{ color: "#d1d5db" }}>
-            Already have an account?{" "}
-            <span
-              onClick={() => navigate("/")}
-              style={{ color: "#8b5cf6", cursor: "pointer", fontWeight: "600" }}
-            >
-              Sign in
-            </span>
-          </Typography>
         </Box>
       </Box>
-    </AuthLayout>
+    </Box>
   );
 };
 

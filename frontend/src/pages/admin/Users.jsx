@@ -5,7 +5,7 @@ import {
   Card,
   CardContent,
   Chip,
-  Dialog,
+  Drawer,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -20,10 +20,12 @@ import {
   TableRow,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import api from "../../lib/api";
 import PageHeader from "../../components/common/PageHeader";
 
@@ -33,6 +35,7 @@ const Users = () => {
   const [organizations, setOrganizations] = useState([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -60,12 +63,13 @@ const Users = () => {
 
   const openCreate = () => {
     setEditing(null);
+    setError("");
     setForm({
       name: "",
       email: "",
       mobileNo: "",
       password: "",
-      role: roles[0]?._id || "",
+      role: roles.find((item) => item.isActive !== false)?.code || "employee",
       organization: organizations[0]?._id || "",
       status: "active",
     });
@@ -74,12 +78,13 @@ const Users = () => {
 
   const openEdit = (item) => {
     setEditing(item);
+    setError("");
     setForm({
       name: item.name || "",
       email: item.email || "",
       mobileNo: item.mobileNo || "",
       password: "",
-      role: item.role?._id || item.role || "",
+      role: item.role?.code || item.role || "employee",
       organization: item.organization?._id || item.organization || "",
       status: item.status || "active",
     });
@@ -87,17 +92,26 @@ const Users = () => {
   };
 
   const submit = async () => {
-    const payload = { ...form };
-    if (!payload.password) delete payload.password;
-    if (editing?._id) await api.put(`/admin/users/${editing._id}`, payload);
-    else await api.post("/admin/users", payload);
-    await load();
-    setOpen(false);
+    try {
+      const payload = { ...form, isActive: form.status === "active" };
+      delete payload.status;
+      if (!payload.password) delete payload.password;
+      if (editing?._id) await api.put(`/admin/users/${editing._id}`, payload);
+      else await api.post("/admin/users", payload);
+      await load();
+      setOpen(false);
+    } catch (err) {
+      setError(err?.response?.data?.message || "Unable to save user.");
+    }
   };
 
   const remove = async (id) => {
-    await api.delete(`/admin/users/${id}`);
-    await load();
+    try {
+      await api.delete(`/admin/users/${id}`);
+      await load();
+    } catch (err) {
+      setError(err?.response?.data?.message || "Unable to deactivate user.");
+    }
   };
 
   return (
@@ -109,15 +123,18 @@ const Users = () => {
         onAction={openCreate}
         actionIcon={AddRoundedIcon}
       />
-      <Card sx={{ borderRadius: 2 }}>
+      {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>{error}</Alert>}
+
+      <Card>
         <CardContent sx={{ p: 0 }}>
           <Table>
             <TableHead>
               <TableRow
                 sx={{
                   "& th": {
-                    bgcolor: "rgba(185, 202, 243, 0.72)",
-                    borderBottom: "1px solid rgba(148,163,184,.2)",
+                  bgcolor: "background.default",
+                    borderBottom: "1px solid",
+                    borderColor: "divider",
                   },
                 }}
               >
@@ -152,10 +169,10 @@ const Users = () => {
                       sx={{
                         minWidth: 90,
                         fontWeight: 600,
-                        color: "#fff",
-                        backgroundColor: user.isActive ? "#2E7D32" : "#D32F2F",
+                        color: "primary.contrastText",
+                        backgroundColor: user.isActive ? "success.main" : "error.main",
                         "& .MuiChip-label": {
-                          color: "#fff",
+                          color: "primary.contrastText",
                           px: 2,
                         },
                       }}
@@ -188,16 +205,31 @@ const Users = () => {
         </CardContent>
       </Card>
 
-      <Dialog
+      <Drawer
+        anchor="right"
         open={open}
         onClose={() => setOpen(false)}
-        fullWidth
-        maxWidth="md"
+        PaperProps={{
+          sx: {
+            width: { xs: "100%", sm: 460 },
+            maxWidth: "100%",
+            borderLeft: "1px solid",
+            borderColor: "divider",
+          },
+        }}
       >
-        <DialogTitle sx={{ fontWeight: 800 }}>
-          {editing ? "Edit User" : "Add User"}
+        <DialogTitle sx={{ fontWeight: 800, borderBottom: "1px solid", borderColor: "divider", display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+          <Box>
+            {editing ? "Edit User" : "Add User"}
+            <Typography sx={{ mt: 0.5, fontSize: 13, fontWeight: 400, color: "text.secondary" }}>
+              {editing ? "Update the existing user details." : "Create a new user account."}
+            </Typography>
+          </Box>
+          <IconButton onClick={() => setOpen(false)} size="small" aria-label="Close drawer">
+            <CloseRoundedIcon fontSize="small" />
+          </IconButton>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ flex: 1, overflowY: "auto" }}>
           <Grid container spacing={2} sx={{ pt: 1 }}>
             <Grid item xs={12} md={6}>
               <TextField
@@ -250,8 +282,8 @@ const Users = () => {
                   setForm((p) => ({ ...p, role: e.target.value }))
                 }
               >
-                {roles.map((role) => (
-                  <MenuItem key={role._id} value={role._id}>
+                {roles.filter((role) => role.isActive !== false || role.code === form.role).map((role) => (
+                  <MenuItem key={role._id} value={role.code || role._id}>
                     {role.name}
                   </MenuItem>
                 ))}
@@ -293,13 +325,13 @@ const Users = () => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: 3 }}>
+        <DialogActions sx={{ p: 2.5, borderTop: "1px solid", borderColor: "divider" }}>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
           <Button variant="contained" onClick={submit}>
             Save
           </Button>
         </DialogActions>
-      </Dialog>
+      </Drawer>
     </Box>
   );
 };

@@ -122,7 +122,7 @@ const EmployeeDetails = () => {
     <Box
       sx={{
         p: { xs: 2, md: 4 },
-        background: "#0f172a",
+        background: "#f4f8f865",
         minHeight: "100vh",
         color: "#fff",
       }}
@@ -140,7 +140,7 @@ const EmployeeDetails = () => {
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography fontSize={24} fontWeight="bold">
+          <Typography fontSize={24} fontWeight="bold" color="#0f172a">
             Employee Profile
           </Typography>
         </Box>
@@ -183,7 +183,6 @@ const EmployeeDetails = () => {
               bgcolor: "#1e293b",
               border: "1px solid #334155",
               textAlign: "center",
-              
             }}
           >
             <Avatar

@@ -5,15 +5,12 @@ const PageHeader = ({ title, description, actionLabel, onAction, actionIcon: Act
   return (
     <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 2, mb: 3 }}>
       <Box>
-        <Typography variant="h4" sx={{ fontWeight: 800, mb: 0.75, color: "#edededd8" }}>
-          {title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 720, color: "#9ca3af" }}>
+        {description ? <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 720 }}>
           {description}
-        </Typography>
+        </Typography> : null}
       </Box>
       {actionLabel ? (
-        <Button variant="contained" onClick={onAction} startIcon={ActionIcon ? <ActionIcon /> : null} sx={{ borderRadius: 3, px: 2.25, py: 1.2 }}>
+        <Button variant="contained" onClick={onAction} startIcon={ActionIcon ? <ActionIcon /> : null} sx={{ px: 2, py: 0.9 }}>
           {actionLabel}
         </Button>
       ) : null}

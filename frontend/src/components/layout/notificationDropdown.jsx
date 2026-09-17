@@ -20,22 +20,17 @@ import {
   Campaign as AnnouncementIcon,
   Info as SystemIcon,
 } from "@mui/icons-material";
+import api from "../../lib/api";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const token = localStorage.getItem("token");
-  const API_URL = "http://localhost:5000/api/notifications";
-
   // Fetch notifications from Backend
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(API_URL, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const result = await response.json();
+      const { data: result } = await api.get("/notifications");
       if (result.success) {
         setNotifications(result.data);
         setUnreadCount(result.unreadCount);
@@ -46,10 +41,8 @@ const NotificationDropdown = () => {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchNotifications();
-    }
-  }, [token]);
+    fetchNotifications();
+  }, []);
 
   const handleOpen = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -57,10 +50,7 @@ const NotificationDropdown = () => {
   // Mark all as read
   const handleMarkAllRead = async () => {
     try {
-      await fetch(`${API_URL}/mark-read`, {
-        method: "PUT",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.put("/notifications/mark-read");
       // Update UI immediately without waiting for a re-fetch
       setUnreadCount(0);
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
@@ -106,11 +96,11 @@ const NotificationDropdown = () => {
           sx: {
             mt: 1.5,
             width: 380,
-            background: "#1e293b", // Dark theme background
-            color: "#fff",
-            border: "1px solid #334155",
-            borderRadius: "12px",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+            background: "#fff",
+            color: "#172033",
+            border: "1px solid #e5e7ef",
+            borderRadius: "8px",
+            boxShadow: "0 10px 24px rgba(16,24,40,.12)",
           },
         }}
       >
@@ -139,12 +129,12 @@ const NotificationDropdown = () => {
           )}
         </Box>
 
-        <Divider sx={{ borderColor: "#334155" }} />
+        <Divider />
 
         {/* Scrollable List */}
         <List sx={{ p: 0, maxHeight: 400, overflowY: "auto" }}>
           {notifications.length === 0 ? (
-            <Box p={4} textAlign="center" color="#94a3b8">
+            <Box p={4} textAlign="center" color="text.secondary">
               <NotificationsIcon sx={{ fontSize: 40, opacity: 0.2, mb: 1 }} />
               <Typography variant="body2">No notifications yet</Typography>
             </Box>
@@ -156,7 +146,7 @@ const NotificationDropdown = () => {
                     background: notif.isRead
                       ? "transparent"
                       : "rgba(59, 130, 246, 0.08)", // Light blue background for unread
-                    "&:hover": { background: "#334155" },
+                    "&:hover": { background: "#f7f8fc" },
                     cursor: "pointer",
                     py: 1.5,
                   }}
@@ -179,7 +169,7 @@ const NotificationDropdown = () => {
                     primaryTypographyProps={{
                       fontSize: 14,
                       fontWeight: notif.isRead ? "normal" : "bold",
-                      color: "#f8fafc",
+                      color: "#172033",
                     }}
                     secondaryTypographyProps={{
                       fontSize: 12,
@@ -199,7 +189,7 @@ const NotificationDropdown = () => {
                     />
                   )}
                 </ListItem>
-                <Divider sx={{ borderColor: "#334155" }} />
+                <Divider />
               </Box>
             ))
           )}
