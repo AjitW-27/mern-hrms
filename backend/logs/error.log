@@ -33,3 +33,15 @@
 [2026-09-20 09:12:37] ERROR: ❌ Biometric connection failed:
 [2026-09-20 09:27:58] ERROR: ❌ Biometric connection failed:
 [2026-09-20 09:32:51] ERROR: 400 - Employee validation failed: gender: `` is not a valid enum value for path `gender`., workLocation: `` is not a valid enum value for path `workLocation`., bankDetails.accountType: `` is not a valid enum value for path `bankDetails.accountType`. - /api/employees - POST - 127.0.0.1
+[2026-09-20 09:36:51] ERROR: ❌ Biometric connection failed:
+[2026-09-20 09:52:12] ERROR: ❌ Biometric connection failed:
+[2026-09-20 10:07:33] ERROR: ❌ Biometric connection failed:
+[2026-09-20 10:22:54] ERROR: ❌ Biometric connection failed:
+[2026-09-20 10:38:15] ERROR: ❌ Biometric connection failed:
+[2026-09-20 10:53:36] ERROR: ❌ Biometric connection failed:
+[2026-09-20 11:08:57] ERROR: ❌ Biometric connection failed:
+[2026-09-20 11:39:08] ERROR: ❌ Biometric connection failed:
+[2026-09-20 11:54:09] ERROR: 400 - Employee validation failed: mobileNo: Path `mobileNo` is required., workLocation: `` is not a valid enum value for path `workLocation`., bankDetails.accountType: `` is not a valid enum value for path `bankDetails.accountType`. - /api/employees - POST - 127.0.0.1
+[2026-09-20 11:54:29] ERROR: ❌ Biometric connection failed:
+[2026-09-20 12:01:12] ERROR: Email failed to ajitwadikar2050@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-33c3318744dsm9498852eec.20 - gsmtp
