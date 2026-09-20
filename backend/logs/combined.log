@@ -1715,3 +1715,88 @@
 [2026-09-20 12:01:19] INFO: 127.0.0.1 - - [20/Sep/2026:06:31:19 +0000] "GET /api/communication/unread-summary HTTP/1.1" 304 - "http://localhost:5173/dashboard/employees" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
 [2026-09-20 12:01:42] INFO: 127.0.0.1 - - [20/Sep/2026:06:31:42 +0000] "GET /api/projects HTTP/1.1" 304 - "http://localhost:5173/dashboard/projects" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
 [2026-09-20 12:01:42] INFO: 127.0.0.1 - - [20/Sep/2026:06:31:42 +0000] "GET /api/communication/unread-summary HTTP/1.1" 304 - "http://localhost:5173/dashboard/projects" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+[2026-09-20 12:07:53] INFO: Client disconnected: ioLpqOpozQZuTAEWAAAw
+[2026-09-20 12:38:27] INFO: MongoDB Connected ✅
+[2026-09-20 12:38:27] INFO: Server running on http://0.0.0.0:5000 🚀
+[2026-09-20 12:38:27] INFO: LAN API: http://10.28.64.135:5000/api
+[2026-09-20 12:38:48] ERROR: ❌ Biometric connection failed:
+[2026-09-20 12:38:48] INFO: 🔁 Retrying biometric connection in 15 minutes...
+[2026-09-20 12:39:22] INFO: Frontend connected: aE6M7ic5uC4ZBkTBAAAB
+[2026-09-20 12:40:07] INFO: Client disconnected: aE6M7ic5uC4ZBkTBAAAB
+[2026-09-20 12:40:22] INFO: Frontend connected: O93gVLGOwduc4DN-AAAD
+[2026-09-20 12:41:07] INFO: Client disconnected: O93gVLGOwduc4DN-AAAD
+[2026-09-20 12:41:22] INFO: Frontend connected: YnyaXonyk7BoApcOAAAF
+[2026-09-20 12:42:07] INFO: Client disconnected: YnyaXonyk7BoApcOAAAF
+[2026-09-20 12:42:22] INFO: Frontend connected: 8bftFvmz9z7lxSrDAAAH
+[2026-09-20 12:43:07] INFO: Client disconnected: 8bftFvmz9z7lxSrDAAAH
+[2026-09-20 12:43:22] INFO: Frontend connected: 222808T6WD7w7KHKAAAJ
+[2026-09-20 12:44:07] INFO: Client disconnected: 222808T6WD7w7KHKAAAJ
+[2026-09-20 12:44:23] INFO: Frontend connected: lZsBOPRqxI8DTkvsAAAL
+[2026-09-20 12:45:08] INFO: Client disconnected: lZsBOPRqxI8DTkvsAAAL
+[2026-09-20 12:45:23] INFO: Frontend connected: B0XQpoBSCLOK7I6FAAAN
+[2026-09-20 12:46:08] INFO: Client disconnected: B0XQpoBSCLOK7I6FAAAN
+[2026-09-20 12:46:23] INFO: Frontend connected: UllI1KGbecloJrLUAAAP
+[2026-09-20 12:47:08] INFO: Client disconnected: UllI1KGbecloJrLUAAAP
+[2026-09-20 12:47:23] INFO: Frontend connected: lTnOKELXylXBL3TeAAAR
+[2026-09-20 12:47:37] INFO: MongoDB Connected ✅
+[2026-09-20 12:48:08] INFO: Client disconnected: lTnOKELXylXBL3TeAAAR
+[2026-09-20 12:48:23] INFO: Frontend connected: 71b5oWjR_-z7sS3PAAAT
+[2026-09-20 12:48:31] INFO: MongoDB Connected ✅
+[2026-09-20 12:48:35] INFO: MongoDB Connected ✅
+[2026-09-20 12:48:35] INFO: Server running on http://0.0.0.0:5000 🚀
+[2026-09-20 12:48:35] INFO: LAN API: http://10.28.64.135:5000/api
+[2026-09-20 12:48:39] INFO: MongoDB Connected ✅
+[2026-09-20 12:48:39] INFO: Server running on http://0.0.0.0:5000 🚀
+[2026-09-20 12:48:39] INFO: LAN API: http://10.28.64.135:5000/api
+[2026-09-20 12:49:00] ERROR: ❌ Biometric connection failed:
+[2026-09-20 12:49:00] INFO: 🔁 Retrying biometric connection in 15 minutes...
+[2026-09-20 12:49:23] INFO: Frontend connected: wvYyJKUxvoZJnJV-AAAB
+[2026-09-20 12:50:08] INFO: Client disconnected: wvYyJKUxvoZJnJV-AAAB
+[2026-09-20 12:50:23] INFO: Frontend connected: yZI8N4znEokwjvjYAAAD
+[2026-09-20 12:51:08] INFO: Client disconnected: yZI8N4znEokwjvjYAAAD
+[2026-09-20 12:51:23] INFO: Frontend connected: 4MIq3fEFe9SQhKUhAAAF
+[2026-09-20 12:52:08] INFO: Client disconnected: 4MIq3fEFe9SQhKUhAAAF
+[2026-09-20 12:52:22] INFO: Frontend connected: bcBIiO5SV9bJDIDZAAAH
+[2026-09-20 12:52:25] ERROR: 404 - Route not found - /api?utm_source=chatgpt.com - GET - 127.0.0.1
+[2026-09-20 12:52:25] INFO: 127.0.0.1 - - [20/Sep/2026:07:22:25 +0000] "GET /api?utm_source=chatgpt.com HTTP/1.1" 404 45 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+[2026-09-20 12:52:25] ERROR: 404 - Route not found - /favicon.ico - GET - 127.0.0.1
+[2026-09-20 12:52:25] INFO: 127.0.0.1 - - [20/Sep/2026:07:22:25 +0000] "GET /favicon.ico HTTP/1.1" 404 45 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36"
+[2026-09-20 12:52:41] INFO: Client disconnected: bcBIiO5SV9bJDIDZAAAH
+[2026-09-20 12:52:43] INFO: Frontend connected: DQ1AinugoaugQ_FYAAAJ
+[2026-09-20 12:53:53] INFO: Client disconnected: DQ1AinugoaugQ_FYAAAJ
+[2026-09-20 12:54:23] INFO: Frontend connected: -kMvjX6NzxDb8gNWAAAL
+[2026-09-20 12:55:08] INFO: Client disconnected: -kMvjX6NzxDb8gNWAAAL
+[2026-09-20 12:55:23] INFO: Frontend connected: NG8SLxUoD5p6PnCqAAAN
+[2026-09-20 12:56:08] INFO: Client disconnected: NG8SLxUoD5p6PnCqAAAN
+[2026-09-20 12:56:22] INFO: Frontend connected: 4TvgOiY29t4t8hrRAAAP
+[2026-09-20 12:57:07] INFO: Client disconnected: 4TvgOiY29t4t8hrRAAAP
+[2026-09-20 12:57:22] INFO: Frontend connected: xjHL2a8KRTHCjBsnAAAR
+[2026-09-20 12:58:07] INFO: Client disconnected: xjHL2a8KRTHCjBsnAAAR
+[2026-09-20 12:58:23] INFO: Frontend connected: JIkhALRsceHZTxESAAAT
+[2026-09-20 12:59:08] INFO: Client disconnected: JIkhALRsceHZTxESAAAT
+[2026-09-20 12:59:23] INFO: Frontend connected: FfXgz0YRa3EKsydrAAAV
+[2026-09-20 13:00:08] INFO: Client disconnected: FfXgz0YRa3EKsydrAAAV
+[2026-09-20 13:00:23] INFO: Frontend connected: 5WOJge88HZ_xlmYfAAAX
+[2026-09-20 13:01:08] INFO: Client disconnected: 5WOJge88HZ_xlmYfAAAX
+[2026-09-20 13:01:23] INFO: Frontend connected: gg0Uwko5PpSlBEyrAAAZ
+[2026-09-20 13:02:08] INFO: Client disconnected: gg0Uwko5PpSlBEyrAAAZ
+[2026-09-20 13:02:22] INFO: Frontend connected: DzoM3SHwbRAoSK1xAAAb
+[2026-09-20 13:03:07] INFO: Client disconnected: DzoM3SHwbRAoSK1xAAAb
+[2026-09-20 13:03:22] INFO: Frontend connected: DzkG50SbcNi4pkpNAAAd
+[2026-09-20 13:04:07] INFO: Client disconnected: DzkG50SbcNi4pkpNAAAd
+[2026-09-20 13:04:21] ERROR: ❌ Biometric connection failed:
+[2026-09-20 13:04:21] INFO: 🔁 Retrying biometric connection in 15 minutes...
+[2026-09-20 13:04:23] INFO: Frontend connected: 9XFnhipY2ZJxqhdSAAAf
+[2026-09-20 13:05:08] INFO: Client disconnected: 9XFnhipY2ZJxqhdSAAAf
+[2026-09-20 13:05:23] INFO: Frontend connected: b2hVXfBxpNUd2KwIAAAh
+[2026-09-20 13:06:08] INFO: Client disconnected: b2hVXfBxpNUd2KwIAAAh
+[2026-09-20 13:06:23] INFO: Frontend connected: tMBGk7gKnraTPKBYAAAj
+[2026-09-20 13:07:08] INFO: Client disconnected: tMBGk7gKnraTPKBYAAAj
+[2026-09-20 13:07:23] INFO: Frontend connected: Z8xenyQ2UffvaXo1AAAl
+[2026-09-20 13:07:42] ERROR: 500 - CORS blocked for origin: https://mern-hrms-git-main-ajits-projects-4ecab577.vercel.app - /api/auth/login - OPTIONS - 127.0.0.1
+[2026-09-20 13:07:46] ERROR: 500 - CORS blocked for origin: https://mern-hrms-git-main-ajits-projects-4ecab577.vercel.app - /api/auth/login - OPTIONS - 127.0.0.1
+[2026-09-20 13:08:08] INFO: Client disconnected: Z8xenyQ2UffvaXo1AAAl
+[2026-09-20 13:08:23] INFO: Frontend connected: 7F_cALh874ZZ7GkyAAAn
+[2026-09-20 13:09:08] INFO: Client disconnected: 7F_cALh874ZZ7GkyAAAn
+[2026-09-20 13:09:23] INFO: Frontend connected: IbD23Zn-9_KimqZFAAAp
+[2026-09-20 13:09:27] INFO: Client disconnected: IbD23Zn-9_KimqZFAAAp

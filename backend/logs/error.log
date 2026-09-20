@@ -45,3 +45,10 @@
 [2026-09-20 11:54:29] ERROR: ❌ Biometric connection failed:
 [2026-09-20 12:01:12] ERROR: Email failed to ajitwadikar2050@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
 535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-33c3318744dsm9498852eec.20 - gsmtp
+[2026-09-20 12:38:48] ERROR: ❌ Biometric connection failed:
+[2026-09-20 12:49:00] ERROR: ❌ Biometric connection failed:
+[2026-09-20 12:52:25] ERROR: 404 - Route not found - /api?utm_source=chatgpt.com - GET - 127.0.0.1
+[2026-09-20 12:52:25] ERROR: 404 - Route not found - /favicon.ico - GET - 127.0.0.1
+[2026-09-20 13:04:21] ERROR: ❌ Biometric connection failed:
+[2026-09-20 13:07:42] ERROR: 500 - CORS blocked for origin: https://mern-hrms-git-main-ajits-projects-4ecab577.vercel.app - /api/auth/login - OPTIONS - 127.0.0.1
+[2026-09-20 13:07:46] ERROR: 500 - CORS blocked for origin: https://mern-hrms-git-main-ajits-projects-4ecab577.vercel.app - /api/auth/login - OPTIONS - 127.0.0.1
