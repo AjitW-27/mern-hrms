@@ -23,7 +23,7 @@ const OPERATORS = [
 const getType = (column) => {
   if (column?.filterType) return column.filterType;
   if (column?.type === "date") return "date";
-  if (column?.type === "number" || column?.type === "money" || column?.type === "progress") return "number";
+  if (["number", "money", "progress"].includes(column?.type)) return "number";
   return "text";
 };
 
@@ -44,7 +44,12 @@ const TableFilter = ({ columns = [], value, onApply, onClear }) => {
     [columns, field],
   );
   const inputType = getType(selectedColumn);
-  const active = Boolean(value?.field && value?.value !== "" && value?.value !== null && value?.value !== undefined);
+  const active = Boolean(
+    value?.field &&
+    value?.value !== "" &&
+    value?.value !== null &&
+    value?.value !== undefined,
+  );
 
   const apply = () => {
     if (!field || filterValue === "") {
@@ -71,9 +76,9 @@ const TableFilter = ({ columns = [], value, onApply, onClear }) => {
         onClick={(event) => setAnchorEl(event.currentTarget)}
         sx={{
           minHeight: 40,
-          borderRadius: 1,
-          borderColor: active ? "primary.main" : "divider",
-          color: active ? "primary.main" : "text.primary",
+          borderRadius: "4px",
+          borderColor: active ? "#F59E0B" : "divider",
+          color: active ? "#F59E0B" : "text.primary",
           px: 1.5,
           fontWeight: 600,
           whiteSpace: "nowrap",
@@ -90,33 +95,60 @@ const TableFilter = ({ columns = [], value, onApply, onClear }) => {
         transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
           sx: {
-            width: { xs: "calc(100vw - 24px)", sm: 390 },
+            width: { xs: "calc(100vw - 24px)", sm: 720 },
             maxWidth: "calc(100vw - 24px)",
             mt: 1,
             border: "1px solid",
             borderColor: "divider",
-            borderRadius: 1,
-            boxShadow: "0 12px 30px rgba(16,24,40,.12)",
+            borderRadius: "4px",
+            boxShadow:
+              "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
           },
         }}
       >
         <Box sx={{ p: 2 }}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" mb={1.5}>
-            <Typography sx={{ fontSize: 15, fontWeight: 600, color: "text.primary" }}>
-              Filter records
-            </Typography>
-            <IconButton size="small" onClick={() => setAnchorEl(null)} aria-label="Close filter">
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={1.5}
+          >
+            <Box>
+              <Typography
+                sx={{ fontSize: 15, fontWeight: 600, color: "text.primary" }}
+              >
+                Filter records
+              </Typography>
+              <Typography
+                sx={{ fontSize: 11, color: "text.secondary", mt: 0.25 }}
+              >
+                Field → Condition → Value
+              </Typography>
+            </Box>
+            <IconButton
+              size="small"
+              onClick={() => setAnchorEl(null)}
+              aria-label="Close filter"
+            >
               <CloseRoundedIcon fontSize="small" />
             </IconButton>
           </Stack>
           <Divider sx={{ mb: 2 }} />
 
-          <Stack spacing={1.5}>
+          {/* Always forced into 3 side-by-side columns */}
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1.2fr",
+              gap: 1.5,
+              alignItems: "start",
+            }}
+          >
             <TextField
               select
               fullWidth
               size="small"
-              label="Column"
+              label="Field"
               value={field}
               onChange={(event) => {
                 setField(event.target.value);
@@ -134,12 +166,14 @@ const TableFilter = ({ columns = [], value, onApply, onClear }) => {
               select
               fullWidth
               size="small"
-              label="Operator"
+              label="Condition"
               value={operator}
               onChange={(event) => setOperator(event.target.value)}
             >
               {OPERATORS.map((item) => (
-                <MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
               ))}
             </TextField>
 
@@ -151,17 +185,28 @@ const TableFilter = ({ columns = [], value, onApply, onClear }) => {
               value={filterValue}
               onChange={(event) => setFilterValue(event.target.value)}
               placeholder={inputType === "text" ? "Enter a value" : undefined}
-              InputLabelProps={inputType === "date" ? { shrink: true } : undefined}
+              InputLabelProps={
+                inputType === "date" ? { shrink: true } : undefined
+              }
               inputProps={inputType === "number" ? { step: "any" } : undefined}
             />
-          </Stack>
+          </Box>
 
           <Stack direction="row" justifyContent="flex-end" spacing={1} mt={2}>
-            <Button size="small" onClick={clear} sx={{ minHeight: 36, borderRadius: 1, fontWeight: 600 }}>
+            <Button
+              size="small"
+              onClick={clear}
+              sx={{ minHeight: 36, borderRadius: "4px", fontWeight: 600 }}
+            >
               Reset
             </Button>
-            <Button size="small" variant="contained" onClick={apply} sx={{ minHeight: 36, borderRadius: 1, fontWeight: 600 }}>
-              Apply
+            <Button
+              size="small"
+              variant="contained"
+              onClick={apply}
+              sx={{ minHeight: 36, borderRadius: "4px", fontWeight: 600 }}
+            >
+              Apply Filter
             </Button>
           </Stack>
         </Box>

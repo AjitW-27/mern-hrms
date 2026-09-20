@@ -5,9 +5,9 @@ const Logo = ({ open = true }) => {
     <svg width="220" height="70" viewBox="0 0 300 90">
       <defs>
         <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#5aa2ff" />
-          <stop offset="40%" stopColor="#3b82f6" />
-          <stop offset="70%" stopColor="#1e3a8a" />
+          <stop offset="0%" stopColor="#4F46E5" />
+          <stop offset="40%" stopColor="#4F46E5" />
+          <stop offset="70%" stopColor="#312E81" />
         </linearGradient>
       </defs>
 
@@ -33,11 +33,11 @@ const Logo = ({ open = true }) => {
       />
 
       {/* Text */}
-      <text x="95" y="48" fontSize="26" fontWeight="800" fill="#fffdf">
+      <text x="95" y="48" fontSize="26" fontWeight="800" fill="rgba(255,255,255,.87)">
         AJIT
       </text>
 
-      <text x="95" y="70" fontSize="20" fill="#9fb3ff" fontWeight="800" letterSpacing="3">
+      <text x="95" y="70" fontSize="20" fill="#A5AEFB" fontWeight="800" letterSpacing="3">
         WADIKAR
       </text>
     </svg>
@@ -46,8 +46,8 @@ const Logo = ({ open = true }) => {
     <svg width="45" height="45" viewBox="0 0 80 80">
       <defs>
         <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#5aa2ff" />
-          <stop offset="100%" stopColor="#1e3a8a" />
+          <stop offset="0%" stopColor="#4F46E5" />
+          <stop offset="100%" stopColor="#312E81" />
         </linearGradient>
       </defs>
 

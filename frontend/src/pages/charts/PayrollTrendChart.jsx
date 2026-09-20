@@ -21,7 +21,7 @@ import {
 const PayrollTrendChart = ({ data, loading }) => {
   const c = useChartTheme();
   return (
-    <ChartCard minHeight={300}>
+    <ChartCard minHeight={340} tone="violet">
       <Box display="flex" justifyContent="space-between">
         <ChartHeading
           title="Payroll Trend"
@@ -33,7 +33,7 @@ const PayrollTrendChart = ({ data, loading }) => {
             py: 0.5,
             border: "1px solid",
             borderColor: "divider",
-            borderRadius: "8px",
+            borderRadius: "4px",
             color: "text.secondary",
             fontSize: 11,
           }}
@@ -45,7 +45,7 @@ const PayrollTrendChart = ({ data, loading }) => {
         <Skeleton
           variant="rectangular"
           height={200}
-          sx={{ bgcolor: "action.hover", borderRadius: "8px" }}
+          sx={{ bgcolor: "action.hover", borderRadius: "4px" }}
         />
       ) : !data?.length ? (
         <Box

@@ -13,21 +13,22 @@ import {
 import { Add as AddIcon, Business as ClientIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import execReq from "../../lib/execReq";
 
 // Helper functions for UI styling
 const getStatusStyles = (status) => {
   switch (status) {
     case "Completed":
-      return { bg: "#10b98120", color: "#10b981" }; // Green
+      return { bg: "rgba(16,185,129,.12)", color: "#10b981" }; // Green
     case "In Progress":
-      return { bg: "#3b82f620", color: "#3b82f6" }; // Blue
+      return { bg: "rgba(79,70,229,.125)", color: "#4F46E5" }; // Blue
     case "Delayed":
-      return { bg: "#ef444420", color: "#ef4444" }; // Red
+      return { bg: "rgba(239,68,68,.12)", color: "#ef4444" }; // Red
     case "On Hold":
-      return { bg: "#f59e0b20", color: "#f59e0b" }; // Orange
+      return { bg: "rgba(245,158,11,.12)", color: "#f59e0b" }; // Orange
     case "Not Started":
     default:
-      return { bg: "#64748b20", color: "#94a3b8" }; // Gray
+      return { bg: "rgba(100,116,139,.12)", color: "none" }; // Gray
   }
 };
 
@@ -38,7 +39,7 @@ const getPriorityColor = (priority) => {
     case "High":
       return "#f59e0b"; // Orange
     case "Medium":
-      return "#3b82f6"; // Blue
+      return "#4F46E5"; // Blue
     case "Low":
     default:
       return "#10b981"; // Green
@@ -52,12 +53,8 @@ const Project = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/projects", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        const data = await response.json();
+        const response = await execReq("/projects");
+        const data = response.data;
         setProjects(Array.isArray(data) ? data : data.projects || []);
       } catch (error) {
         console.error("Error fetching projects:", error);
@@ -70,31 +67,29 @@ const Project = () => {
   return (
     <Box
       sx={{
-        p: { xs: 2, md: 4 },
-        background: "#0f172a",
+        p: { xs: 1.5, sm: 2, md: 2.5 },
+        background: "#FFFFFF",
         minHeight: "100vh",
-        color: "#fff",
+        color: "#0F172A",
       }}
     >
       <Box
         display="flex"
-        justifyContent="space-between"
+        justifyContent="flex-end"
         alignItems="center"
-        mb={4}
+        mb={2.5}
       >
-        <Typography fontSize={28} fontWeight="bold">
-          Projects Overview
-        </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => navigate("/dashboard/add-project")}
           sx={{
-            background: "#8b5cf6",
+            background: "#0E8F9A",
             textTransform: "none",
-            borderRadius: "8px",
-            fontWeight: "bold",
-            "&:hover": { background: "#7c3aed" },
+            borderRadius: "4px",
+            fontWeight: 700,
+            boxShadow: "none",
+            "&:hover": { background: "#0B7480", boxShadow: "none" },
           }}
         >
           New Project
@@ -111,15 +106,17 @@ const Project = () => {
               <Box
                 sx={{
                   p: 3,
-                  borderRadius: "16px",
-                  background: "#1e293b",
-                  border: "1px solid #334155",
+                  borderRadius: "4px",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2E8F0",
+                  boxShadow:
+                    "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   height: "100%",
                   "&:hover": {
-                    borderColor: "#8b5cf6",
+                    borderColor: "#0E8F9A",
                     transition: "0.3s ease-in-out",
                   },
                 }}
@@ -132,14 +129,14 @@ const Project = () => {
                   mb={2}
                 >
                   <Box>
-                    <Typography fontSize={12} color="#94a3b8" fontWeight="bold">
+                    <Typography fontSize={12} color="#64748B" fontWeight={700}>
                       {project.code || "PRJ-0000"}
                     </Typography>
                     <Typography
-                      fontSize={20}
-                      fontWeight="bold"
+                      fontSize={18}
+                      fontWeight={700}
                       noWrap
-                      sx={{ maxWidth: "200px", color: "#f8fafc" }}
+                      sx={{ maxWidth: "200px", color: "#0F172A" }}
                     >
                       {project.name}
                     </Typography>
@@ -151,7 +148,7 @@ const Project = () => {
                       background: statusStyle.bg,
                       color: statusStyle.color,
                       fontWeight: "bold",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                     }}
                   />
                 </Box>
@@ -167,7 +164,7 @@ const Project = () => {
                     display="flex"
                     alignItems="center"
                     gap={0.5}
-                    color="#94a3b8"
+                    color="#64748B"
                   >
                     <ClientIcon fontSize="small" />
                     <Typography fontSize={13}>
@@ -190,10 +187,10 @@ const Project = () => {
                 {/* Progress Bar */}
                 <Box mb={3}>
                   <Box display="flex" justifyContent="space-between" mb={1}>
-                    <Typography fontSize={13} color="#94a3b8">
+                    <Typography fontSize={13} color="#64748B">
                       Progress
                     </Typography>
-                    <Typography fontSize={13} color="#fff" fontWeight="bold">
+                    <Typography fontSize={13} color="#0F172A" fontWeight={700}>
                       {project.progress || 0}%
                     </Typography>
                   </Box>
@@ -205,17 +202,17 @@ const Project = () => {
                     )}
                     sx={{
                       height: 8,
-                      borderRadius: 5,
-                      backgroundColor: "#0f172a",
+                      borderRadius: "4px",
+                      backgroundColor: "#F1F5F9",
                       "& .MuiLinearProgress-bar": {
                         backgroundColor: statusStyle.color, // Progress bar matches status color
-                        borderRadius: 5,
+                        borderRadius: "4px",
                       },
                     }}
                   />
                 </Box>
 
-                <Divider sx={{ borderColor: "#334155", mb: 2 }} />
+                <Divider sx={{ borderColor: "#E2E8F0", mb: 2 }} />
 
                 {/* Footer: Team & Dates */}
                 <Box
@@ -224,7 +221,7 @@ const Project = () => {
                   alignItems="center"
                 >
                   <Box>
-                    <Typography fontSize={12} color="#64748b">
+                    <Typography fontSize={12} color="#64748B">
                       Deadline
                     </Typography>
                     <Typography
@@ -234,7 +231,7 @@ const Project = () => {
                         dayjs(project.deadline).isBefore(dayjs()) &&
                         project.status !== "Completed"
                           ? "#ef4444"
-                          : "#e2e8f0"
+                          : "#475569"
                       }
                     >
                       {project.deadline
@@ -251,7 +248,7 @@ const Project = () => {
                         width: 30,
                         height: 30,
                         fontSize: 12,
-                        borderColor: "#1e293b",
+                        borderColor: "#FFFFFF",
                       },
                     }}
                   >

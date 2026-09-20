@@ -62,8 +62,8 @@ export const projectConfig = {
     { field: "budget", headerName: "Budget", type: "money" }
   ],
   metrics: [
-    { label: "Total Projects", tone: "#38bdf8", compute: (rows) => rows.length },
-    { label: "In Delivery", tone: "#22c55e", compute: (rows) => rows.filter((row) => /active|progress/i.test(row.status || "")).length },
+    { label: "Total Projects", tone: "#0EA5E9", compute: (rows) => rows.length },
+    { label: "In Delivery", tone: "#10B981", compute: (rows) => rows.filter((row) => /active|progress/i.test(row.status || "")).length },
     { label: "At Risk", tone: "#ef4444", compute: (rows) => rows.filter((row) => /critical|hold|blocked|delayed/i.test(`${row.priority || ""} ${row.status || ""}`)).length }
   ],
   filters: [
@@ -128,8 +128,8 @@ export const payrollConfig = {
     { field: "status", headerName: "Status" }
   ],
   metrics: [
-    { label: "Payroll Records", tone: "#38bdf8", compute: (rows) => rows.length },
-    { label: "Approved / Paid", tone: "#22c55e", compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
+    { label: "Payroll Records", tone: "#0EA5E9", compute: (rows) => rows.length },
+    { label: "Approved / Paid", tone: "#10B981", compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
     { label: "Pending Review", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /pending|draft/i.test(row.status || "")).length }
   ],
   filters: [{ field: "status", label: "Status", options: ["Draft", "Pending", "Approved", "Processed", "Paid"] }],
@@ -205,8 +205,8 @@ export const performanceConfig = {
     { field: "status", headerName: "Status" }
   ],
   metrics: [
-    { label: "Reviews", tone: "#38bdf8", compute: (rows) => rows.length },
-    { label: "Closed", tone: "#22c55e", compute: (rows) => rows.filter((row) => /closed|reviewed/i.test(row.status || "")).length },
+    { label: "Reviews", tone: "#0EA5E9", compute: (rows) => rows.length },
+    { label: "Closed", tone: "#10B981", compute: (rows) => rows.filter((row) => /closed|reviewed/i.test(row.status || "")).length },
     { label: "Pending", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /draft|pending/i.test(row.status || "")).length }
   ],
   filters: [{ field: "status", label: "Status", options: ["Draft", "Pending Review", "Reviewed", "Closed"] }],
@@ -239,8 +239,8 @@ export const goalConfig = {
     { field: "dueDate", headerName: "Due Date", type: "date" }
   ],
   metrics: [
-    { label: "Goals", tone: "#38bdf8", compute: (rows) => rows.length },
-    { label: "Achieved", tone: "#22c55e", compute: (rows) => rows.filter((row) => /achieved|completed/i.test(row.status || "")).length },
+    { label: "Goals", tone: "#0EA5E9", compute: (rows) => rows.length },
+    { label: "Achieved", tone: "#10B981", compute: (rows) => rows.filter((row) => /achieved|completed/i.test(row.status || "")).length },
     { label: "Blocked", tone: "#ef4444", compute: (rows) => rows.filter((row) => /blocked/i.test(row.status || "")).length }
   ],
   filters: [
@@ -277,8 +277,8 @@ export const assetConfig = {
     { field: "status", headerName: "Status" }
   ],
   metrics: [
-    { label: "Total Assets", tone: "#38bdf8", compute: (rows) => rows.length },
-    { label: "Assigned", tone: "#22c55e", compute: (rows) => rows.filter((row) => /assigned/i.test(row.status || "") || row.assignedTo).length },
+    { label: "Total Assets", tone: "#0EA5E9", compute: (rows) => rows.length },
+    { label: "Assigned", tone: "#10B981", compute: (rows) => rows.filter((row) => /assigned/i.test(row.status || "") || row.assignedTo).length },
     { label: "Maintenance", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /maintenance|repair/i.test(row.status || "")).length }
   ],
   filters: [
@@ -316,8 +316,8 @@ export const expenseConfig = {
     { field: "createdAt", headerName: "Submitted", type: "date" }
   ],
   metrics: [
-    { label: "Claims", tone: "#38bdf8", compute: (rows) => rows.length },
-    { label: "Approved", tone: "#22c55e", compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
+    { label: "Claims", tone: "#0EA5E9", compute: (rows) => rows.length },
+    { label: "Approved", tone: "#10B981", compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
     { label: "Pending", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /pending/i.test(row.status || "")).length }
   ],
   filters: [

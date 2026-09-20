@@ -4,20 +4,20 @@ import { Box, Typography, Button } from "@mui/material";
 
 // Data ordered for the Pie Chart rendering
 const chartData = [
-  { name: "Engineering", value: 45, color: "#1a73e8" }, // Blue
+  { name: "Engineering", value: 45, color: "#4F46E5" }, // Blue
   { name: "Marketing", value: 25, color: "#10b981" }, // Green
-  { name: "Sales", value: 20, color: "#f97316" }, // Orange
+  { name: "Sales", value: 20, color: "#F59E0B" }, // Orange
   { name: "HR", value: 20, color: "#0ea5e9" }, // Light Blue
-  { name: "Finance", value: 18, color: "#a855f7" }, // Purple
+  { name: "Finance", value: 18, color: "#8B5CF6" }, // Purple
 ];
 
 // Data ordered specifically for the Legend to match the image exactly
 const legendData = [
-  { name: "Engineering", value: 45, color: "#1a73e8" },
+  { name: "Engineering", value: 45, color: "#4F46E5" },
   { name: "Marketing", value: 25, color: "#10b981" },
   { name: "HR", value: 20, color: "#0ea5e9" },
-  { name: "Finance", value: 18, color: "#a855f7" },
-  { name: "Sales", value: 20, color: "#f97316" },
+  { name: "Finance", value: 18, color: "#8B5CF6" },
+  { name: "Sales", value: 20, color: "#F59E0B" },
 ];
 
 const DepartmentChartWidget = () => {
@@ -25,9 +25,9 @@ const DepartmentChartWidget = () => {
     <Box
       sx={{
         p: 2,
-        borderRadius: "16px",
-        backgroundColor: "#131826", // Dark blue-grey background
-        color: "#fff",
+        borderRadius: "4px",
+        backgroundColor: "#0F172A", // Dark blue-grey background
+        color: "#FFFFFF",
         fontFamily: "sans-serif",
         width: "100%",
         maxWidth: 500,
@@ -38,7 +38,7 @@ const DepartmentChartWidget = () => {
       }}
     >
       <Box>
-        <Typography sx={{ fontSize: "1.1rem", fontWeight: "bold", mr: 4 ,}}>
+        <Typography sx={{ fontSize: "1.1rem", fontWeight: "bold", mr: 4 }}>
           Employees by Department
         </Typography>
 
@@ -60,7 +60,7 @@ const DepartmentChartWidget = () => {
                       dx="0"
                       dy="4"
                       stdDeviation="6"
-                      floodColor="#000"
+                      floodColor="#0F172A"
                       floodOpacity="0.4"
                     />
                   </filter>
@@ -137,7 +137,7 @@ const DepartmentChartWidget = () => {
               >
                 128
               </Typography>
-              <Typography sx={{ fontSize: "0.8rem", color: "#94a3b8" }}>
+              <Typography sx={{ fontSize: "0.8rem", color: "none" }}>
                 Total
               </Typography>
             </Box>
@@ -166,7 +166,7 @@ const DepartmentChartWidget = () => {
                 }}
               />
               <Typography
-                sx={{ fontSize: "0.9rem", color: "#e2e8f0", mr: 0.5 }}
+                sx={{ fontSize: "0.9rem", color: "#E2E8F0", mr: 0.5 }}
               >
                 {item.name}:
               </Typography>
@@ -183,15 +183,15 @@ const DepartmentChartWidget = () => {
         disableElevation
         variant="contained"
         sx={{
-          backgroundColor: "#1e2433",
-          color: "#e2e8f0",
+          backgroundColor: "#0F172A",
+          color: "#E2E8F0",
           textTransform: "none",
           fontWeight: 500,
-          borderRadius: "8px",
+          borderRadius: "4px",
           py: 1,
           mt: 4,
           "&:hover": {
-            backgroundColor: "#2a3143",
+            backgroundColor: "#0F172A",
           },
         }}
       >

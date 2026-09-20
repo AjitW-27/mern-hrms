@@ -516,6 +516,9 @@ const resolveModule = (req) => {
 
     goals: "goals",
 
+    communication: "communication",
+    communications: "communication",
+
     reports: "reports",
 
     audit: "audit",
@@ -697,26 +700,26 @@ const hasPermission = async (
     return true;
   }
 
-  /*
-   * If the role has an explicit permission matrix,
-   * anything not selected is DENIED.
-   */
-  if (
-    Object.keys(configuredPermissions).length > 0
-  ) {
-    return false;
+  // A configured module is authoritative. If the module itself is not
+  // present yet (for example a newly added Announcements/Holidays module),
+  // preserve the built-in permissions for system roles instead of returning
+  // a false 403. Custom roles remain deny-by-default until Access is saved.
+  if (configuredModule) {
+    return configuredModule[action] === true;
   }
 
-  /*
-   * Only use old defaults when no permission matrix
-   * exists at all.
-   */
-  const fallback =
-    getDefaultRolePermissions(normalizedRole);
+  const systemRole = [
+    "superadmin", "super_admin", "admin", "hr", "manager", "employee"
+  ].includes(normalizedRole);
 
-  return Boolean(
-    fallback?.[moduleName]?.[action]
-  );
+  if (systemRole) {
+    const fallback = getDefaultRolePermissions(normalizedRole);
+    return Boolean(fallback?.[moduleName]?.[action]);
+  }
+
+  return Object.keys(configuredPermissions).length === 0
+    ? Boolean(getDefaultRolePermissions(normalizedRole)?.[moduleName]?.[action])
+    : false;
 };
 
 /* =========================

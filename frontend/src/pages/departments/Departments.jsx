@@ -1,7 +1,7 @@
 import React from "react";
-import CrudPage from "../../components/common/CrudPage";
+import ModulePage from "../../components/common/ModulePage";
 import { departmentConfig } from "../../config/moduleConfigs";
 
-const Page = () => <CrudPage config={departmentConfig} />;
+const Page = () => <ModulePage config={departmentConfig} />;
 
 export default Page;

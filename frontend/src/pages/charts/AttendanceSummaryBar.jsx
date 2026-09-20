@@ -20,7 +20,7 @@ const AttendanceSummaryBar = ({ kpis, loading }) => {
     { label: "Late", value: late, color: c.warning },
   ].map((stat) => ({ ...stat, pct: Math.round((stat.value / total) * 100) }));
   return (
-    <ChartCard>
+    <ChartCard tone="teal">
       <ChartHeading
         title="Today's Attendance"
         subtitle={new Date().toLocaleDateString("en-IN", {
@@ -105,11 +105,11 @@ const AttendanceSummaryBar = ({ kpis, loading }) => {
               value={stat.pct}
               sx={{
                 height: 4,
-                borderRadius: "8px",
+                borderRadius: "4px",
                 bgcolor: "action.hover",
                 "& .MuiLinearProgress-bar": {
                   bgcolor: stat.color,
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                 },
               }}
             />

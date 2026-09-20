@@ -8,282 +8,156 @@ import {
   Skeleton,
 } from "@mui/material";
 import {
-  People as PeopleIcon,
-  Business as BusinessIcon,
-  Work as WorkIcon,
-  AccountBalanceWallet as WalletIcon,
-  CheckCircle as CheckIcon,
-  HourglassEmpty as PendingIcon,
-  PersonAdd as PersonAddIcon,
-  Schedule as ScheduleIcon,
+  PeopleOutline,
+  BusinessOutlined,
+  WorkOutline,
+  AccountBalanceWalletOutlined,
+  CheckCircleOutline,
+  HourglassEmptyOutlined,
+  PersonAddOutlined,
+  ScheduleOutlined,
 } from "@mui/icons-material";
 
-const CARD_DEFS = {
+const defs = {
   admin: [
-    {
-      key: "totalEmployees",
-      label: "Total Employees",
-      icon: PeopleIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.16), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "totalDepartments",
-      label: "Departments",
-      icon: BusinessIcon,
-      gradient:
-        "radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.16), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fbff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "activeProjects",
-      label: "Active Projects",
-      icon: WorkIcon,
-      gradient:
-        "radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffb 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "totalPayroll",
-      label: "Monthly Payroll",
-      icon: WalletIcon,
-      gradient:
-        "radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #fffdf7 100%)",
-      format: (v) => `₹${Number(v || 0).toLocaleString("en-IN")}`,
-    },
-    {
-      key: "todayPresent",
-      label: "Present Today",
-      icon: CheckIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffd 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "todayAbsent",
-      label: "Absent Today",
-      icon: ScheduleIcon,
-      gradient:
-        "radial-gradient(circle at 100% 0%, rgba(239, 68, 68, 0.10), transparent 55%), linear-gradient(135deg, #ffffff 0%, #fffafa 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "pendingLeaves",
-      label: "Pending Leaves",
-      icon: PendingIcon,
-      gradient:
-        "radial-gradient(circle at 0% 100%, rgba(245, 158, 11, 0.12), transparent 55%), linear-gradient(135deg, #ffffff 0%, #fffdf7 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "newJoineesThisMonth",
-      label: "New Joinings",
-      icon: PersonAddIcon,
-      gradient:
-        "radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.13), transparent 55%), linear-gradient(135deg, #ffffff 0%, #faf7ff 100%)",
-      format: (v) => v,
-    },
+    ["totalEmployees", "Total Employees", PeopleOutline, "teal"],
+    ["totalDepartments", "Departments", BusinessOutlined, "indigo"],
+    ["activeProjects", "Active Projects", WorkOutline, "green"],
+    [
+      "totalPayroll",
+      "Monthly Payroll",
+      AccountBalanceWalletOutlined,
+      "amber",
+      (v) => `₹${Number(v || 0).toLocaleString("en-IN")}`,
+    ],
+    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
+    ["todayAbsent", "Absent Today", ScheduleOutlined, "rose"],
+    ["pendingLeaves", "Pending Leaves", HourglassEmptyOutlined, "amber"],
+    ["newJoineesThisMonth", "New Joinings", PersonAddOutlined, "indigo"],
   ],
-
   hr: [
-    {
-      key: "totalEmployees",
-      label: "Total Employees",
-      icon: PeopleIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.16), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "totalDepartments",
-      label: "Departments",
-      icon: BusinessIcon,
-      gradient:
-        "radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.16), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fbff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "todayPresent",
-      label: "Present Today",
-      icon: CheckIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffd 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "pendingLeaves",
-      label: "Pending Leaves",
-      icon: PendingIcon,
-      gradient:
-        "radial-gradient(circle at 0% 100%, rgba(245, 158, 11, 0.12), transparent 55%), linear-gradient(135deg, #ffffff 0%, #fffdf7 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "newJoineesThisMonth",
-      label: "New Joinings",
-      icon: PersonAddIcon,
-      gradient:
-        "radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.13), transparent 55%), linear-gradient(135deg, #ffffff 0%, #faf7ff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "activeProjects",
-      label: "Active Projects",
-      icon: WorkIcon,
-      gradient:
-        "radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffb 100%)",
-      format: (v) => v,
-    },
+    ["totalEmployees", "Total Employees", PeopleOutline, "teal"],
+    ["totalDepartments", "Departments", BusinessOutlined, "indigo"],
+    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
+    ["pendingLeaves", "Pending Leaves", HourglassEmptyOutlined, "amber"],
+    ["newJoineesThisMonth", "New Joinings", PersonAddOutlined, "indigo"],
+    ["activeProjects", "Active Projects", WorkOutline, "green"],
   ],
-
   manager: [
-    {
-      key: "totalEmployees",
-      label: "Team Members",
-      icon: PeopleIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.16), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "activeProjects",
-      label: "Active Projects",
-      icon: WorkIcon,
-      gradient:
-        "radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffb 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "todayPresent",
-      label: "Present Today",
-      icon: CheckIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffd 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "pendingLeaves",
-      label: "Pending Leaves",
-      icon: PendingIcon,
-      gradient:
-        "radial-gradient(circle at 0% 100%, rgba(245, 158, 11, 0.12), transparent 55%), linear-gradient(135deg, #ffffff 0%, #fffdf7 100%)",
-      format: (v) => v,
-    },
+    ["totalEmployees", "Team Members", PeopleOutline, "teal"],
+    ["activeProjects", "Active Projects", WorkOutline, "green"],
+    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
+    ["pendingLeaves", "Pending Leaves", HourglassEmptyOutlined, "amber"],
   ],
-
   employee: [
-    {
-      key: "totalEmployees",
-      label: "Total Employees",
-      icon: PeopleIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(139, 92, 246, 0.16), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "totalDepartments",
-      label: "Departments",
-      icon: BusinessIcon,
-      gradient:
-        "radial-gradient(circle at 100% 0%, rgba(56, 189, 248, 0.16), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fbff 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "activeProjects",
-      label: "Active Projects",
-      icon: WorkIcon,
-      gradient:
-        "radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffb 100%)",
-      format: (v) => v,
-    },
-    {
-      key: "todayPresent",
-      label: "Present Today",
-      icon: CheckIcon,
-      gradient:
-        "radial-gradient(circle at 0% 0%, rgba(20, 184, 166, 0.14), transparent 55%), linear-gradient(135deg, #ffffff 0%, #f7fffd 100%)",
-      format: (v) => v,
-    },
+    ["totalEmployees", "Total Employees", PeopleOutline, "teal"],
+    ["totalDepartments", "Departments", BusinessOutlined, "indigo"],
+    ["activeProjects", "Active Projects", WorkOutline, "green"],
+    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
   ],
 };
-
-const KpiCard = ({ label, value, icon: Icon, loading, gradient }) => (
+const gradients = {
+  teal: "linear-gradient(135deg,#F0FBFC,#D5F1F4)",
+  indigo: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
+  green: "linear-gradient(135deg,#F0FDF7,#D1F5E4)",
+  amber: "linear-gradient(135deg,#FFFBEB,#FDEBC0)",
+  rose: "linear-gradient(135deg,#FFF5F6,#FFE0E4)",
+};
+const KpiCard = ({ label, value, Icon, loading, tone, format }) => (
   <Card
     sx={{
-      borderRadius: "8px",
       minHeight: 130,
-      background: gradient || "#ffffff",
-      border: "1px solid",
-      borderColor: "#e5e7eb",
-      boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
-
-      transition: "transform 0.25s ease, box-shadow 0.25s ease",
-
+      borderRadius: 1,
+      background: gradients[tone],
+      border: "1px solid #E2E8F0",
+      boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+      transition: "180ms ease",
       "&:hover": {
-        transform: "translateY(-6px) scale(1.015)",
-        boxShadow: "0 12px 30px rgba(15, 23, 42, 0.10)",
+        transform: "translateY(-2px)",
+        borderColor: "#8DD8DE",
+        boxShadow:
+          "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05), 0 4px 24px -6px rgba(14,143,154,.35)",
       },
     }}
   >
     <CardContent sx={{ p: 2.5 }}>
       {loading ? (
         <>
-          <Skeleton variant="text" width={120} height={20} sx={{ mb: 1 }} />
-          <Skeleton variant="text" width={80} height={40} />
+          <Skeleton variant="text" width={120} height={18} />
+          <Skeleton variant="text" width={70} height={38} />
         </>
       ) : (
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Box>
             <Typography
-              fontSize={14}
-              color="text.secondary"
-              fontWeight={500}
-              mb={1}
+              sx={{
+                fontSize: 12,
+                lineHeight: "16px",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: ".06em",
+                color: "#64748B",
+              }}
             >
               {label}
             </Typography>
-            <Typography variant="h5" fontWeight={600} color="text.primary">
-              {value ?? "—"}
+            <Typography
+              sx={{
+                mt: 0.5,
+                fontSize: 28,
+                lineHeight: "32px",
+                fontWeight: 700,
+                color: "#0F172A",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {format ? format(value) : (value ?? 0)}
             </Typography>
           </Box>
           <Box
             sx={{
-              width: 60,
-              height: 60,
+              width: 42,
+              height: 42,
               borderRadius: 1,
-              background: "primary.light",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              bgcolor: "#FFFFFF",
+              display: "grid",
+              placeItems: "center",
+              color: "#0E8F9A",
             }}
           >
-            <Icon sx={{ color: "primary.main", fontSize: 28 }} />
+            <Icon sx={{ fontSize: 20 }} />
           </Box>
         </Box>
       )}
     </CardContent>
   </Card>
 );
-
-const KpiCards = ({ data, loading, role }) => {
-  const cards = CARD_DEFS[role] || CARD_DEFS.employee;
-
+export default function KpiCards({
+  data = {},
+  loading = false,
+  role = "employee",
+}) {
+  const items = defs[String(role).toLowerCase()] || defs.employee;
   return (
     <Grid container spacing={2}>
-      {cards.map((card) => (
-        <Grid item xs={12} sm={6} md={3} key={card.key}>
+      {items.map(([key, label, Icon, tone, format]) => (
+        <Grid item xs={12} sm={6} md={4} lg={3} key={key}>
           <KpiCard
-            label={card.label}
-            value={loading ? null : card.format(data?.[card.key] ?? 0)}
-            icon={card.icon}
-            gradient={card.gradient}
+            label={label}
+            value={data?.[key]}
+            Icon={Icon}
+            tone={tone}
+            format={format}
             loading={loading}
           />
         </Grid>
       ))}
     </Grid>
   );
-};
-
-export default KpiCards;
+}

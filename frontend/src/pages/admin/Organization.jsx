@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Card, CardContent, Grid, Stack, TextField, Typography } from "@mui/material";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 import PageHeader from "../../components/common/PageHeader";
 
 const Organization = () => {
   const [form, setForm] = useState({ name: "", legalName: "", code: "", industry: "", email: "", phone: "", website: "", address: "", timezone: "Asia/Kolkata" });
 
   useEffect(() => {
-    api.get("/admin/organization").then(({ data }) => data.data && setForm((prev) => ({ ...prev, ...data.data }))).catch(() => {});
+    execReq("/admin/organization").then(({ data }) => data.data && setForm((prev) => ({ ...prev, ...data.data }))).catch(() => {});
   }, []);
 
   const save = async () => {
-    await api.put("/admin/organization", form);
+    await execReq.put("/admin/organization", form);
   };
 
   return (

@@ -5,6 +5,8 @@ const Project = require("../models/projectModel");
 const Attendance = require("../models/attendanceModel");
 const Leave = require("../models/leaveModule");
 const { Announcement, Holiday } = require("../models/otherModel");
+const AuditLog = require("../models/auditLogModel");
+const { Meeting } = require("../models/communicationModel");
 
 // Try to require Payroll (two models exist in project)
 let Payroll;
@@ -23,7 +25,8 @@ exports.getDashboardSummary = async (req, res) => {
         const now = new Date();
         const currentMonth = now.getMonth() + 1;
         const currentYear = now.getFullYear();
-        const userRole = req.user?.role || "employee";
+        const userRole = String(req.userRole || req.user?.role || "employee").toLowerCase();
+        const canViewPayroll = ["superadmin", "super_admin", "admin", "hr"].includes(userRole);
 
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -38,8 +41,7 @@ exports.getDashboardSummary = async (req, res) => {
             todayLate,
             pendingLeaves,
             departmentDist,
-            recentEmployees,
-            recentProjects,
+            recentAuditLogs,
             announcements,
             upcomingHolidays,
             monthlyAttendanceTrend,
@@ -49,12 +51,13 @@ exports.getDashboardSummary = async (req, res) => {
             genderDist,
             employmentTypeDist,
             projectStatusDist,
+            upcomingMeetings,
         ] = await Promise.all([
             Employee.countDocuments({ isActive: true }),
             Department.countDocuments({ isActive: true }),
             Project.countDocuments({ status: "In Progress" }),
 
-            Payroll.aggregate([{ $group: { _id: null, total: { $sum: "$netSalary" } } }]).catch(() => []),
+            canViewPayroll ? Payroll.aggregate([{ $group: { _id: null, total: { $sum: "$netSalary" } } }]).catch(() => []) : Promise.resolve([]),
 
             Attendance.countDocuments({ date: today, status: { $in: ["Present", "Late"] } }),
             Attendance.countDocuments({ date: today, status: "Absent" }),
@@ -68,18 +71,17 @@ exports.getDashboardSummary = async (req, res) => {
                 { $sort: { count: -1 } }
             ]),
 
-            Employee.find({ isActive: true })
+            AuditLog.find({ "metadata.status": { $ne: "failed" } })
                 .sort({ createdAt: -1 })
-                .limit(5)
-                .select("fullName department designation joiningDate avatar employeeId"),
+                .limit(8)
+                .populate("actor", "name")
+                .select("actor action entityType createdAt metadata"),
 
-            Project.find()
-                .sort({ createdAt: -1 })
-                .limit(3)
-                .select("name status progress deadline client"),
-
-            Announcement.find({ isActive: true })
-                .sort({ createdAt: -1 })
+            Announcement.find({ isActive: true, $and: [
+                { $or: [{ publishDate: { $exists: false } }, { publishDate: { $lte: now } }] },
+                { $or: [{ expiryDate: null }, { expiryDate: { $exists: false } }, { expiryDate: { $gte: now } }] }
+            ] })
+                .sort({ publishDate: -1, createdAt: -1 })
                 .limit(5)
                 .populate("postedBy", "name")
                 .catch(() => []),
@@ -107,11 +109,11 @@ exports.getDashboardSummary = async (req, res) => {
             ]).catch(() => []),
 
             // Last 6 months payroll
-            Payroll.aggregate([
+            canViewPayroll ? Payroll.aggregate([
                 { $group: { _id: { month: "$month", year: "$year" }, total: { $sum: "$netSalary" }, count: { $sum: 1 } } },
-                { $sort: { "_id.year": 1, "_id.month": 1 } },
+                { $sort: { "_id.year": -1, "_id.month": -1 } },
                 { $limit: 6 }
-            ]).catch(() => []),
+            ]).catch(() => []) : Promise.resolve([]),
 
             Employee.countDocuments({
                 joiningDate: {
@@ -133,6 +135,12 @@ exports.getDashboardSummary = async (req, res) => {
             Project.aggregate([
                 { $group: { _id: "$status", count: { $sum: 1 } } }
             ]),
+
+            Meeting.find({
+                status: "scheduled",
+                startAt: { $gte: now, $lte: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000) },
+                $or: [{ organizer: req.user._id }, { participants: req.user._id }]
+            }).sort({ startAt: 1 }).limit(6).lean().catch(() => []),
         ]);
 
         // ── Process attendance trend ─────────────────────────────────────────
@@ -151,29 +159,40 @@ exports.getDashboardSummary = async (req, res) => {
         }));
 
         // ── Process payroll trend ────────────────────────────────────────────
-        const payrollTrend = monthlyPayrollTrend.map(item => ({
+        const payrollTrend = monthlyPayrollTrend.reverse().map(item => ({
             month: monthNames[(item._id.month || 1) - 1],
             total: Math.round(item.total || 0),
             count: item.count
         }));
 
         // ── Recent activities ────────────────────────────────────────────────
-        const recentActivities = [
-            ...recentEmployees.map(e => ({
-                type: "employee",
-                content: `${e.fullName} joined ${e.department}`,
-                subContent: e.designation,
-                time: e.createdAt,
-                icon: "user"
-            })),
-            ...recentProjects.map(p => ({
-                type: "project",
-                content: `Project "${p.name}" — ${p.status}`,
-                subContent: p.client || "",
-                time: p.createdAt,
-                icon: "briefcase"
-            }))
-        ].sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 6);
+        const recentActivities = recentAuditLogs.map((entry) => {
+            const source = `${entry.entityType || ""} ${entry.action || ""}`.toLowerCase();
+            const type = source.includes("leave")
+                ? "leave"
+                : source.includes("payroll")
+                    ? "payroll"
+                    : source.includes("project")
+                        ? "project"
+                        : source.includes("announcement")
+                            ? "announcement"
+                            : source.includes("attendance")
+                                ? "attendance"
+                                : "employee";
+
+            return {
+                type,
+                content: entry.action || "System activity recorded",
+                subContent: entry.actor?.name ? `by ${entry.actor.name}` : "System",
+                time: entry.createdAt,
+                icon: "activity"
+            };
+        }).slice(0, 6);
+
+        const activeDepartments = await Department.find({ isActive: true }).select("name").lean();
+        const departmentCounts = new Map(departmentDist.map((item) => [item._id || "Unassigned", item.count]));
+        const departmentDistribution = activeDepartments.map((department) => ({ name: department.name, value: departmentCounts.get(department.name) || 0 }));
+        if (departmentCounts.has("Unassigned")) departmentDistribution.push({ name: "Unassigned", value: departmentCounts.get("Unassigned") });
 
         const attendanceRate = totalEmployees > 0
             ? Math.round((todayPresent / totalEmployees) * 100) : 0;
@@ -193,10 +212,7 @@ exports.getDashboardSummary = async (req, res) => {
                 newJoineesThisMonth,
             },
             charts: {
-                departmentDistribution: departmentDist.map(d => ({
-                    name: d._id || "Unknown",
-                    value: d.count
-                })),
+                departmentDistribution,
                 attendanceTrend,
                 leaveTypeDistribution: leaveTypeDist.map(l => ({
                     name: (l._id || "other").charAt(0).toUpperCase() + (l._id || "other").slice(1),
@@ -231,12 +247,20 @@ exports.getDashboardSummary = async (req, res) => {
                     name: h.name,
                     date: h.date,
                     type: h.type
+                })),
+                upcomingEvents: upcomingMeetings.map(m => ({
+                    _id: m._id,
+                    title: m.title,
+                    startAt: m.startAt,
+                    endAt: m.endAt,
+                    meetingType: m.meetingType,
+                    location: m.location
                 }))
             }
         };
 
         // Role-based data filtering
-        if (userRole === "employee") {
+        if (!canViewPayroll) {
             delete response.kpis.totalPayroll;
             delete response.kpis.pendingLeaves;
             delete response.kpis.todayAbsent;

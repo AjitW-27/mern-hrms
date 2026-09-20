@@ -13,11 +13,6 @@ import {
   IconButton,
   MenuItem,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
   Alert,
@@ -26,8 +21,9 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 import PageHeader from "../../components/common/PageHeader";
+import DataGrid from "../../components/common/DataGrid";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -48,9 +44,9 @@ const Users = () => {
 
   const load = async () => {
     const [u, r, o] = await Promise.all([
-      api.get("/admin/users"),
-      api.get("/admin/roles"),
-      api.get("/admin/organization"),
+      execReq("/admin/users"),
+      execReq("/admin/roles"),
+      execReq("/admin/organization"),
     ]);
     setUsers(u.data.data || []);
     setRoles(r.data.data || []);
@@ -59,6 +55,11 @@ const Users = () => {
 
   useEffect(() => {
     load().catch(() => {});
+    try {
+      const current = JSON.parse(localStorage.getItem("hrms_admin_recent") || "[]");
+      const next = [{ name: "Users", category: "People & Access", path: "/dashboard/admin/users", time: Date.now() }, ...current.filter((item) => item.path !== "/dashboard/admin/users")].slice(0, 4);
+      localStorage.setItem("hrms_admin_recent", JSON.stringify(next));
+    } catch {}
   }, []);
 
   const openCreate = () => {
@@ -96,8 +97,8 @@ const Users = () => {
       const payload = { ...form, isActive: form.status === "active" };
       delete payload.status;
       if (!payload.password) delete payload.password;
-      if (editing?._id) await api.put(`/admin/users/${editing._id}`, payload);
-      else await api.post("/admin/users", payload);
+      if (editing?._id) await execReq.put(`/admin/users/${editing._id}`, payload);
+      else await execReq.post("/admin/users", payload);
       await load();
       setOpen(false);
     } catch (err) {
@@ -107,7 +108,7 @@ const Users = () => {
 
   const remove = async (id) => {
     try {
-      await api.delete(`/admin/users/${id}`);
+      await execReq.delete(`/admin/users/${id}`);
       await load();
     } catch (err) {
       setError(err?.response?.data?.message || "Unable to deactivate user.");
@@ -117,8 +118,8 @@ const Users = () => {
   return (
     <Box>
       <PageHeader
-        title="Admin Users"
-        description="Manage user accounts, organization mapping, and access assignment."
+        title="Users"
+        breadcrumbs={["Administration", "People & Access", "Users"]}
         actionLabel="Add User"
         onAction={openCreate}
         actionIcon={AddRoundedIcon}
@@ -127,81 +128,15 @@ const Users = () => {
 
       <Card>
         <CardContent sx={{ p: 0 }}>
-          <Table>
-            <TableHead>
-              <TableRow
-                sx={{
-                  "& th": {
-                  bgcolor: "background.default",
-                    borderBottom: "1px solid",
-                    borderColor: "divider",
-                  },
-                }}
-              >
-                <TableCell sx={{ fontWeight: 700 }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Mobile</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Department</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Role</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user._id} hover>
-                  <TableCell>{user.name || "-"}</TableCell>
-
-                  <TableCell>{user.email || "-"}</TableCell>
-
-                  <TableCell>{user.mobileNo || "-"}</TableCell>
-
-                  <TableCell>{user.department || "-"}</TableCell>
-
-                  <TableCell sx={{ textTransform: "capitalize" }}>
-                    {user.role?.name || user.role || "-"}
-                  </TableCell>
-
-                  <TableCell>
-                    <Chip
-                      label={user.isActive ? "Active" : "Inactive"}
-                      size="small"
-                      sx={{
-                        minWidth: 90,
-                        fontWeight: 600,
-                        color: "primary.contrastText",
-                        backgroundColor: user.isActive ? "success.main" : "error.main",
-                        "& .MuiChip-label": {
-                          color: "primary.contrastText",
-                          px: 2,
-                        },
-                      }}
-                    />
-                  </TableCell>
-
-                  <TableCell>
-                    <Stack direction="row" spacing={1}>
-                      <IconButton
-                        color="primary"
-                        onClick={() => openEdit(user)}
-                        size="small"
-                      >
-                        <EditRoundedIcon fontSize="small" />
-                      </IconButton>
-
-                      <IconButton
-                        color="error"
-                        onClick={() => remove(user._id)}
-                        size="small"
-                      >
-                        <DeleteRoundedIcon fontSize="small" />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <DataGrid rows={users} columns={[
+            { field: "name", headerName: "Name" }, { field: "email", headerName: "Email" },
+            { field: "mobileNo", headerName: "Mobile" }, { field: "department", headerName: "Department" },
+            { field: "role", headerName: "Role", valueGetter: (user) => user.role?.name || user.role || "-" },
+            { field: "isActive", headerName: "Status", renderCell: (user) => <Chip label={user.isActive ? "Active" : "Inactive"} size="small" color={user.isActive ? "success" : "error"} /> },
+          ]} actions={(user) => <>
+            <IconButton color="primary" onClick={() => openEdit(user)} size="small" aria-label="Edit user"><EditRoundedIcon fontSize="small" /></IconButton>
+            <IconButton color="error" onClick={() => remove(user._id)} size="small" aria-label="Delete user"><DeleteRoundedIcon fontSize="small" /></IconButton>
+          </>} />
         </CardContent>
       </Card>
 

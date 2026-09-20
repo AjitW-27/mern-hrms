@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Box, Avatar, Typography } from "@mui/material";
-import axios from "axios";
+import execReq from "../../lib/execReq";
 import useAuthStore from "../../strore/authStore";
-
 
 const Profile = () => {
   // Select state individually to prevent unnecessary React re-renders
@@ -14,10 +13,9 @@ const Profile = () => {
   useEffect(() => {
     // Rely on the token from Zustand state rather than querying localStorage directly
     if (token && !user) {
-      axios
-        .get("http://localhost:5000/api/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+      execReq("/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
         .then((res) => {
           setAuth({
             user: res.data.user,
@@ -34,12 +32,12 @@ const Profile = () => {
 
   return (
     <Box display="flex" alignItems="center" gap={1}>
-      <Avatar  />
+      <Avatar />
       <Box>
-        <Typography sx={{ color: "#fff", fontSize: 14 }}>
+        <Typography sx={{ color: "#FFFFFF", fontSize: 14 }}>
           {user?.name || "Loading..."}
         </Typography>
-        <Typography sx={{ color: "#9ca3af", fontSize: 12 }}>
+        <Typography sx={{ color: "none", fontSize: 12 }}>
           {user?.role || "User"}
         </Typography>
       </Box>

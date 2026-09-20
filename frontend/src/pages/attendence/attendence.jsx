@@ -26,6 +26,7 @@ import {
 } from "@mui/icons-material";
 
 import { io } from "socket.io-client";
+import execReq, { SOCKET_BASE_URL } from "../../lib/execReq";
 
 const Attendance = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,16 +75,8 @@ const Attendance = () => {
     // 2. Fetch records for the selected date
     const fetchAttendance = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/attendance?date=${filterDate}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          },
-        );
-
-        const result = await response.json();
+        const response = await execReq(`/attendance?date=${encodeURIComponent(filterDate)}`);
+        const result = response.data;
 
         if (result?.success && Array.isArray(result?.data)) {
           setAttendanceRecords(result.data);
@@ -103,7 +96,13 @@ const Attendance = () => {
     fetchAttendance();
 
     // 3. Connect to WebSockets for Live Punches
-    const socket = io("http://localhost:5000");
+    const attendanceToken =
+      localStorage.getItem("hrms_token") ||
+      localStorage.getItem("token") ||
+      sessionStorage.getItem("token");
+    const socket = io(SOCKET_BASE_URL, {
+      auth: { token: attendanceToken },
+    });
 
     socket.on("attendance_updated", (newRecord) => {
       // Only process live update if it matches our currently viewed date
@@ -143,55 +142,55 @@ const Attendance = () => {
       count: stats.present,
       icon: <PresentIcon />,
       color: "#10b981",
-      bg: "#10b98120",
+      bg: "rgba(16,185,129,.12)",
     },
     {
       title: "Absent",
       count: stats.absent,
       icon: <AbsentIcon />,
       color: "#ef4444",
-      bg: "#ef444420",
+      bg: "rgba(239,68,68,.12)",
     },
     {
       title: "Late Check-in",
       count: stats.late,
       icon: <LateIcon />,
       color: "#f59e0b",
-      bg: "#f59e0b20",
+      bg: "rgba(245,158,11,.12)",
     },
   ];
 
   // Enhanced Status Chip based on Backend Enum
   const renderStatusChip = (status) => {
-    let color = "#64748b";
-    let bgColor = "#f1f5f9";
+    let color = "#64748B";
+    let bgColor = "#F1F5F9";
 
     switch (status) {
       case "Present":
         color = "#10b981";
-        bgColor = "#10b98120";
+        bgColor = "rgba(16,185,129,.12)";
         break;
 
       case "Absent":
         color = "#ef4444";
-        bgColor = "#ef444420";
+        bgColor = "rgba(239,68,68,.12)";
         break;
 
       case "Late":
         color = "#f59e0b";
-        bgColor = "#f59e0b20";
+        bgColor = "rgba(245,158,11,.12)";
         break;
 
       case "Half Day":
         color = "#8b5cf6";
-        bgColor = "#8b5cf620";
+        bgColor = "rgba(139,92,246,.12)";
         break;
 
       case "On Leave":
       case "Holiday":
       case "Weekend":
-        color = "#3b82f6";
-        bgColor = "#3b82f620";
+        color = "#4F46E5";
+        bgColor = "rgba(79,70,229,.125)";
         break;
 
       default:
@@ -217,9 +216,9 @@ const Attendance = () => {
     <Box
       sx={{
         p: { xs: 2, md: 3 },
-        background: "#f8fafc",
+        background: "#F8FAFC",
         minHeight: "100vh",
-        color: "#0f172a",
+        color: "#0F172A",
       }}
     >
       {/* Header Section */}
@@ -232,11 +231,11 @@ const Attendance = () => {
         flexWrap="wrap"
       >
         <Box>
-          <Typography fontSize={24} fontWeight={600} color="#0f172a">
+          <Typography fontSize={24} fontWeight={600} color="#0F172A">
             Attendance Overview
           </Typography>
 
-          <Typography fontSize={14} color="#64748b" mt={0.5}>
+          <Typography fontSize={14} color="#64748B" mt={0.5}>
             Monitor daily employee check-ins and working hours
           </Typography>
         </Box>
@@ -246,17 +245,17 @@ const Attendance = () => {
           startIcon={<DownloadIcon />}
           sx={{
             color: "#334155",
-            borderColor: "#e5e7eb",
-            background: "#ffffff",
+            borderColor: "#E2E8F0",
+            background: "#FFFFFF",
             textTransform: "none",
             fontWeight: 600,
-            borderRadius: "8px",
+            borderRadius: "4px",
             height: 42,
             px: 2,
 
             "&:hover": {
-              borderColor: "#cbd5e1",
-              backgroundColor: "#f8fafc",
+              borderColor: "#CBD5E1",
+              backgroundColor: "#F8FAFC",
             },
           }}
         >
@@ -272,25 +271,14 @@ const Attendance = () => {
               sx={{
                 p: 2,
                 minHeight: 130,
-                borderRadius: "8px",
+                borderRadius: "4px",
 
                 // Same soft gradient style as Department
-                background: `
-                  radial-gradient(
-                    circle at 0% 0%,
-                    ${stat.color}18 0%,
-                    transparent 55%
-                  ),
-                  linear-gradient(
-                    135deg,
-                    #ffffff 0%,
-                    #f8fafc 100%
-                  )
-                `,
+                background: "linear-gradient(135deg,#F0FBFC,#D5F1F4)",
 
-                border: "1px solid #e5e7eb",
+                border: "1px solid #E2E8F0",
 
-                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+                boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
 
                 display: "flex",
                 alignItems: "center",
@@ -301,7 +289,7 @@ const Attendance = () => {
                 "&:hover": {
                   transform: "translateY(-6px) scale(1.015)",
 
-                  boxShadow: "0 12px 28px rgba(15, 23, 42, 0.10)",
+                  boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
 
                   borderColor: `${stat.color}55`,
                 },
@@ -313,7 +301,7 @@ const Attendance = () => {
                   width: 50,
                   height: 50,
                   flexShrink: 0,
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                   background: stat.bg,
                   color: stat.color,
                   display: "flex",
@@ -331,12 +319,12 @@ const Attendance = () => {
                   fontSize={24}
                   fontWeight={600}
                   lineHeight={1.2}
-                  color="#0f172a"
+                  color="#0F172A"
                 >
                   {stat.count}
                 </Typography>
 
-                <Typography fontSize={14} color="#64748b" mt={0.5}>
+                <Typography fontSize={14} color="#64748B" mt={0.5}>
                   {stat.title}
                 </Typography>
               </Box>
@@ -367,7 +355,7 @@ const Attendance = () => {
               <InputAdornment position="start">
                 <SearchIcon
                   sx={{
-                    color: "#64748b",
+                    color: "#64748B",
                   }}
                 />
               </InputAdornment>
@@ -375,30 +363,30 @@ const Attendance = () => {
           }}
           sx={{
             flexGrow: 1,
-            background: "#ffffff",
-            borderRadius: "8px",
+            background: "#FFFFFF",
+            borderRadius: "4px",
 
             "& .MuiInputBase-root": {
               height: 44,
-              borderRadius: "8px",
+              borderRadius: "4px",
             },
 
             "& input": {
-              color: "#0f172a",
+              color: "#0F172A",
               fontSize: 14,
             },
 
             "& input::placeholder": {
-              color: "#64748b",
+              color: "#64748B",
               opacity: 1,
             },
 
             "& fieldset": {
-              border: "1px solid #e5e7eb",
+              border: "1px solid #E2E8F0",
             },
 
             "&:hover fieldset": {
-              borderColor: "#cbd5e1",
+              borderColor: "#CBD5E1",
             },
 
             "& .Mui-focused fieldset": {
@@ -416,25 +404,25 @@ const Attendance = () => {
           onChange={(e) => setFilterDate(e.target.value)}
           sx={{
             flexGrow: 1,
-            background: "#ffffff",
-            borderRadius: "8px",
+            background: "#FFFFFF",
+            borderRadius: "4px",
 
             "& .MuiInputBase-root": {
               height: 44,
-              borderRadius: "8px",
+              borderRadius: "4px",
             },
 
             "& input": {
-              color: "#0f172a",
+              color: "#0F172A",
               fontSize: 14,
             },
 
             "& fieldset": {
-              border: "1px solid #e5e7eb",
+              border: "1px solid #E2E8F0",
             },
 
             "&:hover fieldset": {
-              borderColor: "#cbd5e1",
+              borderColor: "#CBD5E1",
             },
 
             "& .Mui-focused fieldset": {
@@ -453,10 +441,10 @@ const Attendance = () => {
       <TableContainer
         component={Paper}
         sx={{
-          background: "#ffffff",
-          borderRadius: "8px",
-          border: "1px solid #e5e7eb",
-          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+          background: "#FFFFFF",
+          borderRadius: "4px",
+          border: "1px solid #E2E8F0",
+          boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
           overflow: "hidden",
         }}
       >
@@ -464,7 +452,7 @@ const Attendance = () => {
           {/* Table Header */}
           <TableHead
             sx={{
-              background: "#f8fafc",
+              background: "#F8FAFC",
             }}
           >
             <TableRow>
@@ -482,7 +470,7 @@ const Attendance = () => {
                     color: "#475569",
                     fontWeight: 600,
                     fontSize: 13,
-                    borderBottom: "1px solid #e5e7eb",
+                    borderBottom: "1px solid #E2E8F0",
                   }}
                 >
                   {head}
@@ -506,7 +494,7 @@ const Attendance = () => {
                   key={row?._id}
                   sx={{
                     "&:hover": {
-                      backgroundColor: "#f8fafc",
+                      backgroundColor: "#F8FAFC",
                     },
 
                     transition: "background-color 0.2s ease",
@@ -515,7 +503,7 @@ const Attendance = () => {
                   {/* Employee */}
                   <TableCell
                     sx={{
-                      borderBottom: "1px solid #e5e7eb",
+                      borderBottom: "1px solid #E2E8F0",
                     }}
                   >
                     <Box display="flex" alignItems="center">
@@ -535,13 +523,13 @@ const Attendance = () => {
                       <Box>
                         <Typography
                           fontWeight={600}
-                          color="#0f172a"
+                          color="#0F172A"
                           fontSize={14}
                         >
                           {row?.employeeId?.fullName || "Unknown"}
                         </Typography>
 
-                        <Typography fontSize={12} color="#64748b">
+                        <Typography fontSize={12} color="#64748B">
                           {row?.employeeId?.designation || "N/A"}
                         </Typography>
                       </Box>
@@ -552,7 +540,7 @@ const Attendance = () => {
                   <TableCell
                     sx={{
                       color: "#334155",
-                      borderBottom: "1px solid #e5e7eb",
+                      borderBottom: "1px solid #E2E8F0",
                       fontSize: 14,
                     }}
                   >
@@ -562,7 +550,7 @@ const Attendance = () => {
                   {/* Status */}
                   <TableCell
                     sx={{
-                      borderBottom: "1px solid #e5e7eb",
+                      borderBottom: "1px solid #E2E8F0",
                     }}
                   >
                     {renderStatusChip(row?.status)}
@@ -572,7 +560,7 @@ const Attendance = () => {
                   <TableCell
                     sx={{
                       color: "#334155",
-                      borderBottom: "1px solid #e5e7eb",
+                      borderBottom: "1px solid #E2E8F0",
                       fontSize: 14,
                     }}
                   >
@@ -583,7 +571,7 @@ const Attendance = () => {
                   <TableCell
                     sx={{
                       color: "#334155",
-                      borderBottom: "1px solid #e5e7eb",
+                      borderBottom: "1px solid #E2E8F0",
                       fontSize: 14,
                     }}
                   >
@@ -593,9 +581,9 @@ const Attendance = () => {
                   {/* Total Hours */}
                   <TableCell
                     sx={{
-                      color: "#0f172a",
+                      color: "#0F172A",
                       fontWeight: 600,
-                      borderBottom: "1px solid #e5e7eb",
+                      borderBottom: "1px solid #E2E8F0",
                       fontSize: 14,
                     }}
                   >
@@ -612,7 +600,7 @@ const Attendance = () => {
                   sx={{
                     textAlign: "center",
                     py: 4,
-                    color: "#64748b",
+                    color: "#64748B",
                     borderBottom: "none",
                     fontSize: 14,
                   }}

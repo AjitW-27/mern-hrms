@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuthStore from "../strore/authStore";
-import api from "../lib/api";
+import execReq from "../lib/execReq";
 
 const routeModule = (pathname) => {
   const parts = pathname.split("/").filter(Boolean);
@@ -100,8 +100,8 @@ const ProtectedRoute = ({ allowedRoles }) => {
     // Refresh auth/RBAC in the background. Cached auth data is used immediately,
     // while the server remains the final security authority.
     Promise.all([
-      api.get("/settings", { signal: controller.signal }),
-      api.get("/auth/profile", { signal: controller.signal }),
+      execReq("/settings", { signal: controller.signal }),
+      execReq("/auth/profile", { signal: controller.signal }),
     ])
       .then(([settingsRes, profileRes]) => {
         if (!mounted) return;

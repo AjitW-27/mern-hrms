@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, Box, Button, Card, CardContent, Grid, TextField, Typography } from "@mui/material";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import PageHeader from "../../components/common/PageHeader";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 import useAuthStore from "../../strore/authStore";
 
 const ProfileSettings = () => {
@@ -15,7 +15,7 @@ const ProfileSettings = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api.get("/auth/profile")
+    execReq("/auth/profile")
       .then(({ data }) => {
         const user = data?.user || storedUser || {};
         setForm({ name: user.name || "", email: user.email || "", mobileNo: user.mobileNo || "" });
@@ -29,7 +29,7 @@ const ProfileSettings = () => {
     setError("");
     setMessage("");
     try {
-      const { data } = await api.put("/auth/profile", { name: form.name, mobileNo: form.mobileNo });
+      const { data } = await execReq.put("/auth/profile", { name: form.name, mobileNo: form.mobileNo });
       const user = { ...storedUser, ...data.user };
       setAuth({ user, token: useAuthStore.getState().token || localStorage.getItem("hrms_token") || localStorage.getItem("token") });
       setMessage("Profile updated successfully.");

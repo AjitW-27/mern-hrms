@@ -20,7 +20,7 @@ import {
   Campaign as AnnouncementIcon,
   Info as SystemIcon,
 } from "@mui/icons-material";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
@@ -30,7 +30,7 @@ const NotificationDropdown = () => {
   // Fetch notifications from Backend
   const fetchNotifications = async () => {
     try {
-      const { data: result } = await api.get("/notifications");
+      const { data: result } = await execReq("/notifications");
       if (result.success) {
         setNotifications(result.data);
         setUnreadCount(result.unreadCount);
@@ -50,7 +50,7 @@ const NotificationDropdown = () => {
   // Mark all as read
   const handleMarkAllRead = async () => {
     try {
-      await api.put("/notifications/mark-read");
+      await execReq.put("/notifications/mark-read");
       // Update UI immediately without waiting for a re-fetch
       setUnreadCount(0);
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
@@ -67,11 +67,11 @@ const NotificationDropdown = () => {
       case "leave":
         return <LeaveIcon sx={{ color: "#f59e0b" }} />; // Orange
       case "task":
-        return <TaskIcon sx={{ color: "#3b82f6" }} />; // Blue
+        return <TaskIcon sx={{ color: "#4F46E5" }} />; // Blue
       case "announcement":
         return <AnnouncementIcon sx={{ color: "#8b5cf6" }} />; // Purple
       default:
-        return <SystemIcon sx={{ color: "#94a3b8" }} />; // Gray
+        return <SystemIcon sx={{ color: "none" }} />; // Gray
     }
   };
 
@@ -79,7 +79,7 @@ const NotificationDropdown = () => {
 
   return (
     <>
-      <IconButton onClick={handleOpen} sx={{ color: "#94a3b8" }}>
+      <IconButton onClick={handleOpen} sx={{ color: "none" }}>
         <Badge badgeContent={unreadCount} color="error">
           <NotificationsIcon />
         </Badge>
@@ -96,11 +96,12 @@ const NotificationDropdown = () => {
           sx: {
             mt: 1.5,
             width: 380,
-            background: "#fff",
-            color: "#172033",
-            border: "1px solid #e5e7ef",
-            borderRadius: "8px",
-            boxShadow: "0 10px 24px rgba(16,24,40,.12)",
+            background: "#FFFFFF",
+            color: "#0F172A",
+            border: "1px solid #E2E8F0",
+            borderRadius: "4px",
+            boxShadow:
+              "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
           },
         }}
       >
@@ -120,7 +121,7 @@ const NotificationDropdown = () => {
               onClick={handleMarkAllRead}
               sx={{
                 textTransform: "none",
-                color: "#3b82f6",
+                color: "#4F46E5",
                 fontWeight: "bold",
               }}
             >
@@ -145,8 +146,8 @@ const NotificationDropdown = () => {
                   sx={{
                     background: notif.isRead
                       ? "transparent"
-                      : "rgba(59, 130, 246, 0.08)", // Light blue background for unread
-                    "&:hover": { background: "#f7f8fc" },
+                      : "rgba(79, 70, 229, 0.08)", // Light blue background for unread
+                    "&:hover": { background: "#F8FAFC" },
                     cursor: "pointer",
                     py: 1.5,
                   }}
@@ -169,11 +170,11 @@ const NotificationDropdown = () => {
                     primaryTypographyProps={{
                       fontSize: 14,
                       fontWeight: notif.isRead ? "normal" : "bold",
-                      color: "#172033",
+                      color: "#0F172A",
                     }}
                     secondaryTypographyProps={{
                       fontSize: 12,
-                      color: "#94a3b8",
+                      color: "none",
                       mt: 0.5,
                     }}
                   />

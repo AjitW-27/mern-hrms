@@ -1,5 +1,7 @@
 const logger = require("../utils/logger");
 
+const BIOMETRIC_RECONNECT_INTERVAL_MS = Number(process.env.BIOMETRIC_RECONNECT_INTERVAL_MS) || 15 * 60 * 1000;
+
 const startBiometricListener = async (io) => {
     const { BIOMETRIC_IP, BIOMETRIC_PORT } = process.env;
 
@@ -22,9 +24,10 @@ const startBiometricListener = async (io) => {
 
     } catch (err) {
         logger.error("❌ Biometric connection failed:", err.message);
-        // Retry after 30s
-        logger.info("🔁 Retrying biometric connection in 30 seconds...");
-        setTimeout(() => startBiometricListener(io), 30000);
+        // Reconnect is intentionally slow to avoid continuously hammering an offline device.
+        // Real-time punch events remain event-driven once a connection is established.
+        logger.info(`🔁 Retrying biometric connection in ${Math.round(BIOMETRIC_RECONNECT_INTERVAL_MS / 60000)} minutes...`);
+        setTimeout(() => startBiometricListener(io), BIOMETRIC_RECONNECT_INTERVAL_MS);
     }
 };
 

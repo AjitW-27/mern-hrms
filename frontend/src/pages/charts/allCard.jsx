@@ -15,8 +15,8 @@ const SmallChart = () => {
           title="Total Employees"
           value="128"
           change="+12%"
-          icon={<PeopleIcon sx={{ color: "#fff", fontSize: 45  }} />}
-          color="linear-gradient(135deg, #7c3aed, #6366f1)"
+          icon={<PeopleIcon sx={{ color: "#FFFFFF", fontSize: 45  }} />}
+          color="#8B5CF6"
         />
       </Grid>
 
@@ -25,8 +25,8 @@ const SmallChart = () => {
           title="Departments"
           value="8"
           change="0%"
-          icon={<BusinessIcon sx={{ color: "#fff", fontSize: 45  }} />}
-          color="linear-gradient(135deg, #3b82f6, #06b6d4)"
+          icon={<BusinessIcon sx={{ color: "#FFFFFF", fontSize: 45  }} />}
+          color="linear-gradient(135deg, #4F46E5, #26A8B3)"
         />
       </Grid>
 
@@ -35,8 +35,8 @@ const SmallChart = () => {
           title="Active Projects"
           value="15"
           change="+8%"
-          icon={<WorkIcon sx={{ color: "#fff", fontSize: 45  }} />}
-          color="linear-gradient(135deg, #10b981, #22c55e)"
+          icon={<WorkIcon sx={{ color: "#FFFFFF", fontSize: 45  }} />}
+          color="#10B981"
         />
       </Grid>
 
@@ -45,8 +45,8 @@ const SmallChart = () => {
           title="Payroll"
           value="₹48,760"
           change="+15%"
-          icon={<AccountBalanceWalletIcon sx={{ color: "#fff", fontSize: 45 }} />}
-          color="linear-gradient(135deg, #f59e0b, #f97316)"
+          icon={<AccountBalanceWalletIcon sx={{ color: "#FFFFFF", fontSize: 45 }} />}
+          color="#F59E0B"
         />
       </Grid>
     </Grid>

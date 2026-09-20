@@ -31,7 +31,7 @@ import {
   WorkHistory,
 } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import execReq from "../../lib/execReq";
 
 const EmployeeDetails = () => {
   const { id } = useParams();
@@ -41,8 +41,8 @@ const EmployeeDetails = () => {
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/employees/${id}`,
+        const res = await execReq(
+          `/employees/${id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -64,7 +64,7 @@ const EmployeeDetails = () => {
       )
     ) {
       try {
-        await axios.delete(`http://localhost:5000/api/employees/${id}`, {
+        await execReq.delete(`/employees/${id}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           data: { exitReason: "HR Deleted" },
         });
@@ -78,7 +78,7 @@ const EmployeeDetails = () => {
 
   if (!employee)
     return (
-      <Typography color="#fff" p={4}>
+      <Typography color="#0F172A" p={4}>
         Loading...
       </Typography>
     );
@@ -88,9 +88,9 @@ const EmployeeDetails = () => {
       <Box
         sx={{
           p: 1.5,
-          borderRadius: 2,
-          bgcolor: "rgba(139, 92, 246, 0.1)",
-          color: "#a78bfa",
+          borderRadius: "4px",
+          bgcolor: "#F8FAFC",
+          color: "#0E8F9A",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -99,10 +99,10 @@ const EmployeeDetails = () => {
         <Icon fontSize="small" />
       </Box>
       <Box>
-        <Typography fontSize={12} color="#94a3b8">
+        <Typography fontSize={12} color="#64748B">
           {label}
         </Typography>
-        <Typography fontSize={15} color="#f8fafc" fontWeight="500">
+        <Typography fontSize={15} color="#0F172A" fontWeight="500">
           {value || "N/A"}
         </Typography>
       </Box>
@@ -111,8 +111,8 @@ const EmployeeDetails = () => {
 
   const SectionTitle = ({ icon: Icon, title }) => (
     <Box display="flex" alignItems="center" gap={1.5} mb={3}>
-      <Icon sx={{ color: "#8b5cf6" }} />
-      <Typography variant="h6" color="#e2e8f0" fontWeight="bold">
+      <Icon sx={{ color: "#0E8F9A" }} />
+      <Typography variant="h6" color="#0F172A" fontWeight="bold">
         {title}
       </Typography>
     </Box>
@@ -122,9 +122,9 @@ const EmployeeDetails = () => {
     <Box
       sx={{
         p: { xs: 2, md: 4 },
-        background: "#f4f8f865",
+        background: "#F8FAFC",
         minHeight: "100vh",
-        color: "#fff",
+        color: "#0F172A",
       }}
     >
       <Box
@@ -135,14 +135,11 @@ const EmployeeDetails = () => {
       >
         <Box display="flex" alignItems="center">
           <IconButton
-            sx={{ color: "#94a3b8", mr: 2 }}
+            sx={{ color: "#64748B", mr: 1.5, borderRadius: "4px" }}
             onClick={() => navigate("/dashboard/employees")}
           >
             <ArrowBackIcon />
           </IconButton>
-          <Typography fontSize={24} fontWeight="bold" color="#0f172a">
-            Employee Profile
-          </Typography>
         </Box>
         <Box display="flex" gap={2}>
           <Button
@@ -150,13 +147,13 @@ const EmployeeDetails = () => {
             startIcon={<EditIcon />}
             onClick={() => navigate(`/dashboard/edit-employee/${id}`)}
             sx={{
-              color: "#38bdf8",
-              borderColor: "#38bdf8",
+              color: "#0EA5E9",
+              borderColor: "#0EA5E9",
               textTransform: "none",
               fontWeight: "bold",
               "&:hover": {
-                borderColor: "#0284c7",
-                bgcolor: "rgba(56, 189, 248, 0.1)",
+                borderColor: "#0EA5E9",
+                bgcolor: "rgba(14, 165, 233, 0.1)",
               },
             }}
           >
@@ -179,9 +176,9 @@ const EmployeeDetails = () => {
           <Paper
             sx={{
               p: 4,
-              borderRadius: 4,
-              bgcolor: "#1e293b",
-              border: "1px solid #334155",
+              borderRadius: "4px",
+              bgcolor: "#FFFFFF",
+              border: "1px solid #E2E8F0",
               textAlign: "center",
             }}
           >
@@ -191,17 +188,17 @@ const EmployeeDetails = () => {
                 height: 110,
                 mx: "auto",
                 mb: 2,
-                bgcolor: "#8b5cf6",
+                bgcolor: "#0E8F9A",
                 fontSize: 45,
-                boxShadow: "0 8px 20px rgba(139, 92, 246, 0.3)",
+                boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
               }}
             >
               {employee.fullName?.[0]}
             </Avatar>
-            <Typography variant="h5" fontWeight="bold" color="#fff">
+            <Typography variant="h5" fontWeight="bold" color="#0F172A">
               {employee.fullName}
             </Typography>
-            <Typography color="#94a3b8" mb={2}>
+            <Typography color="#64748B" mb={2}>
               {employee.designation}
             </Typography>
             <Chip
@@ -217,9 +214,9 @@ const EmployeeDetails = () => {
             <Paper
               sx={{
                 p: 4,
-                borderRadius: 4,
-                bgcolor: "#1e293b",
-                border: "1px solid #334155",
+                borderRadius: "4px",
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
               }}
             >
               <SectionTitle icon={InfoOutlined} title="Detailed Information" />
@@ -429,9 +426,9 @@ const EmployeeDetails = () => {
             <Paper
               sx={{
                 p: 4,
-                borderRadius: 4,
-                bgcolor: "#1e293b",
-                border: "1px solid #334155",
+                borderRadius: "4px",
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
               }}
             >
               <SectionTitle icon={CreditCard} title="Bank Details" />
@@ -484,9 +481,9 @@ const EmployeeDetails = () => {
             <Paper
               sx={{
                 p: 4,
-                borderRadius: 4,
-                bgcolor: "#1e293b",
-                border: "1px solid #334155",
+                borderRadius: "4px",
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
               }}
             >
               <SectionTitle icon={WorkHistory} title="Salary & Leave" />
@@ -582,9 +579,9 @@ const EmployeeDetails = () => {
             <Paper
               sx={{
                 p: 4,
-                borderRadius: 4,
-                bgcolor: "#1e293b",
-                border: "1px solid #334155",
+                borderRadius: "4px",
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
               }}
             >
               <SectionTitle icon={DevicesIcon} title="Assigned Assets" />
@@ -596,10 +593,10 @@ const EmployeeDetails = () => {
                       <Box
                         sx={{
                           p: 2.5,
-                          borderRadius: 3,
+                          borderRadius: "4px",
                           background:
-                            "linear-gradient(145deg, #131826, #0f172a)",
-                          border: "1px solid #334155",
+                            "#0F172A",
+                          border: "1px solid #E2E8F0",
                           position: "relative",
                           overflow: "hidden",
                         }}
@@ -611,14 +608,14 @@ const EmployeeDetails = () => {
                             left: 0,
                             width: "100%",
                             height: "3px",
-                            bgcolor: "#8b5cf6",
+                            bgcolor: "#0E8F9A",
                           }}
                         />
 
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="#fff"
+                          color="#0F172A"
                           mb={1}
                         >
                           {asset.assetName}
@@ -632,11 +629,11 @@ const EmployeeDetails = () => {
                         >
                           <Box display="flex" alignItems="center" gap={1}>
                             <QrCodeIcon
-                              sx={{ fontSize: 16, color: "#94a3b8" }}
+                              sx={{ fontSize: 16, color: "#64748B" }}
                             />
                             <Typography
                               fontSize={13}
-                              color="#94a3b8"
+                              color="#64748B"
                               sx={{ fontFamily: "monospace" }}
                             >
                               Asset ID: {asset.assetId}
@@ -647,11 +644,11 @@ const EmployeeDetails = () => {
                             asset.serialNumber && (
                               <Box display="flex" alignItems="center" gap={1}>
                                 <SerialIcon
-                                  sx={{ fontSize: 16, color: "#94a3b8" }}
+                                  sx={{ fontSize: 16, color: "#64748B" }}
                                 />
                                 <Typography
                                   fontSize={13}
-                                  color="#94a3b8"
+                                  color="#64748B"
                                   sx={{ fontFamily: "monospace" }}
                                 >
                                   S/N: {asset.serialNumber}
@@ -664,72 +661,72 @@ const EmployeeDetails = () => {
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748b"
+                              color="#64748B"
                               textTransform="uppercase"
                             >
                               Category
                             </Typography>
-                            <Typography fontSize={13} color="#e2e8f0">
+                            <Typography fontSize={13} color="#0F172A">
                               {asset.category} ({asset.type})
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748b"
+                              color="#64748B"
                               textTransform="uppercase"
                             >
                               Ownership
                             </Typography>
-                            <Typography fontSize={13} color="#e2e8f0">
+                            <Typography fontSize={13} color="#0F172A">
                               {asset.ownership || "N/A"}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748b"
+                              color="#64748B"
                               textTransform="uppercase"
                             >
                               Brand & Model
                             </Typography>
-                            <Typography fontSize={13} color="#e2e8f0">
+                            <Typography fontSize={13} color="#0F172A">
                               {asset.brand || "N/A"} {asset.model || ""}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748b"
+                              color="#64748B"
                               textTransform="uppercase"
                             >
                               Condition
                             </Typography>
-                            <Typography fontSize={13} color="#e2e8f0">
+                            <Typography fontSize={13} color="#0F172A">
                               {asset.condition}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748b"
+                              color="#64748B"
                               textTransform="uppercase"
                             >
                               Status
                             </Typography>
-                            <Typography fontSize={13} color="#e2e8f0">
+                            <Typography fontSize={13} color="#0F172A">
                               {asset.status || "N/A"}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748b"
+                              color="#64748B"
                               textTransform="uppercase"
                             >
                               Assigned On
                             </Typography>
-                            <Typography fontSize={13} color="#e2e8f0">
+                            <Typography fontSize={13} color="#0F172A">
                               {asset.assignedDate
                                 ? new Date(
                                     asset.assignedDate,
@@ -740,12 +737,12 @@ const EmployeeDetails = () => {
                           <Grid item xs={12}>
                             <Typography
                               fontSize={11}
-                              color="#64748b"
+                              color="#64748B"
                               textTransform="uppercase"
                             >
                               Return Date
                             </Typography>
-                            <Typography fontSize={13} color="#e2e8f0">
+                            <Typography fontSize={13} color="#0F172A">
                               {asset.returnDate
                                 ? new Date(
                                     asset.returnDate,
@@ -759,7 +756,7 @@ const EmployeeDetails = () => {
                   ))}
                 </Grid>
               ) : (
-                <Typography color="#94a3b8">No assets assigned.</Typography>
+                <Typography color="#64748B">No assets assigned.</Typography>
               )}
             </Paper>
           </Box>

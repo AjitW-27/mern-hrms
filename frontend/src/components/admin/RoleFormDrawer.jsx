@@ -10,7 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 
-import PermissionMatrix from "./PermissionMatrix";
+import PermissionMatrix from "./permissionMatrix";
 
 const RoleFormDrawer = ({
   open,

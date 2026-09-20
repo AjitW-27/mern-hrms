@@ -12,21 +12,21 @@ import {
 const Settings = () => {
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#fff",
-      backgroundColor: "#1e293b",
-      borderRadius: "8px",
+      color: "#FFFFFF",
+      backgroundColor: "#1E293B",
+      borderRadius: "4px",
       "& fieldset": { borderColor: "#334155" },
     },
-    "& .MuiInputLabel-root": { color: "#94a3b8" },
+    "& .MuiInputLabel-root": { color: "none" },
   };
 
   return (
     <Box
       sx={{
         p: { xs: 2, md: 4 },
-        background: "#0f172a",
+        background: "#0F172A",
         minHeight: "100vh",
-        color: "#fff",
+        color: "#FFFFFF",
       }}
     >
       <Typography fontSize={24} fontWeight="bold" mb={4}>
@@ -38,10 +38,10 @@ const Settings = () => {
         <Grid item xs={12} md={6}>
           <Box
             sx={{
-              background: "#131826",
+              background: "#0F172A",
               p: 4,
-              borderRadius: "16px",
-              border: "1px solid #1e293b",
+              borderRadius: "4px",
+              border: "1px solid #1E293B",
             }}
           >
             <Typography fontSize={18} fontWeight="bold" mb={3}>
@@ -70,7 +70,7 @@ const Settings = () => {
                   sx={{
                     background: "#8b5cf6",
                     textTransform: "none",
-                    "&:hover": { background: "#7c3aed" },
+                    "&:hover": { background: "#8B5CF6" },
                   }}
                 >
                   Save Profile
@@ -84,10 +84,10 @@ const Settings = () => {
         <Grid item xs={12} md={6}>
           <Box
             sx={{
-              background: "#131826",
+              background: "#0F172A",
               p: 4,
-              borderRadius: "16px",
-              border: "1px solid #1e293b",
+              borderRadius: "4px",
+              border: "1px solid #1E293B",
             }}
           >
             <Typography fontSize={18} fontWeight="bold" mb={3}>
@@ -102,7 +102,7 @@ const Settings = () => {
             >
               <Box>
                 <Typography fontWeight="bold">Email Notifications</Typography>
-                <Typography fontSize={13} color="#94a3b8">
+                <Typography fontSize={13} color="none">
                   Receive alerts for new messages
                 </Typography>
               </Box>
@@ -116,7 +116,7 @@ const Settings = () => {
                 }}
               />
             </Box>
-            <Divider sx={{ borderColor: "#1e293b", my: 2 }} />
+            <Divider sx={{ borderColor: "#1E293B", my: 2 }} />
             <Box
               display="flex"
               justifyContent="space-between"
@@ -124,7 +124,7 @@ const Settings = () => {
             >
               <Box>
                 <Typography fontWeight="bold">Payroll Alerts</Typography>
-                <Typography fontSize={13} color="#94a3b8">
+                <Typography fontSize={13} color="none">
                   Notify employees on payroll run
                 </Typography>
               </Box>

@@ -9,9 +9,9 @@ const asyncHandler = require("../utils/asyncHandler");
 
 // ADD EMPLOYEE
 const addEmployee = asyncHandler(async (req, res) => {
-    const {
+    let {
         fullName, email, mobileNo, designation, role, department,
-        dateOfBirth, gender, joiningDate, employmentType, salary,
+        dateOfBirth, gender, joiningDate, employmentType, employmentStatus, salary,
         bankDetails, address, emergencyContact, biometricId,
         reportsTo, workLocation, shiftTiming,
         assetGiven, assetDetails
@@ -19,6 +19,10 @@ const addEmployee = asyncHandler(async (req, res) => {
 
     const exists = await Employee.findOne({ email });
     if (exists) return res.status(400).json({ success: false, message: "Employee with this email already exists" });
+
+    // Normalize Employment Type string formatting defensively
+    if (employmentType === "Full Time") employmentType = "Full-time";
+    if (employmentType === "Part Time") employmentType = "Part-time";
 
     const normalizedRole = String(role || "employee").trim().toLowerCase().replace(/\s+/g, "_");
     const roleDoc = await Role.findOne({ $or: [{ code: normalizedRole }, { name: normalizedRole }] }).select("code name isActive").lean();
@@ -35,6 +39,7 @@ const addEmployee = asyncHandler(async (req, res) => {
         fullName, email, mobileNo, designation, role: normalizedRole, department,
         dateOfBirth, gender, joiningDate: joiningDate || new Date(),
         employmentType: employmentType || "Full-time",
+        employmentStatus: employmentStatus || "Active",
         salary, bankDetails, address, emergencyContact, biometricId,
         reportsTo: reportsTo || undefined,
         workLocation, shiftTiming,

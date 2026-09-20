@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Box, Grid, Typography, Alert, Fade } from "@mui/material";
 import { NotificationsActive as NotificationsActiveIcon } from "@mui/icons-material";
 import useAuthStore from "../../strore/authStore";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 
 import KpiCards from "../charts/KpiCards";
 import AttendanceTrendChart from "../charts/AttendanceTrendChart";
@@ -14,6 +14,7 @@ import PayrollTrendChart from "../charts/PayrollTrendChart";
 import LeaveDistributionChart from "../charts/LeaveDistributionChart";
 import ProjectStatusChart from "../charts/ProjectStatusChart";
 import AttendanceSummaryBar from "../charts/AttendanceSummaryBar";
+import UpcomingEvents from "../charts/upcomingEvents";
 
 const Dashboard = () => {
   const { token, user } = useAuthStore();
@@ -30,7 +31,7 @@ const Dashboard = () => {
       setLoading(true);
       setError(null);
 
-      const { data: json } = await api.get("/dashboard/summary");
+      const { data: json } = await execReq("/dashboard/summary");
       setData(json);
     } catch (err) {
       setError(err.message);
@@ -42,7 +43,7 @@ const Dashboard = () => {
   // Fetch Latest Notification
   const fetchLatestNotification = useCallback(async () => {
     try {
-      const { data: json } = await api.get("/notifications");
+      const { data: json } = await execReq("/notifications");
 
       if (json.success && json.data.length > 0) {
         // Find the most recent UNREAD notification
@@ -65,14 +66,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchDashboard();
-    fetchLatestNotification(); // Call it when component loads
+    fetchLatestNotification();
 
     const interval = setInterval(fetchDashboard, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [fetchDashboard, fetchLatestNotification]);
 
   const role = user?.role || "employee";
-  const isAdminOrHr = ["admin", "hr"].includes(role);
+  const isAdminOrHr = ["admin", "hr", "superadmin", "super_admin"].includes(String(role).toLowerCase());
 
   const getGreeting = () => {
     const h = new Date().getHours();
@@ -112,7 +113,7 @@ const Dashboard = () => {
                 color: "text.primary",
                 border: "1px solid",
                 borderColor: "primary.main",
-                borderRadius: "8px",
+                borderRadius: "4px",
                 alignItems: "center",
                 py: 1,
                 px: 3,
@@ -148,7 +149,7 @@ const Dashboard = () => {
         )}
       </Box>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={2} alignItems="stretch">
         {/* KPI Cards */}
         <Grid item xs={12}>
           <KpiCards data={data?.kpis} loading={loading} role={role} />
@@ -207,6 +208,10 @@ const Dashboard = () => {
             announcements={data?.feed?.announcements}
             loading={loading}
           />
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={6}>
+          <UpcomingEvents events={data?.feed?.upcomingEvents} loading={loading} />
         </Grid>
 
         {/* Recent Activities */}

@@ -17,13 +17,13 @@ const timeAgo = (date) => {
 const AnnouncementsWidget = ({ announcements, loading }) => {
   const c = useChartTheme();
   return (
-    <ChartCard minHeight={300}>
+    <ChartCard minHeight={340} tone="sky">
       <Box display="flex" alignItems="center" gap={1.5} mb={2}>
         <Box
           sx={{
             width: 42,
             height: 42,
-            borderRadius: "8px",
+            borderRadius: "4px",
             bgcolor: "primary.light",
             display: "grid",
             placeItems: "center",
@@ -37,7 +37,7 @@ const AnnouncementsWidget = ({ announcements, loading }) => {
         <Skeleton
           variant="rectangular"
           height={180}
-          sx={{ bgcolor: "action.hover", borderRadius: "8px" }}
+          sx={{ bgcolor: "action.hover", borderRadius: "4px" }}
         />
       ) : !announcements?.length ? (
         <Box
@@ -61,7 +61,7 @@ const AnnouncementsWidget = ({ announcements, loading }) => {
                 p: 1.5,
                 border: "1px solid",
                 borderColor: "divider",
-                borderRadius: "8px",
+                borderRadius: "4px",
                 bgcolor: "background.paper",
                 "&:hover": { bgcolor: "action.hover" },
               }}
@@ -77,7 +77,7 @@ const AnnouncementsWidget = ({ announcements, loading }) => {
                   size="small"
                   sx={{
                     height: 18,
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                     bgcolor: "primary.light",
                     color: "primary.dark",
                   }}

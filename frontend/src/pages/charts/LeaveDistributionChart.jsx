@@ -21,13 +21,13 @@ const LeaveDistributionChart = ({ data, loading }) => {
   const c = useChartTheme();
   const colors = [c.primary, c.secondary, c.success, c.warning];
   return (
-    <ChartCard>
+    <ChartCard tone="amber">
       <ChartHeading title="Leave Distribution" subtitle="By leave type" />
       {loading ? (
         <Skeleton
           variant="rectangular"
           height={220}
-          sx={{ bgcolor: "action.hover", borderRadius: "8px" }}
+          sx={{ bgcolor: "action.hover", borderRadius: "4px" }}
         />
       ) : !data?.length ? (
         <Box

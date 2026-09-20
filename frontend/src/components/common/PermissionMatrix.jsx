@@ -45,6 +45,9 @@ const moduleLabels = {
   settings: "System Settings",
   reports: "Reports",
   audit: "Audit Logs",
+  communication: "Communication",
+  announcements: "Announcements",
+  holidays: "Holidays",
 };
 
 const PermissionMatrix = ({ value = {}, onChange }) => {
@@ -71,7 +74,7 @@ const PermissionMatrix = ({ value = {}, onChange }) => {
     <Paper
       variant="outlined"
       sx={{
-        borderRadius: 1,
+        borderRadius: "4px",
         overflow: "hidden",
       }}
     >
@@ -188,7 +191,7 @@ const PermissionMatrix = ({ value = {}, onChange }) => {
                           justifyContent: "center",
                           width: 28,
                           height: 28,
-                          borderRadius: 1,
+                          borderRadius: "4px",
                         }}
                       >
                         {allowed ? (

@@ -1,7 +1,7 @@
 import React from "react";
-import CrudPage from "../../components/common/CrudPage";
+import ModulePage from "../../components/common/ModulePage";
 import { performanceConfig } from "../../config/moduleConfigs";
 
-const Page = () => <CrudPage config={performanceConfig} />;
+const Page = () => <ModulePage config={performanceConfig} />;
 
 export default Page;

@@ -17,6 +17,7 @@ import {
   Email as EmailIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import execReq from "../../lib/execReq";
 
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
@@ -25,13 +26,8 @@ const Employee = () => {
 
   const fetchEmployees = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/employees", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      const result = await response.json();
+      const response = await execReq("/employees");
+      const result = response.data;
       if (result.success && Array.isArray(result.data)) {
         setEmployees(result.data);
       } else {
@@ -58,9 +54,9 @@ const Employee = () => {
     <Box
       sx={{
         p: { xs: 1, md: 1 },
-      background: "#f4f8f865",
+        background: "#F4F7FA",
         // minHeight: "100vh",
-        color: "#2d2a2a",
+        color: "#0F172A",
       }}
     >
       {/* Header */}
@@ -84,7 +80,7 @@ const Employee = () => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon sx={{ color: "#94a3b8", fontSize: 20 }} />
+                <SearchIcon sx={{ color: "none", fontSize: 20 }} />
               </InputAdornment>
             ),
           }}
@@ -94,15 +90,15 @@ const Employee = () => {
 
             "& .MuiOutlinedInput-root": {
               height: 44,
-              borderRadius: "8px",
-              background: "#1e293b",
+              borderRadius: "4px",
+              background: "#1E293B",
 
               "& fieldset": {
                 border: "1px solid #334155",
               },
 
               "&:hover fieldset": {
-                borderColor: "#64748b",
+                borderColor: "#64748B",
               },
 
               "&.Mui-focused fieldset": {
@@ -111,12 +107,12 @@ const Employee = () => {
             },
 
             "& input": {
-              color: "#fff",
+              color: "#FFFFFF",
               fontSize: 14,
             },
 
             "& input::placeholder": {
-              color: "#94a3b8",
+              color: "none",
               opacity: 1,
             },
           }}
@@ -131,9 +127,9 @@ const Employee = () => {
           sx={{
             height: 44,
             px: 2.5,
-            borderRadius: "8px",
+            borderRadius: "4px",
             background: "#8b5cf6",
-            color: "#fff",
+            color: "#FFFFFF",
             textTransform: "none",
             fontSize: 14,
             fontWeight: 600,
@@ -141,7 +137,7 @@ const Employee = () => {
             boxShadow: "none",
 
             "&:hover": {
-              background: "#7c3aed",
+              background: "#8B5CF6",
               boxShadow: "none",
             },
           }}
@@ -158,16 +154,18 @@ const Employee = () => {
               onClick={() => navigate(`/dashboard/employee/${emp._id}`)}
               sx={{
                 p: 3,
-                borderRadius: "16px",
-                background: "linear-gradient(145deg, #1e293b, #131826)",
+                borderRadius: "4px",
+                background: "linear-gradient(135deg,#062B31,#0B7480,#4F46E5)",
                 border: "1px solid #334155",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+                boxShadow:
+                  "0 24px 44px -12px rgba(15,23,42,.22), 0 4px 16px -4px rgba(15,23,42,.08)",
                 cursor: "pointer",
                 transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-5px)",
                   borderColor: "#8b5cf6",
-                  boxShadow: "0 15px 35px rgba(139, 92, 246, 0.2)",
+                  boxShadow:
+                    "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
                 },
               }}
             >
@@ -184,10 +182,15 @@ const Employee = () => {
                   {emp.fullName?.[0]}
                 </Avatar>
                 <Box>
-                  <Typography fontWeight="bold" color="#cfdced" fontSize={18} noWrap>
+                  <Typography
+                    fontWeight="bold"
+                    color="#E2E8F0"
+                    fontSize={18}
+                    noWrap
+                  >
                     {emp.fullName}
                   </Typography>
-                  <Typography fontSize={13} color="#94a3b8" noWrap>
+                  <Typography fontSize={13} color="none" noWrap>
                     {emp.designation}
                   </Typography>
                 </Box>
@@ -197,14 +200,14 @@ const Employee = () => {
 
               <Box display="flex" flexDirection="column" gap={1.5}>
                 <Box display="flex" alignItems="center" gap={1}>
-                  <BadgeIcon sx={{ fontSize: 18, color: "#94a3b8" }} />
-                  <Typography fontSize={13} color="#cbd5f5">
+                  <BadgeIcon sx={{ fontSize: 18, color: "none" }} />
+                  <Typography fontSize={13} color="#C7CDFE">
                     {emp.employeeId || "N/A"}
                   </Typography>
                 </Box>
                 <Box display="flex" alignItems="center" gap={1}>
-                  <EmailIcon sx={{ fontSize: 18, color: "#94a3b8" }} />
-                  <Typography fontSize={13} color="#cbd5f5" noWrap>
+                  <EmailIcon sx={{ fontSize: 18, color: "none" }} />
+                  <Typography fontSize={13} color="#C7CDFE" noWrap>
                     {emp.email}
                   </Typography>
                 </Box>
@@ -216,7 +219,7 @@ const Employee = () => {
                   size="small"
                   sx={{
                     bgcolor: "rgba(139, 92, 246, 0.15)",
-                    color: "#c4b5fd",
+                    color: "#C7CDFE",
                     fontWeight: "bold",
                   }}
                 />
@@ -224,8 +227,8 @@ const Employee = () => {
                   label={emp.role}
                   size="small"
                   sx={{
-                    bgcolor: "rgba(56, 189, 248, 0.15)",
-                    color: "#7dd3fc",
+                    bgcolor: "rgba(14, 165, 233, 0.15)",
+                    color: "#55C0C9",
                     textTransform: "capitalize",
                   }}
                 />

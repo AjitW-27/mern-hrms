@@ -1,35 +1,84 @@
 import React, { useState } from "react";
-import { Box, CssBaseline } from "@mui/material";
+import { Box, CssBaseline, useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { Outlet } from "react-router-dom";
-import Sidebar from "./Sidebar";
-import Topbar from "./Topbar";
+import Sidebar from "./sidebar";
+// import Topbar from "./Topbar";
 
-const AppLayout = () => {
-  const [open, setOpen] = useState(true);
+const SIDEBAR_COLLAPSED_WIDTH = 68;
+
+const DashboardLayout = () => {
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
+  const temporaryDrawer = isMobile || !canHover;
 
   return (
     <Box
       sx={{
         display: "flex",
+        backgroundColor: "background.default",
         minHeight: "100vh",
-        bgcolor: "background.default",
+        width: "100%",
+        overflow: "hidden",
       }}
     >
       <CssBaseline />
-      <Sidebar open={open} />
+
+      <SessionManager />
+
+      <Sidebar
+        open={open}
+        variant={temporaryDrawer ? "temporary" : "permanent"}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+      />
+
       <Box
-        sx={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}
+        sx={{
+          flex: 1,
+          minWidth: 0,
+          width: `calc(100% - ${temporaryDrawer ? 0 : SIDEBAR_COLLAPSED_WIDTH}px)`,
+          marginLeft: temporaryDrawer ? 0 : `${SIDEBAR_COLLAPSED_WIDTH}px`,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+        }}
       >
-        <Topbar open={open} setOpen={setOpen} />
+        <Box
+          sx={{
+            position: "relative",
+            zIndex: 1100,
+            width: "100%",
+          }}
+        >
+          <Appbar
+            open={open}
+            setOpen={setOpen}
+            temporaryDrawer={temporaryDrawer}
+          />
+        </Box>
+
         <Box
           component="main"
-          sx={{ flex: 1, p: { xs: 1, md: 1 }, overflow: "auto" }}
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            width: "100%",
+            overflowX: "hidden",
+            overflowY: "auto",
+            boxSizing: "border-box",
+          }}
         >
-          <Outlet />
+          <PageSetup>
+            <Outlet />
+          </PageSetup>
         </Box>
       </Box>
     </Box>
   );
 };
 
-export default AppLayout;
+export default DashboardLayout;

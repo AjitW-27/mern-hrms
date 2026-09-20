@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Button, Card, CardContent, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import PageHeader from "../../components/common/PageHeader";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 
 const reportTypes = [
   { label: "Attendance Report", value: "attendance" },
@@ -19,7 +19,7 @@ const Reports = () => {
     setLoading(true);
     try {
       const endpoint = type === "hr-summary" ? "/enterprise/reports/hr-summary" : `/reports/${type}`;
-      const { data } = await api.get(endpoint);
+      const { data } = await execReq(endpoint);
       setResult(data.data || data);
     } finally {
       setLoading(false);
@@ -29,7 +29,7 @@ const Reports = () => {
   return (
     <Box>
       <PageHeader title="Reports" description="Run attendance, payroll, leave, and HR summary reports from backend endpoints." />
-      <Card sx={{ borderRadius: 4 }}>
+      <Card sx={{ borderRadius: "4px" }}>
         <CardContent sx={{ p: { xs: 2, md: 4 } }}>
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} md={6}>
@@ -48,7 +48,7 @@ const Reports = () => {
             </Grid>
           </Grid>
 
-          <Stack sx={{ mt: 3, p: 2, borderRadius: 3, bgcolor: "rgba(15,23,42,.06)", overflowX: "auto" }}>
+          <Stack sx={{ mt: 3, p: 2, borderRadius: "4px", bgcolor: "rgba(15,23,42,.06)", overflowX: "auto" }}>
             <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 800 }}>
               Result
             </Typography>

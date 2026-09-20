@@ -18,10 +18,15 @@ const announcementSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
+        publishDate: { type: Date, default: Date.now },
+        expiryDate: { type: Date, default: null },
+        priority: { type: String, enum: ["Low", "Normal", "High"], default: "Normal" },
         isActive: { type: Boolean, default: true },
     },
     { timestamps: true }
 );
+
+announcementSchema.index({ isActive: 1, publishDate: -1, expiryDate: 1 });
 
 // PERFORMANCE
 const performanceSchema = new mongoose.Schema(
@@ -88,10 +93,13 @@ const holidaySchema = new mongoose.Schema(
             enum: ["Public", "Optional"],
             default: "Public",
         },
+        description: { type: String, trim: true, default: "" },
         isActive: { type: Boolean, default: true },
     },
     { timestamps: true }
 );
+
+holidaySchema.index({ date: 1, isActive: 1 });
 
 // NOTIFICATION
 const notificationSchema = new mongoose.Schema(

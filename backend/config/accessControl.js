@@ -22,6 +22,9 @@ const MODULES = [
   { key: "settings", label: "System Settings", actions: ["read", "update"] },
   { key: "reports", label: "Reports", actions: ["read", "export"] },
   { key: "audit", label: "Audit Logs", actions: ["read", "export"] }
+  ,{ key: "announcements", label: "Announcements", actions: ACTIONS }
+  ,{ key: "holidays", label: "Holidays", actions: ACTIONS }
+  ,{ key: "communication", label: "Communication", actions: ["create", "read", "update", "manage"] }
 ];
 
 const EMPTY_PERMISSION = { create: false, read: false, update: false, delete: false, approve: false, export: false, manage: false };
@@ -143,7 +146,7 @@ function buildAccess({ full = false, employee = false, manager = false, hr = fal
       return acc;
     }
 
-    if (["users", "roles", "organizations", "notifications", "settings", "reports", "audit"].includes(k)) {
+    if (["users", "roles", "organizations", "notifications", "settings", "reports", "audit", "announcements", "holidays"].includes(k)) {
       acc[k] = accessFor({
         create: full || hr,
         read: true,
@@ -152,6 +155,16 @@ function buildAccess({ full = false, employee = false, manager = false, hr = fal
         approve: full || hr,
         export: full || hr,
         manage: full || hr
+      });
+      return acc;
+    }
+
+    if (k === "communication") {
+      acc[k] = accessFor({
+        create: true,
+        read: true,
+        update: true,
+        manage: true
       });
       return acc;
     }

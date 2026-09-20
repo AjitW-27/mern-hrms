@@ -18,6 +18,7 @@ import {
 } from "@mui/icons-material";
 
 import { useNavigate } from "react-router-dom";
+import execReq from "../../lib/execReq";
 
 const Department = () => {
   const navigate = useNavigate();
@@ -27,13 +28,8 @@ const Department = () => {
   // Fetch departments
   const fetchDepartments = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/departments", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-
-      const data = await response.json();
+      const response = await execReq("/departments");
+      const data = response.data;
 
       setDepartments(Array.isArray(data) ? data : data.data || []);
     } catch (error) {
@@ -49,8 +45,8 @@ const Department = () => {
     <Box
       sx={{
         p: { xs: 2, md: 3 },
-        background: "#f8fafc",
-        color: "#0f172a",
+        background: "#F8FAFC",
+        color: "#0F172A",
         minHeight: "100vh",
       }}
     >
@@ -71,11 +67,11 @@ const Department = () => {
       >
         {/* Title */}
         <Box>
-          <Typography fontSize={20} fontWeight={700} color="#0f172a">
+          <Typography fontSize={20} fontWeight={700} color="#0F172A">
             Departments
           </Typography>
 
-          <Typography fontSize={14} color="#64748b" mt={0.5}>
+          <Typography fontSize={14} color="#64748B" mt={0.5}>
             Manage your organization's departments and teams
           </Typography>
         </Box>
@@ -95,13 +91,13 @@ const Department = () => {
             fontSize: 14,
             fontWeight: 600,
 
-            borderRadius: "8px",
+            borderRadius: "4px",
 
-            boxShadow: "0 4px 12px rgba(139, 92, 246, 0.20)",
+            boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
 
             "&:hover": {
-              background: "#7c3aed",
-              boxShadow: "0 6px 16px rgba(139, 92, 246, 0.25)",
+              background: "#8B5CF6",
+              boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
             },
           }}
         >
@@ -121,29 +117,18 @@ const Department = () => {
                 sx={{
                   p: 3,
 
-                  borderRadius: "8px",
+                  borderRadius: "4px",
 
                   /*
                    * Soft pastel gradient
                    * Department color is used only
                    * as a very light background glow.
                    */
-                  background: `
-                    radial-gradient(
-                      circle at 0% 0%,
-                      ${color}18 0%,
-                      transparent 55%
-                    ),
-                    linear-gradient(
-                      135deg,
-                      #ffffff 0%,
-                      #f8fafc 100%
-                    )
-                  `,
+                  background: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
 
-                  border: "1px solid #e5e7eb",
+                  border: "1px solid #E2E8F0",
 
-                  boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+                  boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
 
                   transition:
                     "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
@@ -151,7 +136,7 @@ const Department = () => {
                   "&:hover": {
                     transform: "translateY(-6px) scale(1.015)",
 
-                    boxShadow: "0 12px 28px rgba(15, 23, 42, 0.10)",
+                    boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
 
                     borderColor: `${color}55`,
                   },
@@ -179,7 +164,7 @@ const Department = () => {
                         width: 40,
                         height: 40,
 
-                        borderRadius: "8px",
+                        borderRadius: "4px",
 
                         background: `${color}15`,
 
@@ -198,7 +183,7 @@ const Department = () => {
                     </Box>
 
                     {/* Department Name */}
-                    <Typography fontSize={18} fontWeight={600} color="#0f172a">
+                    <Typography fontSize={18} fontWeight={600} color="#0F172A">
                       {dept.name}
                     </Typography>
                   </Box>
@@ -207,7 +192,7 @@ const Department = () => {
                   <IconButton
                     size="small"
                     sx={{
-                      color: "#64748b",
+                      color: "#64748B",
 
                       "&:hover": {
                         background: `${color}10`,
@@ -223,7 +208,7 @@ const Department = () => {
                 <Box mb={3}>
                   <Typography
                     fontSize={12}
-                    color="#64748b"
+                    color="#64748B"
                     textTransform="uppercase"
                     fontWeight={600}
                     letterSpacing={0.5}
@@ -240,7 +225,7 @@ const Department = () => {
                 {/* ================= DIVIDER ================= */}
                 <Divider
                   sx={{
-                    borderColor: "#e5e7eb",
+                    borderColor: "#E2E8F0",
                     mb: 2,
                   }}
                 />
@@ -258,13 +243,13 @@ const Department = () => {
                     <Typography
                       fontSize={20}
                       fontWeight={700}
-                      color="#0f172a"
+                      color="#0F172A"
                       lineHeight={1.2}
                     >
                       {dept.count || 0}
                     </Typography>
 
-                    <Typography fontSize={13} color="#64748b">
+                    <Typography fontSize={13} color="#64748B">
                       Employees
                     </Typography>
                   </Box>
@@ -278,10 +263,10 @@ const Department = () => {
                         height: 32,
                         fontSize: 14,
 
-                        borderColor: "#ffffff",
+                        borderColor: "#FFFFFF",
                         borderWidth: 2,
 
-                        background: "#e2e8f0",
+                        background: "#E2E8F0",
                         color: "#475569",
                       },
                     }}
@@ -290,9 +275,9 @@ const Department = () => {
                       <Avatar
                         key={index}
                         sx={{
-                          bgcolor: index === 0 ? color : "#e2e8f0",
+                          bgcolor: index === 0 ? color : "#E2E8F0",
 
-                          color: index === 0 ? "#ffffff" : "#475569",
+                          color: index === 0 ? "#FFFFFF" : "#475569",
 
                           fontWeight: 600,
                         }}
@@ -314,13 +299,13 @@ const Department = () => {
               sx={{
                 textAlign: "center",
                 py: 8,
-                color: "#64748b",
+                color: "#64748B",
               }}
             >
               <FolderIcon
                 sx={{
                   fontSize: 48,
-                  color: "#cbd5e1",
+                  color: "#CBD5E1",
                   mb: 1,
                 }}
               />

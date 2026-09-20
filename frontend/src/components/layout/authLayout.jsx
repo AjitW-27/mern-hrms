@@ -25,8 +25,8 @@ const AuthLayout = ({ children }) => {
           content: '""',
           position: "absolute",
           inset: 0,
-         // background:
-        //    "linear-gradient(to right, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.6) 50%, rgba(15,23,42,0.2) 100%)",
+          // background:
+          //    "linear-gradient(to right, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.6) 50%, rgba(15,23,42,0.2) 100%)",
           zIndex: 1,
         },
       }}
@@ -41,7 +41,7 @@ const AuthLayout = ({ children }) => {
           flexDirection: "column",
           justifyContent: "center",
           px: { md: 8, lg: 12 },
-          color: "#fff",
+          color: "#FFFFFF",
           position: "relative",
           zIndex: 2,
           perspective: "1200px", // Enables 3D Space
@@ -52,13 +52,13 @@ const AuthLayout = ({ children }) => {
           sx={{
             transform: "rotateY(35deg) rotateX(2deg)",
             transformStyle: "preserve-3d",
-            mt: 9, 
+            mt: 9,
             // mr:15,
-            ml:2
+            ml: 2,
           }}
         >
           <Box display="flex" alignItems="center" mb={6}>
-            {/* <BusinessIcon sx={{ fontSize: 40, mr: 1, color: "#d1d5db" }} /> */}
+            {/* <BusinessIcon sx={{ fontSize: 40, mr: 1, color: "#CBD5E1" }} /> */}
             {/* <Box>
               <Typography
                 variant="h5"
@@ -69,7 +69,7 @@ const AuthLayout = ({ children }) => {
               </Typography>
               <Typography
                 variant="caption"
-                sx={{ color: "#9ca3af", letterSpacing: 1 }}
+                sx={{ color: "none", letterSpacing: 1 }}
               >
                 HUMAN RESOURCE MANAGEMENT SYSTEM
               </Typography>
@@ -84,7 +84,7 @@ const AuthLayout = ({ children }) => {
           >
             Empowering People,
             <br />
-            Building <span style={{ color: "#a78bfa" }}>Better Workplaces</span>
+            Building <span style={{ color: "#8B5CF6" }}>Better Workplaces</span>
           </Typography>
 
           <Typography
@@ -97,7 +97,7 @@ const AuthLayout = ({ children }) => {
 
           <Stack direction="row" spacing={5} mb={8}>
             <Stack alignItems="center" spacing={1}>
-              <GroupsOutlinedIcon sx={{ color: "#a78bfa", fontSize: 32 }} />
+              <GroupsOutlinedIcon sx={{ color: "#8B5CF6", fontSize: 32 }} />
               <Typography
                 variant="body2"
                 textAlign="center"
@@ -109,7 +109,7 @@ const AuthLayout = ({ children }) => {
               </Typography>
             </Stack>
             <Stack alignItems="center" spacing={1}>
-              <CalendarTodayIcon sx={{ color: "#a78bfa", fontSize: 28 }} />
+              <CalendarTodayIcon sx={{ color: "#8B5CF6", fontSize: 28 }} />
               <Typography
                 variant="body2"
                 textAlign="center"
@@ -122,7 +122,7 @@ const AuthLayout = ({ children }) => {
             </Stack>
             <Stack alignItems="center" spacing={1}>
               <VerifiedUserOutlinedIcon
-                sx={{ color: "#a78bfa", fontSize: 32 }}
+                sx={{ color: "#8B5CF6", fontSize: 32 }}
               />
               <Typography
                 variant="body2"
@@ -138,7 +138,7 @@ const AuthLayout = ({ children }) => {
           <Box sx={{ borderLeft: "3px solid #818cf8", pl: 2, maxWidth: 350 }}>
             <Typography
               variant="body2"
-              sx={{ fontStyle: "italic", opacity: 0.9,mt:-2 }}
+              sx={{ fontStyle: "italic", opacity: 0.9, mt: -2 }}
             >
               "Great companies are built by amazing teams."
             </Typography>

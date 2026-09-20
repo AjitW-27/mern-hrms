@@ -32,7 +32,7 @@ const AttendanceTrendChart = ({ data, loading }) => {
     { key: "Late", color: c.warning },
   ];
   return (
-    <ChartCard>
+    <ChartCard tone="blue">
       <Box
         display="flex"
         justifyContent="space-between"
@@ -48,7 +48,7 @@ const AttendanceTrendChart = ({ data, loading }) => {
             py: 0.5,
             border: "1px solid",
             borderColor: "divider",
-            borderRadius: "8px",
+            borderRadius: "4px",
             fontSize: 12,
             color: "text.secondary",
           }}
@@ -60,7 +60,7 @@ const AttendanceTrendChart = ({ data, loading }) => {
         <Skeleton
           variant="rectangular"
           height={260}
-          sx={{ bgcolor: "action.hover", borderRadius: "8px" }}
+          sx={{ bgcolor: "action.hover", borderRadius: "4px" }}
         />
       ) : (
         <ResponsiveContainer width="100%" height={275}>

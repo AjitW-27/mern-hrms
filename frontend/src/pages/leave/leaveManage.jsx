@@ -4,12 +4,6 @@ import {
   Typography,
   Grid,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
   Chip,
   TextField,
@@ -21,6 +15,8 @@ import {
   ArrowBack as ArrowBackIcon,
   AttachFile as AttachFileIcon,
 } from "@mui/icons-material";
+import DataGrid from "../../components/common/DataGrid";
+import execReq from "../../lib/execReq";
 
 // Helper to calculate days between two dates dynamically
 const calculateDays = (start, end) => {
@@ -51,10 +47,8 @@ const LeaveManagement = () => {
   // 1. Fetch Leaves & Balances (Updated to match /api/leaves/my)
   const fetchLeaves = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/leaves/my", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      const result = await response.json();
+      const response = await execReq("/leaves/my");
+      const result = response.data;
       if (result.success) {
         setLeaves(result.data);
         if (result.leaveBalance) setBalances(result.leaveBalance);
@@ -67,10 +61,8 @@ const LeaveManagement = () => {
   // 2. Fetch Managers Dynamically
   const fetchManagers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/employees", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      const result = await response.json();
+      const response = await execReq("/employees");
+      const result = response.data;
       if (result.success) {
         const approvers = result.data.filter((emp) =>
           ["admin", "hr", "manager"].includes(emp.userId?.role || emp.role),
@@ -105,17 +97,8 @@ const LeaveManagement = () => {
         payload.append("supportingDocument", formData.supportingDocument);
       }
 
-      const response = await fetch("http://localhost:5000/api/leaves/apply", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          // Note: DO NOT set Content-Type here. The browser automatically
-          // sets 'multipart/form-data' with the correct boundary boundary when passing FormData.
-        },
-        body: payload,
-      });
-
-      const result = await response.json();
+      const response = await execReq.post("/leaves/apply", payload);
+      const result = response.data;
       if (result.success) {
         setFormData({
           leaveType: "",
@@ -141,14 +124,8 @@ const LeaveManagement = () => {
   const handleCancelLeave = async (id) => {
     if (!window.confirm("Cancel this leave request?")) return;
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/leaves/${id}/cancel`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        },
-      );
-      const result = await response.json();
+      const response = await execReq.put(`/leaves/${id}/cancel`);
+      const result = response.data;
       if (result.success) fetchLeaves();
     } catch (error) {
       console.error("Error cancelling leave:", error);
@@ -157,7 +134,7 @@ const LeaveManagement = () => {
 
   // --- Dynamic UI Calculations ---
   const dynamicLeaveStats = Object.keys(balances).map((key, index) => {
-    const colors = ["#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"];
+    const colors = ["#8b5cf6", "#4F46E5", "#10b981", "#f59e0b", "#ef4444"];
     const color = colors[index % colors.length];
 
     let total = 15;
@@ -193,15 +170,15 @@ const LeaveManagement = () => {
 
   const textFieldStyles = {
     "& .MuiOutlinedInput-root": {
-      backgroundColor: "#ffffff",
-      borderRadius: "8px",
-      color: "#0f172a",
+      backgroundColor: "#FFFFFF",
+      borderRadius: "4px",
+      color: "#0F172A",
       minHeight: 44,
       "& fieldset": {
-        borderColor: "#e2e8f0",
+        borderColor: "#E2E8F0",
       },
       "&:hover fieldset": {
-        borderColor: "#cbd5e1",
+        borderColor: "#CBD5E1",
       },
       "&.Mui-focused fieldset": {
         borderColor: "#8b5cf6",
@@ -209,32 +186,32 @@ const LeaveManagement = () => {
       },
     },
     "& .MuiInputBase-input": {
-      color: "#0f172a",
+      color: "#0F172A",
     },
     "& .MuiInputBase-input::placeholder": {
-      color: "#94a3b8",
+      color: "none",
       opacity: 1,
     },
     "& .MuiSelect-select": {
-      color: "#0f172a",
+      color: "#0F172A",
     },
     "& .MuiSelect-icon": {
-      color: "#64748b",
+      color: "#64748B",
     },
     "& input[type='date']": {
       colorScheme: "light",
     },
     "& textarea": {
-      color: "#0f172a",
+      color: "#0F172A",
     },
   };
 
   const renderStatusChip = (status) => {
     const statusMap = {
-      approved: { color: "#10b981", bg: "#10b98120" },
-      pending: { color: "#f59e0b", bg: "#f59e0b20" },
-      rejected: { color: "#ef4444", bg: "#ef444420" },
-      cancelled: { color: "#64748b", bg: "#f1f5f9" },
+      approved: { color: "#10b981", bg: "rgba(16,185,129,.12)" },
+      pending: { color: "#f59e0b", bg: "rgba(245,158,11,.12)" },
+      rejected: { color: "#ef4444", bg: "rgba(239,68,68,.12)" },
+      cancelled: { color: "#64748B", bg: "#F1F5F9" },
     };
     const style = statusMap[status?.toLowerCase()] || statusMap.pending;
     return (
@@ -256,9 +233,9 @@ const LeaveManagement = () => {
       <Box
         sx={{
           p: { xs: 2, md: 4 },
-          background: "#f8fafc",
+          background: "#F8FAFC",
           minHeight: "100vh",
-          color: "#0f172a",
+          color: "#0F172A",
         }}
       >
         <Box
@@ -267,15 +244,8 @@ const LeaveManagement = () => {
           alignItems="center"
           mb={4}
         >
-          <Box>
-            <Typography
-              fontSize={{ xs: 22, sm: 26 }}
-              fontWeight={700}
-              color="#0f172a"
-            >
-              Leave Management
-            </Typography>
-            <Typography fontSize={14} color="#64748b" mt={0.5}>
+          <Box flex={1}>
+            <Typography fontSize={14} color="#64748B">
               Manage your leave balances and history
             </Typography>
           </Box>
@@ -284,14 +254,15 @@ const LeaveManagement = () => {
             startIcon={<AddIcon />}
             onClick={() => setView("apply")}
             sx={{
-              background: "#8b5cf6",
+              background: "#0E8F9A",
               fontWeight: 600,
               textTransform: "none",
-              borderRadius: "8px",
+              borderRadius: "4px",
               boxShadow: "none",
               "&:hover": {
-                background: "#7c3aed",
-                boxShadow: "0 6px 16px rgba(139, 92, 246, 0.18)",
+                background: "#0B7480",
+                boxShadow:
+                  "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
               },
             }}
           >
@@ -311,26 +282,17 @@ const LeaveManagement = () => {
                     sx={{
                       p: 3,
                       minHeight: 145,
-                      borderRadius: "8px",
-                      background: `
-                        radial-gradient(
-                          circle at 0% 0%,
-                          ${stat.color}18 0%,
-                          transparent 55%
-                        ),
-                        linear-gradient(
-                          135deg,
-                          #ffffff 0%,
-                          #f8fafc 100%
-                        )
-                      `,
-                      border: "1px solid #e5e7eb",
-                      boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+                      borderRadius: "4px",
+                      background: "#FFFFFF",
+                      border: "1px solid #E2E8F0",
+                      boxShadow:
+                        "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
                       transition:
                         "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
                       "&:hover": {
                         transform: "translateY(-6px) scale(1.015)",
-                        boxShadow: "0 12px 28px rgba(15, 23, 42, 0.10)",
+                        boxShadow:
+                          "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
                         borderColor: `${stat.color}55`,
                       },
                     }}
@@ -344,7 +306,7 @@ const LeaveManagement = () => {
                       <Typography
                         fontSize={16}
                         fontWeight="bold"
-                        color="#0f172a"
+                        color="#0F172A"
                       >
                         {stat.title}
                       </Typography>
@@ -369,17 +331,17 @@ const LeaveManagement = () => {
                       justifyContent="space-between"
                       mb={1}
                       fontSize={13}
-                      color="#64748b"
+                      color="#64748B"
                     >
                       <Typography fontSize="inherit">
                         Total:{" "}
-                        <span style={{ color: "#0f172a", fontWeight: "700" }}>
+                        <span style={{ color: "#0F172A", fontWeight: "700" }}>
                           {stat.total}
                         </span>
                       </Typography>
                       <Typography fontSize="inherit">
                         Used:{" "}
-                        <span style={{ color: "#0f172a", fontWeight: "700" }}>
+                        <span style={{ color: "#0F172A", fontWeight: "700" }}>
                           {stat.used}
                         </span>
                       </Typography>
@@ -389,8 +351,8 @@ const LeaveManagement = () => {
                       value={progress}
                       sx={{
                         height: 8,
-                        borderRadius: 4,
-                        backgroundColor: "#e2e8f0",
+                        borderRadius: "4px",
+                        backgroundColor: "#E2E8F0",
                         "& .MuiLinearProgress-bar": {
                           backgroundColor: stat.color,
                         },
@@ -402,7 +364,7 @@ const LeaveManagement = () => {
             })
           ) : (
             <Grid item xs={12}>
-              <Typography color="#64748b">Loading leave balances...</Typography>
+              <Typography color="#64748B">Loading leave balances...</Typography>
             </Grid>
           )}
         </Grid>
@@ -410,129 +372,75 @@ const LeaveManagement = () => {
         {/* History Table */}
         <Paper
           sx={{
-            background: "#ffffff",
-            borderRadius: "8px",
-            border: "1px solid #e5e7eb",
+            background: "#FFFFFF",
+            borderRadius: "4px",
+            border: "1px solid #E2E8F0",
             overflow: "hidden",
-            boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+            boxShadow:
+              "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
           }}
         >
-          <Box p={2.5} borderBottom="1px solid #e5e7eb">
+          <Box p={2.5} borderBottom="1px solid #E2E8F0">
             <Typography fontSize={18} fontWeight="bold">
               Leave History
             </Typography>
           </Box>
-          <TableContainer>
-            <Table>
-              <TableHead sx={{ background: "#f8fafc" }}>
-                <TableRow>
-                  {["Leave Type", "From", "To", "Days", "Status", "Action"].map(
-                    (head) => (
-                      <TableCell
-                        key={head}
-                        sx={{
-                          color: "#475569",
-                          fontWeight: 600,
-                          borderBottom: "1px solid #e5e7eb",
-                        }}
-                      >
-                        {head}
-                      </TableCell>
-                    ),
-                  )}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {leaves.length > 0 ? (
-                  leaves.map((row) => (
-                    <TableRow
-                      key={row._id}
-                      sx={{
-                        "&:hover": {
-                          backgroundColor: "#f8fafc",
-                        },
-                      }}
-                    >
-                      <TableCell
-                        sx={{
-                          color: "#0f172a",
-                          borderBottom: "1px solid #e5e7eb",
-                          textTransform: "capitalize",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {row.leaveType} Leave
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          color: "#334155",
-                          borderBottom: "1px solid #e5e7eb",
-                        }}
-                      >
-                        {new Date(row.fromDate).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          color: "#334155",
-                          borderBottom: "1px solid #e5e7eb",
-                        }}
-                      >
-                        {new Date(row.toDate).toLocaleDateString("en-GB", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          color: "#334155",
-                          borderBottom: "1px solid #e5e7eb",
-                        }}
-                      >
-                        {calculateDays(row.fromDate, row.toDate)}
-                      </TableCell>
-                      <TableCell sx={{ borderBottom: "1px solid #e5e7eb" }}>
-                        {renderStatusChip(row.status)}
-                      </TableCell>
-                      <TableCell sx={{ borderBottom: "1px solid #e5e7eb" }}>
-                        {row.status === "pending" ? (
-                          <Button
-                            size="small"
-                            onClick={() => handleCancelLeave(row._id)}
-                            sx={{
-                              color: "#ef4444",
-                              textTransform: "none",
-                              fontWeight: "bold",
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                        ) : (
-                          <Typography fontSize={13} color="#64748b">
-                            Processed
-                          </Typography>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={6}
-                      align="center"
-                      sx={{ py: 4, color: "#64748b", borderBottom: "none" }}
-                    >
-                      No leave history available.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <DataGrid
+            rows={leaves}
+            emptyMessage="No leave history available."
+            columns={[
+              {
+                field: "leaveType",
+                headerName: "Leave Type",
+                valueGetter: (row) => `${row.leaveType} Leave`,
+              },
+              {
+                field: "fromDate",
+                headerName: "From",
+                valueGetter: (row) =>
+                  new Date(row.fromDate).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }),
+              },
+              {
+                field: "toDate",
+                headerName: "To",
+                valueGetter: (row) =>
+                  new Date(row.toDate).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }),
+              },
+              {
+                field: "days",
+                headerName: "Days",
+                valueGetter: (row) => calculateDays(row.fromDate, row.toDate),
+              },
+              {
+                field: "status",
+                headerName: "Status",
+                renderCell: (row) => renderStatusChip(row.status),
+              },
+            ]}
+            actions={(row) =>
+              row.status === "pending" ? (
+                <Button
+                  size="small"
+                  color="error"
+                  onClick={() => handleCancelLeave(row._id)}
+                >
+                  Cancel
+                </Button>
+              ) : (
+                <Typography fontSize={13} color="text.secondary">
+                  Processed
+                </Typography>
+              )
+            }
+          />
         </Paper>
       </Box>
     );
@@ -545,9 +453,9 @@ const LeaveManagement = () => {
     <Box
       sx={{
         p: { xs: 2, md: 4 },
-        background: "#f8fafc",
+        background: "#F8FAFC",
         minHeight: "100vh",
-        color: "#0f172a",
+        color: "#0F172A",
       }}
     >
       <Box mb={4}>
@@ -559,22 +467,15 @@ const LeaveManagement = () => {
             mb: 2,
             textTransform: "none",
             fontWeight: 600,
-            borderRadius: "8px",
+            borderRadius: "4px",
             "&:hover": {
-              backgroundColor: "#f1f5f9",
+              backgroundColor: "#F1F5F9",
             },
           }}
         >
           Back to Dashboard
         </Button>
-        <Typography
-          fontSize={{ xs: 23, sm: 28 }}
-          fontWeight={700}
-          color="#0f172a"
-        >
-          Apply Leave
-        </Typography>
-        <Typography fontSize={14} color="#64748b" mt={0.5}>
+        <Typography fontSize={13} color="#64748B" mt={0.5}>
           Submit leave request with manager approval workflow
         </Typography>
       </Box>
@@ -584,28 +485,18 @@ const LeaveManagement = () => {
           <Paper
             sx={{
               p: { xs: 2.5, sm: 3, md: 4 },
-              background: `
-                radial-gradient(
-                  circle at 0% 0%,
-                  rgba(139, 92, 246, 0.08) 0%,
-                  transparent 50%
-                ),
-                linear-gradient(
-                  135deg,
-                  #ffffff 0%,
-                  #f8fafc 100%
-                )
-              `,
-              borderRadius: "8px",
-              border: "1px solid #e5e7eb",
-              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.06)",
+              background: "#FFFFFF",
+              borderRadius: "4px",
+              border: "1px solid #E2E8F0",
+              boxShadow:
+                "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
             }}
           >
             <Box mb={3}>
-              <Typography fontSize={18} fontWeight={700} color="#0f172a">
+              <Typography fontSize={18} fontWeight={700} color="#0F172A">
                 Leave Request Details
               </Typography>
-              <Typography fontSize={13} color="#64748b" mt={0.5}>
+              <Typography fontSize={13} color="#64748B" mt={0.5}>
                 Enter the details below to submit your leave request.
               </Typography>
             </Box>
@@ -629,7 +520,7 @@ const LeaveManagement = () => {
                     setFormData({ ...formData, leaveType: e.target.value })
                   }
                   sx={textFieldStyles}
-                  SelectProps={{ sx: { color: "#0f172a" } }}
+                  SelectProps={{ sx: { color: "#0F172A" } }}
                 >
                   <MenuItem value="sick">Sick Leave</MenuItem>
                   <MenuItem value="casual">Casual Leave</MenuItem>
@@ -656,7 +547,7 @@ const LeaveManagement = () => {
                     setFormData({ ...formData, managerId: e.target.value })
                   }
                   sx={textFieldStyles}
-                  SelectProps={{ sx: { color: "#0f172a" } }}
+                  SelectProps={{ sx: { color: "#0F172A" } }}
                 >
                   {managers.map((mgr) => (
                     <MenuItem key={mgr._id} value={mgr._id}>
@@ -746,16 +637,16 @@ const LeaveManagement = () => {
                   startIcon={<AttachFileIcon />}
                   sx={{
                     color: "#475569",
-                    borderColor: "#e2e8f0",
-                    backgroundColor: "#ffffff",
+                    borderColor: "#E2E8F0",
+                    backgroundColor: "#FFFFFF",
                     textTransform: "none",
                     width: "100%",
                     justifyContent: "flex-start",
                     p: 1.5,
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                     "&:hover": {
-                      borderColor: "#cbd5e1",
-                      backgroundColor: "#f8fafc",
+                      borderColor: "#CBD5E1",
+                      backgroundColor: "#F8FAFC",
                     },
                   }}
                 >
@@ -792,11 +683,12 @@ const LeaveManagement = () => {
                   textTransform: "none",
                   px: 3,
                   py: 1.2,
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                   boxShadow: "none",
                   "&:hover": {
-                    background: "#7c3aed",
-                    boxShadow: "0 6px 16px rgba(139, 92, 246, 0.18)",
+                    background: "#8B5CF6",
+                    boxShadow:
+                      "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
                   },
                 }}
               >
@@ -807,14 +699,14 @@ const LeaveManagement = () => {
                 onClick={() => setView("dashboard")}
                 sx={{
                   color: "#475569",
-                  borderColor: "#e2e8f0",
-                  backgroundColor: "#ffffff",
+                  borderColor: "#E2E8F0",
+                  backgroundColor: "#FFFFFF",
                   textTransform: "none",
                   px: 3,
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                   "&:hover": {
-                    borderColor: "#cbd5e1",
-                    backgroundColor: "#f8fafc",
+                    borderColor: "#CBD5E1",
+                    backgroundColor: "#F8FAFC",
                   },
                 }}
               >
@@ -828,14 +720,15 @@ const LeaveManagement = () => {
           <Paper
             sx={{
               p: 3,
-              background: "#ffffff",
-              borderRadius: "8px",
-              border: "1px solid #e5e7eb",
-              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+              background: "#FFFFFF",
+              borderRadius: "4px",
+              border: "1px solid #E2E8F0",
+              boxShadow:
+                "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
               mb: 3,
             }}
           >
-            <Typography fontSize={18} fontWeight={700} mb={3} color="#0f172a">
+            <Typography fontSize={18} fontWeight={700} mb={3} color="#0F172A">
               Leave Summary
             </Typography>
 
@@ -846,16 +739,16 @@ const LeaveManagement = () => {
               mb={3}
               p={2}
               sx={{
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                background: "#f8fafc",
+                border: "1px solid #E2E8F0",
+                borderRadius: "4px",
+                background: "#F8FAFC",
               }}
             >
               <Box>
-                <Typography fontSize={13} color="#64748b">
+                <Typography fontSize={13} color="#64748B">
                   Total Available
                 </Typography>
-                <Typography fontSize={24} fontWeight={700} color="#0f172a">
+                <Typography fontSize={24} fontWeight={700} color="#0F172A">
                   {totalAvailableLeaves} Days
                 </Typography>
               </Box>
@@ -864,7 +757,7 @@ const LeaveManagement = () => {
                   width: 45,
                   height: 45,
                   borderRadius: "50%",
-                  background: "#10b98120",
+                  background: "rgba(16,185,129,.12)",
                   color: "#10b981",
                   display: "flex",
                   alignItems: "center",
@@ -885,12 +778,12 @@ const LeaveManagement = () => {
                 mb={3}
                 p={2}
                 sx={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "8px",
-                  background: "#f8fafc",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: "4px",
+                  background: "#F8FAFC",
                 }}
               >
-                <Typography fontSize={14} color="#64748b">
+                <Typography fontSize={14} color="#64748B">
                   Days Requested:
                 </Typography>
                 <Typography fontSize={16} fontWeight="bold" color="#8b5cf6">
@@ -902,13 +795,13 @@ const LeaveManagement = () => {
             <Box
               p={2}
               sx={{
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                background: "#f8fafc",
+                border: "1px solid #E2E8F0",
+                borderRadius: "4px",
+                background: "#F8FAFC",
               }}
             >
               <Box display="flex" justifyContent="space-between" mb={1}>
-                <Typography fontSize={14} color="#64748b">
+                <Typography fontSize={14} color="#64748B">
                   Pending Approvals
                 </Typography>
                 <Typography fontSize={14} fontWeight="bold" color="#f59e0b">
@@ -920,8 +813,8 @@ const LeaveManagement = () => {
                 value={pendingProgress}
                 sx={{
                   height: 8,
-                  borderRadius: 4,
-                  backgroundColor: "#e2e8f0",
+                  borderRadius: "4px",
+                  backgroundColor: "#E2E8F0",
                   "& .MuiLinearProgress-bar": { backgroundColor: "#f59e0b" },
                 }}
               />
@@ -931,22 +824,12 @@ const LeaveManagement = () => {
           <Box
             sx={{
               p: 3,
-              background: `
-                radial-gradient(
-                  circle at 0% 0%,
-                  rgba(16, 185, 129, 0.10) 0%,
-                  transparent 55%
-                ),
-                linear-gradient(
-                  135deg,
-                  #ffffff 0%,
-                  #f8fafc 100%
-                )
-              `,
-              border: "1px solid #e5e7eb",
-              borderRadius: "8px",
-              color: "#0f172a",
-              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+              background: "#FFFFFF",
+              border: "1px solid #E2E8F0",
+              borderRadius: "4px",
+              color: "#0F172A",
+              boxShadow:
+                "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
             }}
           >
             <Typography
@@ -966,11 +849,11 @@ const LeaveManagement = () => {
               fontWeight={700}
               mb={2}
               lineHeight={1.3}
-              color="#0f172a"
+              color="#0F172A"
             >
               Apply leave 3 days in advance
             </Typography>
-            <Typography fontSize={14} color="#64748b" sx={{ lineHeight: 1.6 }}>
+            <Typography fontSize={14} color="#64748B" sx={{ lineHeight: 1.6 }}>
               Emergency leaves require immediate approval from your reporting
               manager and HR department.
             </Typography>

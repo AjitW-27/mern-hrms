@@ -19,6 +19,7 @@ router.use("/training", require("./trainingRoutes"));
 router.use("/performance", require("./performanceRoutes"));
 router.use("/goals", require("./goalsRoutes"));
 router.use("/admin", require("./adminRoutes"));
+router.use("/admin", require("./contentRoutes"));
 router.use("/rbac/roles", require("./rbac/role.routes"));
 router.use("/rbac/permissions", require("./rbac/permission.routes"));
 

@@ -1,7 +1,6 @@
 * {
   box-sizing: border-box;
 }
-
 html,
 body,
 #root {
@@ -9,45 +8,55 @@ body,
   min-height: 100%;
   margin: 0;
 }
-
-body {
-  background: #f7f8fc;
-  font-family: "Inter", "Segoe UI", sans-serif;
+:root {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-
-/* Responsive safeguards: keep existing page structure intact while preventing
-   horizontal overflow on phones and tablets. */
+body {
+  background: #f4f7fa;
+  color: #0f172a;
+  font-family: inherit;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
 #root {
+  min-height: 100vh;
   overflow-x: hidden;
 }
-
-img, svg, canvas {
+img,
+svg,
+canvas {
   max-width: 100%;
 }
-
-@media (max-width: 899px) {
-  .MuiDialog-paper {
-    margin: 12px;
-    width: calc(100% - 24px);
-    max-width: calc(100% - 24px);
-  }
-
-  .MuiTableContainer-root {
-    -webkit-overflow-scrolling: touch;
-  }
+:focus-visible {
+  outline: none;
+  box-shadow: none !important;
 }
-
-@media (max-width: 599px) {
-  .MuiCardContent-root {
-    padding: 12px;
-  }
-
-  .MuiDialogContent-root {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .MuiTableCell-root {
-    white-space: nowrap;
-  }
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: none;
 }

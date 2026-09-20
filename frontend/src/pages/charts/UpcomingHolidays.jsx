@@ -21,13 +21,13 @@ const formatDate = (value) => {
 const UpcomingHolidays = ({ holidays, loading }) => {
   const c = useChartTheme();
   return (
-    <ChartCard minHeight={300}>
+    <ChartCard minHeight={340} tone="rose">
       <Box display="flex" alignItems="center" gap={1.5}>
         <Box
           sx={{
             width: 42,
             height: 42,
-            borderRadius: "8px",
+            borderRadius: "4px",
             bgcolor: "primary.light",
             display: "grid",
             placeItems: "center",
@@ -41,7 +41,7 @@ const UpcomingHolidays = ({ holidays, loading }) => {
         <Skeleton
           variant="rectangular"
           height={185}
-          sx={{ mt: 2, bgcolor: "action.hover", borderRadius: "8px" }}
+          sx={{ mt: 2, bgcolor: "action.hover", borderRadius: "4px" }}
         />
       ) : !holidays?.length ? (
         <Box
@@ -66,7 +66,7 @@ const UpcomingHolidays = ({ holidays, loading }) => {
                 gap={1.5}
                 sx={{
                   p: 1.25,
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                   border: "1px solid",
                   borderColor: "divider",
                   "&:hover": { bgcolor: "action.hover" },
@@ -80,7 +80,7 @@ const UpcomingHolidays = ({ holidays, loading }) => {
                     placeItems: "center",
                     alignContent: "center",
                     bgcolor: "primary.light",
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                   }}
                 >
                   <Typography
@@ -117,7 +117,7 @@ const UpcomingHolidays = ({ holidays, loading }) => {
                   label={holiday.type}
                   size="small"
                   sx={{
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                     bgcolor: "primary.light",
                     color: "primary.dark",
                   }}

@@ -26,26 +26,26 @@ import {
 } from "@mui/icons-material";
 
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import execReq, { SOCKET_BASE_URL } from "../../lib/execReq";
 import useAuthStore from "../../strore/authStore";
-import LoginImage from "../../assets/LoginImg.png"; // Import the image
+import LoginImage from "../../assets/loginImg.png"; // Import the image
 // Google Icon
 const GoogleIconLogo = () => (
   <svg width="20" height="20" viewBox="0 0 24 24">
     <path
-      fill="#4285F4"
+      fill="#4F46E5"
       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
     />
     <path
-      fill="#34A853"
+      fill="#10B981"
       d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
     />
     <path
-      fill="#FBBC05"
+      fill="#F59E0B"
       d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
     />
     <path
-      fill="#EA4335"
+      fill="#EF4444"
       d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
     />
   </svg>
@@ -106,8 +106,8 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+      const response = await execReq.post(
+        "/auth/login",
         {
           email: formData.email,
           password: formData.password,
@@ -146,8 +146,6 @@ const Login = () => {
         accessToken,
       });
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-
       navigate("/dashboard");
     } catch (err) {
       setError(
@@ -164,20 +162,20 @@ const Login = () => {
     "& .MuiOutlinedInput-root": {
       height: "56px",
       borderRadius: "10px",
-      backgroundColor: "#ffffff",
-      color: "#172033",
+      backgroundColor: "#FFFFFF",
+      color: "#0F172A",
 
       "& fieldset": {
-        borderColor: "#d9e0ea",
+        borderColor: "#E2E8F0",
         borderWidth: "1px",
       },
 
       "&:hover fieldset": {
-        borderColor: "#93b4ff",
+        borderColor: "#818CF8",
       },
 
       "&.Mui-focused fieldset": {
-        borderColor: "#3b82f6",
+        borderColor: "#4F46E5",
         borderWidth: "1.5px",
       },
     },
@@ -187,7 +185,7 @@ const Login = () => {
     },
 
     "& .MuiInputBase-input::placeholder": {
-      color: "#94a3b8",
+      color: "none",
       opacity: 1,
     },
   };
@@ -197,7 +195,7 @@ const Login = () => {
       sx={{
         width: "100%",
         minHeight: "100vh",
-        background: "#f6f8fc",
+        background: "#F8FAFC",
         display: "flex",
         alignItems: "stretch",
         justifyContent: "center",
@@ -226,7 +224,7 @@ const Login = () => {
             lg: "65% 35%",
           },
 
-          background: "#ffffff",
+          background: "#FFFFFF",
           overflow: "hidden",
           borderRadius: 0,
           border: "none",
@@ -251,7 +249,7 @@ const Login = () => {
             width: "100%",
             height: "100vh",
             overflow: "hidden",
-            background: "#ffffff",
+            background: "#FFFFFF",
           }}
         >
           <Box
@@ -300,7 +298,7 @@ const Login = () => {
               lg: 4,
             },
 
-            background: "#ffffff",
+            background: "#FFFFFF",
 
             overflowY: "auto",
           }}
@@ -350,22 +348,23 @@ const Login = () => {
                 sx={{
                   width: 58,
                   height: 58,
-                  borderRadius: "16px",
+                  borderRadius: "4px",
 
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
 
                   background:
-                    "linear-gradient(135deg, #4f46e5 0%, #2563eb 100%)",
+                    "linear-gradient(135deg, #4f46e5 0%, #4F46E5 100%)",
 
-                  boxShadow: "0 10px 25px rgba(37, 99, 235, 0.22)",
+                  boxShadow:
+                    "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
                 }}
               >
                 <PeopleOutlineIcon
                   sx={{
                     fontSize: 36,
-                    color: "#ffffff",
+                    color: "#FFFFFF",
                   }}
                 />
               </Box>
@@ -375,7 +374,7 @@ const Login = () => {
                   mt: 1.5,
                   fontSize: "25px",
                   fontWeight: 700,
-                  color: "#172033",
+                  color: "#0F172A",
                 }}
               >
                 HRMS
@@ -384,7 +383,7 @@ const Login = () => {
               <Typography
                 sx={{
                   mt: 0.3,
-                  color: "#64748b",
+                  color: "#64748B",
                   fontSize: "13px",
                   textAlign: "center",
                 }}
@@ -408,12 +407,12 @@ const Login = () => {
                   lg: 2,
                 },
 
-                color: "#64748b",
+                color: "#64748B",
                 borderRadius: "10px",
 
                 "&:hover": {
-                  background: "#f1f5f9",
-                  color: "#2563eb",
+                  background: "#F1F5F9",
+                  color: "#4F46E5",
                 },
               }}
             >
@@ -446,8 +445,8 @@ const Login = () => {
 
                   lineHeight: 1.2,
                   fontWeight: 700,
-                  color: "#172033",
-                  letterSpacing: "-0.8px",
+                  color: "#0F172A",
+                  letterSpacing: "-0.4px",
                 }}
               >
                 Welcome Back!
@@ -455,7 +454,7 @@ const Login = () => {
 
               <Typography
                 sx={{
-                  color: "#64748b",
+                  color: "#64748B",
                   fontSize: "15px",
                   mt: 1,
                 }}
@@ -474,9 +473,9 @@ const Login = () => {
                 sx={{
                   mb: 3,
                   borderRadius: "10px",
-                  background: "#fef2f2",
-                  color: "#b91c1c",
-                  border: "1px solid #fecaca",
+                  background: "#FEE2E2",
+                  color: "#EF4444",
+                  border: "1px solid #FEE2E2",
 
                   "& .MuiAlert-icon": {
                     color: "#ef4444",
@@ -494,7 +493,7 @@ const Login = () => {
             <Box sx={{ mb: 3 }}>
               <Typography
                 sx={{
-                  color: "#1e293b",
+                  color: "#1E293B",
                   fontSize: "14px",
                   fontWeight: 600,
                   mb: 1,
@@ -517,7 +516,7 @@ const Login = () => {
                     <InputAdornment position="start">
                       <MailOutlineIcon
                         sx={{
-                          color: "#64748b",
+                          color: "#64748B",
                           fontSize: 21,
                         }}
                       />
@@ -534,7 +533,7 @@ const Login = () => {
             <Box sx={{ mb: 2 }}>
               <Typography
                 sx={{
-                  color: "#1e293b",
+                  color: "#1E293B",
                   fontSize: "14px",
                   fontWeight: 600,
                   mb: 1,
@@ -557,7 +556,7 @@ const Login = () => {
                     <InputAdornment position="start">
                       <LockOutlinedIcon
                         sx={{
-                          color: "#64748b",
+                          color: "#64748B",
                           fontSize: 21,
                         }}
                       />
@@ -571,11 +570,11 @@ const Login = () => {
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                         sx={{
-                          color: "#64748b",
+                          color: "#64748B",
 
                           "&:hover": {
-                            color: "#2563eb",
-                            background: "#eff6ff",
+                            color: "#4F46E5",
+                            background: "#E0F2FE",
                           },
                         }}
                       >
@@ -616,10 +615,10 @@ const Login = () => {
                     sx={{
                       p: 0.5,
                       mr: 0.5,
-                      color: "#94a3b8",
+                      color: "none",
 
                       "&.Mui-checked": {
-                        color: "#2563eb",
+                        color: "#4F46E5",
                       },
                     }}
                   />
@@ -640,7 +639,7 @@ const Login = () => {
                 component={Link}
                 to="/forgot-password"
                 sx={{
-                  color: "#2563eb",
+                  color: "#4F46E5",
                   textDecoration: "none",
                   fontSize: "14px",
                   fontWeight: 600,
@@ -667,29 +666,30 @@ const Login = () => {
                 height: "56px",
                 borderRadius: "10px",
 
-                background: "linear-gradient(90deg, #4f46e5 0%, #2563eb 100%)",
+                background: "linear-gradient(90deg, #4f46e5 0%, #4F46E5 100%)",
 
-                color: "#ffffff",
+                color: "#FFFFFF",
                 fontSize: "16px",
                 fontWeight: 600,
                 textTransform: "none",
 
-                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.20)",
+                boxShadow:
+                  "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
 
                 transition: "all 0.2s ease",
 
                 "&:hover": {
-                  background:
-                    "linear-gradient(90deg, #4338ca 0%, #1d4ed8 100%)",
+                  background: "#4338CA",
 
-                  boxShadow: "0 10px 25px rgba(37, 99, 235, 0.28)",
+                  boxShadow:
+                    "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
 
                   transform: "translateY(-1px)",
                 },
 
                 "&.Mui-disabled": {
-                  color: "#ffffff",
-                  background: "#94a3b8",
+                  color: "#FFFFFF",
+                  background: "none",
                 },
               }}
             >
@@ -703,11 +703,11 @@ const Login = () => {
             <Divider
               sx={{
                 my: 3,
-                color: "#94a3b8",
+                color: "none",
                 fontSize: "13px",
 
                 "&::before, &::after": {
-                  borderColor: "#e2e8f0",
+                  borderColor: "#E2E8F0",
                 },
               }}
             >
@@ -723,24 +723,24 @@ const Login = () => {
               type="button"
               startIcon={<GoogleIconLogo />}
               onClick={() => {
-                window.location.href = "http://localhost:5000/api/auth/google";
+                window.location.href = `${SOCKET_BASE_URL}/api/auth/google`;
               }}
               sx={{
                 height: "54px",
                 borderRadius: "10px",
 
-                border: "1px solid #d9e0ea",
+                border: "1px solid #E2E8F0",
 
                 color: "#334155",
                 textTransform: "none",
                 fontSize: "15px",
                 fontWeight: 500,
 
-                background: "#ffffff",
+                background: "#FFFFFF",
 
                 "&:hover": {
-                  background: "#f8fafc",
-                  borderColor: "#93b4ff",
+                  background: "#F8FAFC",
+                  borderColor: "#818CF8",
                 },
               }}
             >
@@ -755,7 +755,7 @@ const Login = () => {
               sx={{
                 textAlign: "center",
                 mt: 4,
-                color: "#64748b",
+                color: "#64748B",
                 fontSize: "14px",
                 lineHeight: 1.6,
               }}
@@ -765,7 +765,7 @@ const Login = () => {
                 component="span"
                 onClick={() => navigate("/register")}
                 sx={{
-                  color: "#2563eb",
+                  color: "#4F46E5",
                   cursor: "pointer",
                   fontWeight: 600,
 
@@ -791,7 +791,7 @@ const Login = () => {
 
                 mt: 4,
 
-                color: "#94a3b8",
+                color: "none",
 
                 textAlign: "center",
               }}
@@ -799,7 +799,7 @@ const Login = () => {
               <SecurityOutlinedIcon
                 sx={{
                   fontSize: 16,
-                  color: "#64748b",
+                  color: "#64748B",
                   flexShrink: 0,
                 }}
               />
@@ -821,7 +821,7 @@ const Login = () => {
               sx={{
                 textAlign: "center",
                 mt: 1.5,
-                color: "#94a3b8",
+                color: "none",
                 fontSize: "12px",
               }}
             >

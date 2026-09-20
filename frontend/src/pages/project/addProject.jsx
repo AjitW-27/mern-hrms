@@ -14,6 +14,7 @@ import {
   AddTask as AddTaskIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import execReq from "../../lib/execReq";
 
 const AddProject = () => {
   const navigate = useNavigate();
@@ -55,25 +56,11 @@ const AddProject = () => {
     };
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/projects",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(formattedData),
-        }
-      );
+      const response = await execReq.post("/projects", formattedData);
+      const data = response.data;
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null);
-
-        alert(
-          errorData?.error || `Error: ${response.status}`
-        );
-
+      if (data?.success === false) {
+        alert(data?.message || data?.error || "Unable to add project.");
         return;
       }
 
@@ -91,16 +78,16 @@ const AddProject = () => {
 
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#0f172a",
-      backgroundColor: "#ffffff",
-      borderRadius: "8px",
+      color: "#0F172A",
+      backgroundColor: "#FFFFFF",
+      borderRadius: "4px",
 
       "& fieldset": {
-        borderColor: "#e2e8f0",
+        borderColor: "#E2E8F0",
       },
 
       "&:hover fieldset": {
-        borderColor: "#cbd5e1",
+        borderColor: "#CBD5E1",
       },
 
       "&.Mui-focused fieldset": {
@@ -109,18 +96,18 @@ const AddProject = () => {
       },
 
       "& input::placeholder": {
-        color: "#94a3b8",
+        color: "none",
         opacity: 1,
       },
 
       "& textarea::placeholder": {
-        color: "#94a3b8",
+        color: "none",
         opacity: 1,
       },
     },
 
     "& .MuiInputLabel-root": {
-      color: "#64748b",
+      color: "#64748B",
     },
 
     "& .MuiInputLabel-root.Mui-focused": {
@@ -128,7 +115,7 @@ const AddProject = () => {
     },
 
     "& .MuiSelect-icon": {
-      color: "#64748b",
+      color: "#64748B",
     },
 
     "& input[type='date']::-webkit-calendar-picker-indicator": {
@@ -143,23 +130,24 @@ const AddProject = () => {
   const dropdownStyles = {
     PaperProps: {
       sx: {
-        bgcolor: "#ffffff",
-        color: "#0f172a",
-        border: "1px solid #e5e7eb",
-        borderRadius: "8px",
-        boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)",
+        bgcolor: "#FFFFFF",
+        color: "#0F172A",
+        border: "1px solid #E2E8F0",
+        borderRadius: "4px",
+        boxShadow:
+          "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
 
         "& .MuiMenuItem-root": {
           fontSize: 14,
         },
 
         "& .MuiMenuItem-root:hover": {
-          bgcolor: "#f8fafc",
+          bgcolor: "#F8FAFC",
         },
 
         "& .Mui-selected": {
-          bgcolor: "#ede9fe !important",
-          color: "#7c3aed",
+          bgcolor: "#EEF0FF !important",
+          color: "#8B5CF6",
         },
       },
     },
@@ -175,8 +163,8 @@ const AddProject = () => {
           sm: 3,
           md: 4,
         },
-        background: "#f8fafc",
-        color: "#0f172a",
+        background: "#F8FAFC",
+        color: "#0F172A",
       }}
     >
       {/* =========================
@@ -198,8 +186,8 @@ const AddProject = () => {
             mr: 1.5,
 
             "&:hover": {
-              backgroundColor: "#f1f5f9",
-              color: "#0f172a",
+              backgroundColor: "#F1F5F9",
+              color: "#0F172A",
             },
           }}
         >
@@ -213,16 +201,12 @@ const AddProject = () => {
               sm: 24,
             }}
             fontWeight={600}
-            color="#0f172a"
+            color="#0F172A"
           >
             Create New Project
           </Typography>
 
-          <Typography
-            fontSize={14}
-            color="#64748b"
-            mt={0.5}
-          >
+          <Typography fontSize={14} color="#64748B" mt={0.5}>
             Add project details, timeline and project information
           </Typography>
         </Box>
@@ -238,21 +222,10 @@ const AddProject = () => {
         sx={{
           width: "100%",
 
-          background: `
-            radial-gradient(
-              circle at 0% 0%,
-              rgba(139, 92, 246, 0.10) 0%,
-              transparent 45%
-            ),
-            linear-gradient(
-              135deg,
-              #ffffff 0%,
-              #f8fafc 100%
-            )
-          `,
+          background: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
 
-          border: "1px solid #e5e7eb",
-          borderRadius: "8px",
+          border: "1px solid #E2E8F0",
+          borderRadius: "4px",
 
           p: {
             xs: 2.5,
@@ -261,27 +234,18 @@ const AddProject = () => {
           },
 
           boxShadow:
-            "0 1px 3px rgba(15, 23, 42, 0.05)",
+            "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
         }}
       >
         {/* =========================
             BASIC DETAILS
         ========================= */}
 
-        <Typography
-          fontSize={18}
-          fontWeight={600}
-          color="#0f172a"
-          mb={3}
-        >
+        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
           Basic Details
         </Typography>
 
-        <Grid
-          container
-          spacing={3}
-          mb={4}
-        >
+        <Grid container spacing={3} mb={4}>
           <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
@@ -310,20 +274,11 @@ const AddProject = () => {
             TIMELINE & STATUS
         ========================= */}
 
-        <Typography
-          fontSize={18}
-          fontWeight={600}
-          color="#0f172a"
-          mb={3}
-        >
+        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
           Timeline & Status
         </Typography>
 
-        <Grid
-          container
-          spacing={3}
-          mb={4}
-        >
+        <Grid container spacing={3} mb={4}>
           <Grid item xs={12} sm={3}>
             <TextField
               fullWidth
@@ -395,12 +350,7 @@ const AddProject = () => {
                 MenuProps: dropdownStyles,
               }}
             >
-              {[
-                "Low",
-                "Medium",
-                "High",
-                "Critical",
-              ].map((p) => (
+              {["Low", "Medium", "High", "Critical"].map((p) => (
                 <MenuItem key={p} value={p}>
                   {p}
                 </MenuItem>
@@ -413,20 +363,11 @@ const AddProject = () => {
             METRICS & META
         ========================= */}
 
-        <Typography
-          fontSize={18}
-          fontWeight={600}
-          color="#0f172a"
-          mb={3}
-        >
+        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
           Metrics & Meta
         </Typography>
 
-        <Grid
-          container
-          spacing={3}
-          mb={4}
-        >
+        <Grid container spacing={3} mb={4}>
           <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
@@ -439,9 +380,7 @@ const AddProject = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Typography color="#64748b">
-                      $
-                    </Typography>
+                    <Typography color="#64748B">$</Typography>
                   </InputAdornment>
                 ),
               }}
@@ -483,19 +422,11 @@ const AddProject = () => {
             PROJECT DESCRIPTION
         ========================= */}
 
-        <Typography
-          fontSize={18}
-          fontWeight={600}
-          color="#0f172a"
-          mb={3}
-        >
+        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
           Project Description
         </Typography>
 
-        <Grid
-          container
-          spacing={3}
-        >
+        <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
               fullWidth
@@ -521,7 +452,7 @@ const AddProject = () => {
           gap={2}
           mt={5}
           pt={3}
-          borderTop="1px solid #e5e7eb"
+          borderTop="1px solid #E2E8F0"
           sx={{
             "@media (max-width: 500px)": {
               flexDirection: "column-reverse",
@@ -535,24 +466,22 @@ const AddProject = () => {
         >
           <Button
             variant="outlined"
-            onClick={() =>
-              navigate("/dashboard/projects")
-            }
+            onClick={() => navigate("/dashboard/projects")}
             sx={{
               height: 44,
               px: 3,
 
               color: "#475569",
-              borderColor: "#e2e8f0",
-              background: "#ffffff",
+              borderColor: "#E2E8F0",
+              background: "#FFFFFF",
 
               textTransform: "none",
               fontWeight: 600,
-              borderRadius: "8px",
+              borderRadius: "4px",
 
               "&:hover": {
-                borderColor: "#cbd5e1",
-                backgroundColor: "#f8fafc",
+                borderColor: "#CBD5E1",
+                backgroundColor: "#F8FAFC",
               },
             }}
           >
@@ -571,14 +500,14 @@ const AddProject = () => {
 
               textTransform: "none",
               fontWeight: 600,
-              borderRadius: "8px",
+              borderRadius: "4px",
 
               boxShadow: "none",
 
               "&:hover": {
-                background: "#7c3aed",
+                background: "#8B5CF6",
                 boxShadow:
-                  "0 6px 16px rgba(139, 92, 246, 0.18)",
+                  "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
               },
             }}
           >

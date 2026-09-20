@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Avatar,
@@ -8,13 +8,8 @@ import {
   Menu,
   MenuItem,
   Typography,
-  Breadcrumbs,
-  Link,
-  useMediaQuery,
 } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import {
-  Menu as MenuIcon,
   LogoutOutlined,
   AdminPanelSettingsOutlined,
   ManageAccountsOutlined,
@@ -23,35 +18,43 @@ import {
 import { useLocation, useNavigate } from "react-router-dom";
 import { getPageMeta } from "../../config/pageMeta";
 import useAuthStore from "../../strore/authStore";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 import NotificationDropdown from "./notificationDropdown";
+import MessageNotificationDropdown from "./MessageNotificationDropdown";
 
-const Appbar = ({ open, setOpen }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+const Appbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const page = getPageMeta(location.pathname);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [rbacEnabled, setRbacEnabled] = React.useState(false);
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
-  const [rbacEnabled, setRbacEnabled] = useState(false);
-  const canAccessAdmin = !rbacEnabled || ["superadmin", "super_admin"].includes(String(user?.role || "").toLowerCase()) || Boolean(user?.rolePermissions?.users?.read || user?.rolePermissions?.roles?.read);
 
   React.useEffect(() => {
     let mounted = true;
-    api.get("/settings").then(({ data }) => {
-      if (mounted) setRbacEnabled(data.data?.rbacEnabled === true);
-    }).catch(() => {
-      if (mounted) setRbacEnabled(false);
-    });
-    return () => { mounted = false; };
+    execReq("/settings")
+      .then(({ data }) => {
+        if (mounted) setRbacEnabled(data?.data?.rbacEnabled === true);
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
   }, []);
 
+  const role = String(
+    user?.role?.code || user?.role?.name || user?.role || "employee",
+  ).toLowerCase();
+  const canAccessAdmin =
+    !rbacEnabled ||
+    ["admin", "superadmin", "super_admin", "hr"].includes(role) ||
+    Boolean(
+      user?.rolePermissions?.users?.read || user?.rolePermissions?.roles?.read,
+    );
+
   const handleLogout = async () => {
-    // The backend invalidates the refresh token; local cleanup still happens if
-    // the server is unavailable so the protected UI is never left accessible.
-    await api.post("/auth/logout").catch(() => {});
+    await execReq.post("/auth/logout").catch(() => {});
     logout();
     navigate("/", { replace: true });
   };
@@ -59,57 +62,132 @@ const Appbar = ({ open, setOpen }) => {
   return (
     <Box
       sx={{
-        height: 70,
-        px: 3,
+        height: 64,
+        px: { xs: 2, md: 3 },
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        background: "background.paper",
-        borderBottom: "1px solid",
-        borderColor: "divider",
+        bgcolor: "#FFFFFF",
+        borderBottom: "1px solid #E2E8F0",
+        position: "sticky",
+        top: 0,
+        zIndex: 1100,
       }}
     >
-      {/* LEFT */}
-      <Box display="flex" alignItems="center" gap={2}>
-        <IconButton
-          onClick={() => setOpen(!open)}
-          sx={{ color: "text.primary", ml: -2 }}
+      <Box sx={{ minWidth: 0 }}>
+        <Typography
+          sx={{
+            fontSize: 16,
+            lineHeight: "24px",
+            fontWeight: 600,
+            color: "#0F172A",
+          }}
         >
-          <MenuIcon />
-        </IconButton>
-
-        <Box sx={{ display: { xs: "none", lg: "flex" }, flexDirection: "column", alignItems: "flex-start", minWidth: 190 }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, lineHeight: 1.25, color: "text.primary" }}>{page.title}</Typography>
-          <Breadcrumbs separator="/" sx={{ mt: 0.15, "& .MuiBreadcrumbs-li": { fontSize: 12, color: "text.secondary" } }}>
-            {page.crumbs.map((crumb) => <Link key={crumb.to} component="button" underline="hover" color="inherit" onClick={() => navigate(crumb.to)} sx={{ fontSize: 12 }}>{crumb.label}</Link>)}
-            <Typography component="span" sx={{ fontSize: 12, color: "text.secondary" }}>{page.title}</Typography>
-          </Breadcrumbs>
+          {page.title}
+        </Typography>
+        <Box
+          sx={{
+            display: { xs: "none", sm: "flex" },
+            gap: 0.75,
+            alignItems: "center",
+          }}
+        >
+          {page.crumbs.map((crumb) => (
+            <Typography key={crumb.to} sx={{ fontSize: 12, color: "none" }}>
+              {crumb.label} /
+            </Typography>
+          ))}
+          <Typography sx={{ fontSize: 12, color: "#475569" }}>
+            {page.title}
+          </Typography>
         </Box>
       </Box>
-
-      {/* RIGHT */}
-      <Box display="flex" alignItems="center" gap={isMobile ? 0.75 : 3}>
-        
-       
-        <NotificationDropdown/>
-
-        <IconButton onClick={(event) => setAnchorEl(event.currentTarget)} aria-label="Open account menu" aria-controls={anchorEl ? "account-menu" : undefined} aria-haspopup="true" aria-expanded={Boolean(anchorEl)} sx={{ p: 0.5, borderRadius: 1, "&:hover": { bgcolor: "action.hover" } }}>
-          <Avatar src={user?.avatar} sx={{ width: 34, height: 34, bgcolor: "primary.main", fontSize: 14, fontWeight: 700 }}>
+      <Box
+        sx={{ display: "flex", alignItems: "center", gap: { xs: 0.5, md: 1 } }}
+      >
+        <MessageNotificationDropdown />
+        <NotificationDropdown />
+        <IconButton
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+          aria-label="Open account menu"
+          sx={{ p: 0.5, borderRadius: 999 }}
+        >
+          <Avatar
+            src={user?.avatar}
+            sx={{
+              width: 34,
+              height: 34,
+              bgcolor: "#0E8F9A",
+              fontSize: 14,
+              fontWeight: 700,
+            }}
+          >
             {user?.name?.trim()?.charAt(0)?.toUpperCase() || "A"}
           </Avatar>
         </IconButton>
-        <Menu id="account-menu" anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)} anchorOrigin={{ vertical: "bottom", horizontal: "right" }} transformOrigin={{ vertical: "top", horizontal: "right" }} PaperProps={{ sx: { width: { xs: 240, sm: 260 }, mt: 1, border: "1px solid", borderColor: "divider", borderRadius: 1, boxShadow: "0 10px 24px rgba(16,24,40,.12)", overflow: "hidden" } }}>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+        >
           <Box sx={{ px: 2, py: 1.5 }}>
-            <Typography variant="caption" color="text.secondary" fontWeight={600}>ADMIN</Typography>
-            <Typography variant="subtitle2" fontWeight={700}>{user?.name || "Administrator"}</Typography>
-            <Typography variant="caption" color="text.secondary" noWrap display="block">{user?.email || "No email available"}</Typography>
+            <Typography sx={{ fontSize: 12, color: "none", fontWeight: 600 }}>
+              ACCOUNT
+            </Typography>
+            <Typography
+              sx={{ fontSize: 14, fontWeight: 600, color: "#0F172A" }}
+            >
+              {user?.name || "Administrator"}
+            </Typography>
+            <Typography sx={{ fontSize: 12, color: "none" }} noWrap>
+              {user?.email || ""}
+            </Typography>
           </Box>
           <Divider />
-          <MenuItem onClick={() => { setAnchorEl(null); navigate("/dashboard/profile"); }}><ListItemIcon><ManageAccountsOutlined fontSize="small" /></ListItemIcon>Profile</MenuItem>
-          <MenuItem onClick={() => { setAnchorEl(null); navigate("/dashboard/settings"); }}><ListItemIcon><SettingsOutlined fontSize="small" /></ListItemIcon>Settings</MenuItem>
-          {canAccessAdmin && <MenuItem onClick={() => { setAnchorEl(null); navigate("/dashboard/admin/users"); }}><ListItemIcon><AdminPanelSettingsOutlined fontSize="small" /></ListItemIcon>Admin</MenuItem>}
+          <MenuItem
+            onClick={() => {
+              setAnchorEl(null);
+              navigate("/dashboard/profile");
+            }}
+          >
+            <ListItemIcon>
+              <ManageAccountsOutlined fontSize="small" />
+            </ListItemIcon>
+            Profile
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              setAnchorEl(null);
+              navigate("/dashboard/settings");
+            }}
+          >
+            <ListItemIcon>
+              <SettingsOutlined fontSize="small" />
+            </ListItemIcon>
+            Settings
+          </MenuItem>
+          {canAccessAdmin && (
+            <MenuItem
+              onClick={() => {
+                setAnchorEl(null);
+                navigate("/dashboard/admin");
+              }}
+            >
+              <ListItemIcon>
+                <AdminPanelSettingsOutlined fontSize="small" />
+              </ListItemIcon>
+              Admin
+            </MenuItem>
+          )}
           <Divider />
-          <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}><ListItemIcon sx={{ color: "error.main" }}><LogoutOutlined fontSize="small" /></ListItemIcon>Logout</MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <ListItemIcon>
+              <LogoutOutlined fontSize="small" />
+            </ListItemIcon>
+            Logout
+          </MenuItem>
         </Menu>
       </Box>
     </Box>

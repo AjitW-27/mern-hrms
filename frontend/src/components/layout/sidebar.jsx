@@ -1,693 +1,226 @@
 import React from "react";
-import { styled } from "@mui/material/styles";
 import {
   Box,
-  Drawer as MuiDrawer,
+  Divider,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Typography,
-  Divider,
   Tooltip,
-  Avatar,
-  Chip,
+  Typography,
 } from "@mui/material";
-
+import { useTheme } from "@mui/material/styles";
 import {
-  Dashboard as DashboardIcon,
-  People as PeopleIcon,
-  Work as WorkIcon,
-  Event as EventIcon,
-  Payment as PaymentIcon,
-  Logout as LogoutIcon,
-  BeachAccess as LeaveIcon,
-  Devices as AssetIcon,
-  Receipt as ExpenseIcon,
-  School as TrainingIcon,
-  TrendingUp as PerformanceIcon,
-  Flag as GoalIcon,
-  Assessment as ReportIcon,
-  History as AuditIcon,
-  Schedule as ShiftIcon,
+  DashboardOutlined,
+  PeopleOutline,
+  WorkOutline,
+  EventOutlined,
+  PaymentsOutlined,
+  BeachAccessOutlined,
+  DevicesOtherOutlined,
+  ReceiptLongOutlined,
+  SchoolOutlined,
+  TrendingUpOutlined,
+  FlagOutlined,
+  AssessmentOutlined,
+  HistoryOutlined,
+  ScheduleOutlined,
+  ForumOutlined,
+  AdminPanelSettingsOutlined,
+  LogoutOutlined,
 } from "@mui/icons-material";
-
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Logo from "../comps/logo";
 import useAuthStore from "../../strore/authStore";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 
-const drawerWidth = 240;
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ open, theme }) => ({
-  width: open ? drawerWidth : 72,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-
-  "& .MuiDrawer-paper": {
-    width: open ? drawerWidth : 72,
-    overflowX: "hidden",
-    transition: "width 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-    background: theme.palette.background.paper,
-    color: theme.palette.text.primary,
-    borderRight: `1px solid ${theme.palette.divider}`,
-    boxShadow: "none",
-    display: "flex",
-    flexDirection: "column",
-  },
-}));
-
-const ALL_MENU = [
-  {
-    text: "Dashboard",
-    icon: DashboardIcon,
-    path: "/dashboard",
-    roles: ["superadmin", "admin", "hr", "manager", "employee"],
-  },
-  {
-    text: "Employees",
-    icon: PeopleIcon,
-    path: "/dashboard/employees",
-    roles: ["superadmin", "admin", "hr", "manager"],
-  },
-  {
-    text: "Projects",
-    icon: WorkIcon,
-    path: "/dashboard/projects",
-    roles: ["superadmin", "admin", "hr", "manager", "employee"],
-  },
-  {
-    text: "Attendance",
-    icon: EventIcon,
-    path: "/dashboard/attendance",
-    roles: ["superadmin", "admin", "hr", "manager", "employee"],
-  },
-  {
-    text: "Leave",
-    icon: LeaveIcon,
-    path: "/dashboard/leave",
-    roles: ["superadmin", "admin", "hr", "manager", "employee"],
-  },
-  {
-    text: "Payroll",
-    icon: PaymentIcon,
-    path: "/dashboard/payroll",
-    roles: ["superadmin", "admin", "hr", "employee"],
-  },
-  {
-    text: "Assets",
-    icon: AssetIcon,
-    path: "/dashboard/assets",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
-    text: "Expenses",
-    icon: ExpenseIcon,
-    path: "/dashboard/expenses",
-    roles: ["superadmin", "admin", "hr", "manager", "employee"],
-  },
-  {
-    text: "Onboarding",
-    icon: WorkIcon,
-    path: "/dashboard/onboarding",
-    roles: ["superadmin", "admin", "hr", "manager"],
-  },
-  {
-    text: "Training",
-    icon: TrainingIcon,
-    path: "/dashboard/training",
-    roles: ["superadmin", "admin", "hr", "manager"],
-  },
-  {
-    text: "Performance",
-    icon: PerformanceIcon,
-    path: "/dashboard/performance",
-    roles: ["superadmin", "admin", "hr", "manager"],
-  },
-  {
-    text: "Goals",
-    icon: GoalIcon,
-    path: "/dashboard/goals",
-    roles: ["superadmin", "admin", "hr", "manager", "employee"],
-  },
-  {
-    text: "Shifts",
-    icon: ShiftIcon,
-    path: "/dashboard/enterprise/shifts",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
-    text: "Leave Policies",
-    icon: LeaveIcon,
-    path: "/dashboard/enterprise/leave-policies",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
-    text: "Reports",
-    icon: ReportIcon,
-    path: "/dashboard/reports",
-    roles: ["superadmin", "admin", "hr"],
-  },
-  {
-    text: "Audit Logs",
-    icon: AuditIcon,
-    path: "/dashboard/audit-logs",
-    roles: ["superadmin", "admin", "hr"],
-  },
+const menu = [
+  ["Dashboard", DashboardOutlined, "/dashboard", ["dashboard"]],
+  ["Employees", PeopleOutline, "/dashboard/employees", ["employees"]],
+  ["Projects", WorkOutline, "/dashboard/projects", ["projects"]],
+  ["Attendance", EventOutlined, "/dashboard/attendance", ["attendance"]],
+  ["Leave", BeachAccessOutlined, "/dashboard/leave", ["leave"]],
+  ["Payroll", PaymentsOutlined, "/dashboard/payroll", ["payroll"]],
+  ["Assets", DevicesOtherOutlined, "/dashboard/assets", ["assets"]],
+  ["Expenses", ReceiptLongOutlined, "/dashboard/expenses", ["expenses"]],
+  ["Onboarding", WorkOutline, "/dashboard/onboarding", ["onboarding"]],
+  ["Training", SchoolOutlined, "/dashboard/training", ["training"]],
+  [
+    "Performance",
+    TrendingUpOutlined,
+    "/dashboard/performance",
+    ["performance"],
+  ],
+  ["Goals", FlagOutlined, "/dashboard/goals", ["goals"]],
+  // [
+  //   "Communication",
+  //   ForumOutlined,
+  //   "/dashboard/communication",
+  //   ["communication"],
+  // ],
+  // ["Admin", AdminPanelSettingsOutlined, "/dashboard/admin", ["users"]],
+  ["Shifts", ScheduleOutlined, "/dashboard/enterprise/shifts", ["attendance"]],
+  [
+    "Leave Policies",
+    BeachAccessOutlined,
+    "/dashboard/enterprise/leave-policies",
+    ["leave"],
+  ],
+  ["Reports", AssessmentOutlined, "/dashboard/reports", ["reports"]],
+  ["Audit Logs", HistoryOutlined, "/dashboard/audit-logs", ["audit"]],
 ];
 
-/*
-|--------------------------------------------------------------------------
-| Normalize Role
-|--------------------------------------------------------------------------
-*/
+const Rail = ({ expanded, children, ...props }) => {
+  const theme = useTheme();
+  return (
+    <Box
+      {...props}
+      sx={{
+        position: "fixed",
+        inset: "0 auto 0 0",
+        width: expanded ? 240 : 72,
+        zIndex: 1400,
+        background: "#FFFFFF",
+        borderRight: "1px solid #E2E8F0",
+        transition: "width 180ms ease",
+        overflow: "hidden",
+        boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+        ...(expanded
+          ? {
+              boxShadow:
+                "0 24px 44px -12px rgba(15,23,42,.22), 0 4px 16px -4px rgba(15,23,42,.08)",
+            }
+          : {}),
+        [theme.breakpoints.down("md")]: { width: expanded ? 240 : 64 },
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
 
-const normalizeRole = (value) =>
-  String(value || "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "_");
-
-/*
-|--------------------------------------------------------------------------
-| Sidebar
-|--------------------------------------------------------------------------
-*/
-
-export default function Sidebar({ open, variant = "permanent", onClose }) {
+export default function Sidebar({ open, onOpen, onClose, canHover = true }) {
   const navigate = useNavigate();
   const location = useLocation();
-
-  /*
-  |--------------------------------------------------------------------------
-  | Zustand
-  |--------------------------------------------------------------------------
-  |
-  | When Access.jsx updates setUser(), this component automatically
-  | rerenders because it subscribes to user.
-  |
-  */
-
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
-
-  const role = normalizeRole(user?.role || "employee");
-
-  const expanded = variant === "temporary" ? true : open;
-
-  /*
-  |--------------------------------------------------------------------------
-  | RBAC Enabled State
-  |--------------------------------------------------------------------------
-  |
-  | First read cached value so the menu does not wait for API.
-  |
-  */
-
-  const [rbacEnabled, setRbacEnabled] = React.useState(() => {
-    try {
-      const cached = localStorage.getItem("hrms_rbac_enabled");
-
-      if (cached !== null) {
-        return cached === "true";
-      }
-    } catch (error) {
-      console.error("Failed to read RBAC state:", error);
-    }
-
-    return false;
-  });
-
-  /*
-  |--------------------------------------------------------------------------
-  | Load / Sync RBAC Settings
-  |--------------------------------------------------------------------------
-  */
+  const [rbacEnabled, setRbacEnabled] = React.useState(false);
 
   React.useEffect(() => {
     let mounted = true;
-
-    const syncRbac = async () => {
-      /*
-      |--------------------------------------------------------------------------
-      | Immediately use cached value
-      |--------------------------------------------------------------------------
-      */
-
+    const sync = async () => {
       try {
         const cached = localStorage.getItem("hrms_rbac_enabled");
-
-        if (mounted && cached !== null) {
-          setRbacEnabled(cached === "true");
+        if (cached !== null && mounted) setRbacEnabled(cached === "true");
+        const { data } = await execReq("/settings");
+        if (mounted) {
+          setRbacEnabled(data?.data?.rbacEnabled === true);
+          localStorage.setItem(
+            "hrms_rbac_enabled",
+            String(data?.data?.rbacEnabled === true),
+          );
         }
-      } catch (error) {
-        console.error("Failed to read cached RBAC state:", error);
-      }
-
-      /*
-      |--------------------------------------------------------------------------
-      | Get latest value from backend
-      |--------------------------------------------------------------------------
-      */
-
-      try {
-        const { data } = await api.get("/settings");
-
-        const enabled = data?.data?.rbacEnabled === true;
-
-        if (!mounted) return;
-
-        setRbacEnabled(enabled);
-
-        localStorage.setItem("hrms_rbac_enabled", String(enabled));
-      } catch (error) {
-        console.error("Failed to load RBAC settings:", error);
-      }
+      } catch {}
     };
-
-    /*
-    |--------------------------------------------------------------------------
-    | Listen for permission/RBAC changes
-    |--------------------------------------------------------------------------
-    |
-    | Access.jsx dispatches:
-    |
-    | window.dispatchEvent(
-    |   new CustomEvent("hrms-rbac-updated")
-    | );
-    |
-    | This makes the sidebar update immediately.
-    |
-    */
-
-    const handleRbacUpdated = () => {
-      syncRbac();
-    };
-
-    window.addEventListener("hrms-rbac-updated", handleRbacUpdated);
-
-    syncRbac();
-
+    sync();
+    window.addEventListener("hrms-rbac-updated", sync);
     return () => {
       mounted = false;
-
-      window.removeEventListener("hrms-rbac-updated", handleRbacUpdated);
+      window.removeEventListener("hrms-rbac-updated", sync);
     };
   }, []);
 
-  /*
-  |--------------------------------------------------------------------------
-  | Permission Module Resolver
-  |--------------------------------------------------------------------------
-  */
+  const role = String(
+    user?.role?.code || user?.role?.name || user?.role || "employee",
+  ).toLowerCase();
+  const hasRead = (module) =>
+    !rbacEnabled ||
+    ["admin", "superadmin", "super_admin"].includes(role) ||
+    user?.rolePermissions?.[module]?.read === true;
+  const items = menu.filter(([, , , modules]) => modules.some(hasRead));
+  const expanded = open && canHover;
 
-  const permissionModule = (path) => {
-    if (path === "/dashboard") {
-      return "dashboard";
-    }
-
-    if (path.includes("/employees")) {
-      return "employees";
-    }
-
-    if (path.includes("/projects")) {
-      return "projects";
-    }
-
-    if (path.includes("/attendance")) {
-      return "attendance";
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Shifts
-    |--------------------------------------------------------------------------
-    |
-    | Keep your existing mapping.
-    |
-    */
-
-    if (path.includes("/shifts")) {
-      return "attendance";
-    }
-
-    if (path.includes("/leave-policies")) {
-      return "leave";
-    }
-
-    if (path.includes("/leave")) {
-      return "leave";
-    }
-
-    if (path.includes("/payroll")) {
-      return "payroll";
-    }
-
-    if (path.includes("/assets")) {
-      return "assets";
-    }
-
-    if (path.includes("/expenses")) {
-      return "expenses";
-    }
-
-    if (path.includes("/onboarding")) {
-      return "onboarding";
-    }
-
-    if (path.includes("/training")) {
-      return "training";
-    }
-
-    if (path.includes("/performance")) {
-      return "performance";
-    }
-
-    if (path.includes("/goals")) {
-      return "goals";
-    }
-
-    if (path.includes("/reports")) {
-      return "reports";
-    }
-
-    if (path.includes("/audit-logs")) {
-      return "audit";
-    }
-
-    return "dashboard";
-  };
-
-  /*
-  |--------------------------------------------------------------------------
-  | READ Permission Check
-  |--------------------------------------------------------------------------
-  */
-
-  const hasReadPermission = (module) => {
-    /*
-    |--------------------------------------------------------------------------
-    | RBAC disabled
-    |--------------------------------------------------------------------------
-    |
-    | When RBAC is disabled, permissions should not control
-    | the drawer. Existing role-based access remains.
-    |
-    */
-
-    if (!rbacEnabled) {
-      return true;
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | RBAC enabled
-    |--------------------------------------------------------------------------
-    |
-    | IMPORTANT:
-    |
-    | Do NOT give SUPER_ADMIN automatic access here.
-    |
-    | The permission matrix controls the drawer.
-    |
-    | Example:
-    |
-    | dashboard.read = false
-    |
-    | => Dashboard is hidden.
-    |
-    */
-
-    return user?.rolePermissions?.[module]?.read === true;
-  };
-
-  /*
-  |--------------------------------------------------------------------------
-  | Build Menu
-  |--------------------------------------------------------------------------
-  */
-
-  const menuItems = ALL_MENU.filter((item) => {
-    /*
-    |--------------------------------------------------------------------------
-    | RBAC Disabled
-    |--------------------------------------------------------------------------
-    |
-    | Preserve your original role based behavior.
-    |
-    */
-
-    if (!rbacEnabled) {
-      return (
-        item.roles.includes(role) ||
-        role === "superadmin" ||
-        role === "super_admin"
-      );
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | RBAC Enabled
-    |--------------------------------------------------------------------------
-    |
-    | READ permission decides whether menu appears.
-    |
-    */
-
-    const module = permissionModule(item.path);
-
-    return hasReadPermission(module);
-  });
-
-  /*
-  |--------------------------------------------------------------------------
-  | Logout
-  |--------------------------------------------------------------------------
-  */
-
-  const handleLogout = () => {
+  const go = (path) => navigate(path);
+  const isActive = (path) =>
+    location.pathname === path ||
+    (path !== "/dashboard" && location.pathname.startsWith(path));
+  const doLogout = () => {
     logout();
-
-    localStorage.removeItem("token");
+    localStorage.removeItem("hrms_token");
     sessionStorage.removeItem("token");
-
-    navigate("/");
+    navigate("/", { replace: true });
   };
-
-  /*
-  |--------------------------------------------------------------------------
-  | UI
-  |--------------------------------------------------------------------------
-  */
 
   return (
-    <Drawer
-      variant={variant}
-      open={open}
-      onClose={onClose}
-      ModalProps={{
-        keepMounted: true,
-      }}
-      PaperProps={{
-        sx: {
-          overflow: "hidden",
-        },
-      }}
+    <Rail
+      expanded={expanded}
+      onMouseEnter={canHover ? onOpen : undefined}
+      onMouseLeave={canHover ? onClose : undefined}
+      aria-label="Primary navigation"
     >
-      {/* LOGO */}
-
       <Box
         sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 2,
-          flexShrink: 0,
-          background: "background.paper",
-        }}
-      >
-        <Box
-          sx={{
-            height: 70,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: expanded ? "flex-start" : "center",
-            p: 1.9,
-          }}
-        >
-          <Logo open={expanded} />
-        </Box>
-
-        <Divider />
-      </Box>
-
-      {/* SCROLLABLE CONTENT */}
-
-      <Box
-        sx={{
-          flex: 1,
-          overflowY: "auto",
-          overflowX: "hidden",
-
-          "&::-webkit-scrollbar": {
-            width: 2,
-          },
-
-          "&::-webkit-scrollbar-thumb": {
-            background: "divider",
-            borderRadius: 4,
-          },
-
-          "&::-webkit-scrollbar-track": {
-            background: "transparent",
-          },
-
+          height: 64,
           display: "flex",
-          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: expanded ? "flex-start" : "center",
+          px: expanded ? 2 : 1.25,
+          borderBottom: "1px solid #E2E8F0",
         }}
       >
-        {/* USER INFO */}
-
-        {expanded && user && (
-          <Box
-            sx={{
-              px: 2,
-              py: 1.5,
-            }}
-          >
-            <Box display="flex" alignItems="center" gap={1.5}>
-              <Avatar
-                sx={{
-                  width: 36,
-                  height: 36,
-                  bgcolor: "primary.main",
-                  fontSize: 14,
-                  fontWeight: "bold",
-                }}
-              >
-                {user.name?.charAt(0)?.toUpperCase()}
-              </Avatar>
-
-              <Box>
-                <Typography
-                  fontSize={13}
-                  fontWeight={600}
-                  color="text.primary"
-                  noWrap
-                >
-                  {user.name}
-                </Typography>
-
-                <Chip
-                  label={role.toUpperCase()}
-                  size="small"
-                  sx={{
-                    height: 16,
-                    fontSize: 9,
-                    fontWeight: "bold",
-                    bgcolor: "primary.light",
-                    color: "primary.dark",
-                    border: "1px solid",
-                    borderColor: "primary.light",
-                  }}
-                />
-              </Box>
-            </Box>
-          </Box>
-        )}
-
-        {expanded && <Divider />}
-
-        {/* MENU */}
-
-        <List
-          sx={{
-            px: 1,
-            pt: 1,
-          }}
-        >
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-
-            const isActive =
-              location.pathname === item.path ||
-              (item.path !== "/dashboard" &&
-                location.pathname.startsWith(item.path));
-
+        <Logo open={expanded} />
+      </Box>
+      <Box
+        sx={{ px: 1, pt: 1.5, overflowY: "auto", height: "calc(100vh - 64px)" }}
+      >
+        <List disablePadding>
+          {items.map(([label, Icon, path]) => {
+            const active = isActive(path);
             return (
-              <ListItem
-                key={item.text}
-                disablePadding
-                sx={{
-                  mb: 0.3,
-                }}
-              >
-                <Tooltip title={!expanded ? item.text : ""} placement="right">
+              <ListItem key={label} disablePadding sx={{ mb: 0.5 }}>
+                <Tooltip title={expanded ? "" : label} placement="right">
                   <ListItemButton
-                    onClick={() => {
-                      navigate(item.path);
-
-                      if (variant === "temporary") {
-                        onClose?.();
-                      }
-                    }}
+                    onClick={() => go(path)}
                     sx={{
-                      borderRadius: "4px",
                       minHeight: 44,
-
-                      justifyContent: expanded ? "initial" : "center",
-
-                      px: expanded ? 1.5 : 1,
-
-                      background: isActive
-                        ? "linear-gradient(90deg, rgba(0, 255, 255, 0.10), rgba(0, 255, 255, 0.01))"
-                        : "transparent",
-
-                      border: isActive ? "1px solid" : "1px solid transparent",
-
-                      borderColor: isActive ? "primary.light" : "transparent",
-
-                      "&:hover": {
-                        background: "action.hover",
-                      },
+                      borderRadius: 1,
+                      px: expanded ? 1.25 : 1,
+                      justifyContent: expanded ? "flex-start" : "center",
+                      position: "relative",
+                      bgcolor: active ? "#E6F7F8" : "transparent",
+                      "&:hover": { bgcolor: "#F8FAFC" },
+                      "&::before": active
+                        ? {
+                            content: '""',
+                            position: "absolute",
+                            left: 0,
+                            top: 8,
+                            bottom: 8,
+                            width: 3,
+                            borderRadius: "0 999px 999px 0",
+                            bgcolor: "#0E8F9A",
+                          }
+                        : {},
                     }}
                   >
                     <ListItemIcon
                       sx={{
-                        color: isActive ? "primary.main" : "text.secondary",
-
                         minWidth: 0,
-
-                        mr: expanded ? 1.5 : 0,
-
+                        mr: expanded ? 1.25 : 0,
                         justifyContent: "center",
+                        color: active ? "#0E8F9A" : "#64748B",
                       }}
                     >
-                      <Icon fontSize="small" />
+                      <Icon sx={{ fontSize: 20, strokeWidth: 1.75 }} />
                     </ListItemIcon>
-
                     {expanded && (
                       <ListItemText
-                        primary={item.text}
+                        primary={label}
                         primaryTypographyProps={{
                           fontSize: 14,
                           fontWeight: 600,
-                          color: isActive ? "primary.dark" : "text.primary",
-                        }}
-                      />
-                    )}
-
-                    {isActive && expanded && (
-                      <Box
-                        sx={{
-                          width: 4,
-                          height: 20,
-                          borderRadius: 1,
-                          bgcolor: "primary.main",
-                          ml: "auto",
+                          color: active ? "#0A5C67" : "#0F172A",
                         }}
                       />
                     )}
@@ -697,72 +230,45 @@ export default function Sidebar({ open, variant = "permanent", onClose }) {
             );
           })}
         </List>
-
-        <Box
-          sx={{
-            flexGrow: 1,
-          }}
-        />
-
-        <Divider
-          sx={{
-            mx: 2,
-          }}
-        />
-
-        {/* LOGOUT */}
-
-        <List
-          sx={{
-            px: 1,
-            pb: 1,
-          }}
-        >
-          <ListItem disablePadding>
-            <Tooltip title={!expanded ? "Logout" : ""} placement="right">
-              <ListItemButton
-                onClick={handleLogout}
-                sx={{
-                  borderRadius: "4px",
-                  minHeight: 44,
-
-                  justifyContent: expanded ? "initial" : "center",
-
-                  px: expanded ? 1.5 : 1,
-
-                  "&:hover": {
-                    background: "action.hover",
-                  },
+        <Divider sx={{ my: 1.5 }} />
+        <Tooltip title={expanded ? "" : "Logout"} placement="right">
+          <ListItemButton
+            onClick={doLogout}
+            sx={{
+              minHeight: 44,
+              borderRadius: 1,
+              px: expanded ? 1.25 : 1,
+              justifyContent: expanded ? "flex-start" : "center",
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: expanded ? 1.25 : 0,
+                justifyContent: "center",
+                color: "#EF4444",
+              }}
+            >
+              <LogoutOutlined sx={{ fontSize: 20 }} />
+            </ListItemIcon>
+            {expanded && (
+              <ListItemText
+                primary="Logout"
+                primaryTypographyProps={{
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#EF4444",
                 }}
-              >
-                <ListItemIcon
-                  sx={{
-                    color: "error.main",
-                    minWidth: 0,
-
-                    mr: expanded ? 1.5 : 0,
-
-                    justifyContent: "center",
-                  }}
-                >
-                  <LogoutIcon fontSize="small" />
-                </ListItemIcon>
-
-                {expanded && (
-                  <ListItemText
-                    primary="Logout"
-                    primaryTypographyProps={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: "error.main",
-                    }}
-                  />
-                )}
-              </ListItemButton>
-            </Tooltip>
-          </ListItem>
-        </List>
+              />
+            )}
+          </ListItemButton>
+        </Tooltip>
+        {/* {expanded && (
+          <Typography sx={{ px: 1.25, py: 2, fontSize: 12, color: "none" }}>
+            {role.toUpperCase()}
+          </Typography>
+        )} */}
       </Box>
-    </Drawer>
+    </Rail>
   );
 }

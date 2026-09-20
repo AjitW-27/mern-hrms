@@ -1,7 +1,7 @@
 import React from "react";
-import CrudPage from "../../components/common/CrudPage";
+import ModulePage from "../../components/common/ModulePage";
 import { attendanceConfig } from "../../config/moduleConfigs";
 
-const Page = () => <CrudPage config={attendanceConfig} />;
+const Page = () => <ModulePage config={attendanceConfig} />;
 
 export default Page;

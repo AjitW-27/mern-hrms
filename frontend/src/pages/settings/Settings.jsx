@@ -18,7 +18,7 @@ import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../../components/common/PageHeader";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 
 const settingCards = [
   {
@@ -57,8 +57,7 @@ const Settings = () => {
   const [feedback, setFeedback] = useState("");
 
   useEffect(() => {
-    api
-      .get("/settings")
+    execReq("/settings")
       .then(({ data }) => {
         if (data?.data) setForm((prev) => ({ ...prev, ...data.data }));
       })
@@ -67,7 +66,7 @@ const Settings = () => {
 
   const save = async () => {
     try {
-      await api.put("/settings", form);
+      await execReq.put("/settings", form);
       setFeedback("Settings saved successfully.");
     } catch (error) {
       setFeedback(error?.response?.data?.message || "Unable to save settings.");
@@ -111,7 +110,7 @@ const Settings = () => {
                       sx={{
                         width: 44,
                         height: 44,
-                        borderRadius: "8px",
+                        borderRadius: "4px",
                         display: "grid",
                         placeItems: "center",
                         bgcolor: "primary.light",
@@ -267,7 +266,7 @@ const Settings = () => {
                   alignItems="center"
                   sx={{
                     p: 2,
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                     border: "1px solid",
                     borderColor: "divider",
                   }}

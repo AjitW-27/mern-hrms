@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import api from "../lib/api";
+import execReq from "../lib/execReq";
 
 const AuthContext = createContext(null);
 
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
       return;
     }
     try {
-      const { data } = await api.get("/auth/me");
+      const { data } = await execReq("/auth/me");
       setUser(data.user);
     } catch (error) {
       localStorage.removeItem("hrms_token");
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
-    const { data } = await api.post("/auth/login", { email, password });
+    const { data } = await execReq.post("/auth/login", { email, password });
     localStorage.setItem("hrms_token", data.token);
     localStorage.setItem("hrms_user", JSON.stringify(data.user));
     setUser(data.user);

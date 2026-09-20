@@ -6,42 +6,26 @@ import Appbar from "./appbar";
 import { Outlet } from "react-router-dom";
 import SessionManager from "../../strore/sessionManager";
 import PageSetup from "../common/PageSetup";
-import Sidebar from "./Sidebar";
+import Sidebar from "./sidebar";
+
+const SIDEBAR_COLLAPSED_WIDTH = 70;
 
 const DashboardLayout = () => {
-  const [open, setOpen] = useState(() =>
-    typeof window === "undefined" ? true : window.innerWidth >= 900,
-  );
+  const [open, setOpen] = useState(false);
   const theme = useTheme();
+
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const canHover = useMediaQuery("(hover: hover) and (pointer: fine)");
+  const temporaryDrawer = isMobile || !canHover;
 
   return (
     <Box
       sx={{
         display: "flex",
         backgroundColor: "background.default",
-        height: "100vh",
-        overflowY: "auto",
-        overflowX: "hidden",
-
-        /* Firefox */
-        scrollbarWidth: "2px",
-        scrollbarColor: "divider transparent",
-
-        /* Chrome, Edge */
-        "&::-webkit-scrollbar": {
-          width: "2px",
-        },
-        "&::-webkit-scrollbar-track": {
-          background: "transparent",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "divider",
-          borderRadius: "8px",
-        },
-        "&::-webkit-scrollbar-thumb:hover": {
-          backgroundColor: "primary.main",
-        },
+        minHeight: "100vh",
+        width: "100%",
+        overflow: "hidden",
       }}
     >
       <CssBaseline />
@@ -50,28 +34,46 @@ const DashboardLayout = () => {
 
       <Sidebar
         open={open}
-        variant={isMobile ? "temporary" : "permanent"}
+        variant={temporaryDrawer ? "temporary" : "permanent"}
         onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
       />
 
       <Box
         sx={{
-          flexGrow: 1,
+          flex: 1,
+          minWidth: 0,
+          width: `calc(100% - ${temporaryDrawer ? 0 : SIDEBAR_COLLAPSED_WIDTH}px)`,
+          marginLeft: temporaryDrawer ? 0 : `${SIDEBAR_COLLAPSED_WIDTH}px`,
           display: "flex",
           flexDirection: "column",
-          height: "100%",
+          minHeight: "100vh",
         }}
       >
-        <Box sx={{ zIndex: 1100 }}>
-          <Appbar open={open} setOpen={setOpen} />
+        <Box
+          sx={{
+            position: "relative",
+            zIndex: 1100,
+            width: "100%",
+          }}
+        >
+          <Appbar
+            open={open}
+            setOpen={setOpen}
+            temporaryDrawer={temporaryDrawer}
+          />
         </Box>
+
         <Box
           component="main"
           sx={{
-            flexGrow: 1,
-            p: { xs: 0.75, sm: 1, md: 1.25, lg: 1.5 },
-            overflowY: "auto",
+            flex: 1,
+            minWidth: 0,
+            p:2,
+            width: "100%",
             overflowX: "hidden",
+            overflowY: "auto",
+            boxSizing: "border-box",
           }}
         >
           <PageSetup>

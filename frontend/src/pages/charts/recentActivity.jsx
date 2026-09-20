@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Typography, Divider, Skeleton } from "@mui/material";
 import {
   PersonAdd as PersonAddIcon,
@@ -8,10 +9,10 @@ import {
 } from "@mui/icons-material";
 
 const ICON_MAP = {
-  employee: { icon: PersonAddIcon, bg: "#059669" },
-  project: { icon: WorkIcon, bg: "#2563eb" },
-  leave: { icon: LeaveIcon, bg: "#ea580c" },
-  payroll: { icon: PaymentIcon, bg: "#7c3aed" },
+  employee: { icon: PersonAddIcon, bg: "#10B981" },
+  project: { icon: WorkIcon, bg: "#4F46E5" },
+  leave: { icon: LeaveIcon, bg: "#F59E0B" },
+  payroll: { icon: PaymentIcon, bg: "#8B5CF6" },
 };
 
 const timeAgo = (dateStr) => {
@@ -24,11 +25,12 @@ const timeAgo = (dateStr) => {
 };
 
 const RecentActivities = ({ activities, loading }) => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
         p: 2.5,
-        borderRadius: "8px",
+        borderRadius: "4px",
         background: "background.paper",
         border: "1px solid",
         borderColor: "divider",
@@ -53,11 +55,18 @@ const RecentActivities = ({ activities, loading }) => {
           </Typography>
         </Box>
         <Typography
+          component="button"
+          type="button"
+          onClick={() => navigate("/dashboard/audit-logs")}
           sx={{
             color: "primary.main",
             fontWeight: 600,
             fontSize: 13,
             cursor: "pointer",
+            border: 0,
+            background: "transparent",
+            p: 0,
+            fontFamily: "inherit",
             "&:hover": { textDecoration: "underline" },
           }}
         >
@@ -76,7 +85,7 @@ const RecentActivities = ({ activities, loading }) => {
                 height={42}
                 sx={{
                   bgcolor: "action.hover",
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                   flexShrink: 0,
                 }}
               />
@@ -119,7 +128,7 @@ const RecentActivities = ({ activities, loading }) => {
                       width: 42,
                       height: 42,
                       bgcolor: "primary.light",
-                      borderRadius: "8px",
+                      borderRadius: "4px",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",

@@ -1,46 +1,27 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import DashboardLayout from "./components/layout/dashLayout";
-import Dashboard from "./pages/dashboard/Dashboard";
-import AddEmployee from "./pages/employee/createEmp";
-import Department from "./pages/department/department";
-import Payroll from "./pages/payroll/payroll";
-import AddDepartment from "./pages/department/addDepartment";
-import AddProject from "./pages/project/addProject";
-import Project from "./pages/projects/Projects";
-import Settings from "./pages/settings/Settings";
-import ProfileSettings from "./pages/auth/ProfileSettings";
-import Attendance from "./pages/attendence/attendence";
-import Employee from "./pages/employee/employee";
-import EmployeeDetails from "./pages/employee/employeeDetails";
-import LeaveManagement from "./pages/leave/leaveManage";
-import AssetManagement from "./pages/assets/AssetManagement";
-import ExpenseManagement from "./pages/expense/ExpenseManagement";
-import Onboarding from "./pages/onboarding/Onboarding";
-import Training from "./pages/training/Training";
-import Performance from "./pages/performance/Performance";
-import Goals from "./pages/goals/Goals";
-import Users from "./pages/admin/Users";
-import Roles from "./pages/admin/Roles";
-import Organization from "./pages/admin/Organization";
-import RBAC from "./pages/admin/RBAC";
-import AdminLayout, { AdminIndex } from "./components/admin/AdminLayout";
-import Branches from "./pages/enterprise/Branches";
-import Shifts from "./pages/enterprise/Shifts";
-import LeavePolicies from "./pages/enterprise/LeavePolicies";
-import Reports from "./pages/reports/Reports";
-import AuditLogs from "./pages/audit/AuditLogs";
 import AutoLogoutHandler from "./strore/autoLogoutHandler";
 import ProtectedRoute from "./routes/ProtectedRoute";
+
+const Login = lazy(() => import("./pages/auth/Login")); const Register = lazy(() => import("./pages/auth/Register"));
+const DashboardLayout = lazy(() => import("./components/layout/dashLayout")); const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const Employee = lazy(() => import("./pages/employees/Employees")); const EmployeeForm = lazy(() => import("./pages/employee/createEmp")); const EmployeeDetails = lazy(() => import("./pages/employee/employeeDetails"));
+const Department = lazy(() => import("./pages/departments/Departments")); const DepartmentForm = lazy(() => import("./pages/department/addDepartment")); const Payroll = lazy(() => import("./pages/payroll/payroll")); const Project = lazy(() => import("./pages/projects/Projects"));
+const Settings = lazy(() => import("./pages/settings/Settings")); const ProjectForm = lazy(() => import("./pages/project/addProject")); const ProfileSettings = lazy(() => import("./pages/auth/ProfileSettings")); const Attendance = lazy(() => import("./pages/attendance/Attendance"));
+const LeaveManagement = lazy(() => import("./pages/leave/leaveManage")); const AssetManagement = lazy(() => import("./pages/assets/AssetManagement")); const ExpenseManagement = lazy(() => import("./pages/expense/ExpenseManagement"));
+const Onboarding = lazy(() => import("./pages/onboarding/Onboarding")); const Training = lazy(() => import("./pages/training/Training")); const Performance = lazy(() => import("./pages/performance/Performance")); const Goals = lazy(() => import("./pages/goals/Goals"));
+const Users = lazy(() => import("./pages/admin/Users")); const Roles = lazy(() => import("./pages/admin/Roles")); const Organization = lazy(() => import("./pages/admin/Organization")); const RBAC = lazy(() => import("./pages/admin/RBAC"));
+const Announcements = lazy(() => import("./pages/admin/Announcements")); const Holidays = lazy(() => import("./pages/admin/Holidays"));
+const AdminLayout = lazy(() => import("./components/admin/AdminLayout")); const AdminOverview = lazy(() => import("./pages/admin/AdminOverview")); const Branches = lazy(() => import("./pages/enterprise/Branches")); const Shifts = lazy(() => import("./pages/enterprise/Shifts")); const LeavePolicies = lazy(() => import("./pages/enterprise/LeavePolicies"));
+const Reports = lazy(() => import("./pages/reports/Reports")); const AuditLogs = lazy(() => import("./pages/audit/AuditLogs"));
+const CommunicationHub = lazy(() => import("./pages/communication/CommunicationHub"));
 
 const App = () => {
   return (
     <>
       <AutoLogoutHandler />
-      <Routes>
+      <Suspense fallback={<div aria-live="polite" style={{ padding: 24 }}>Loading module…</div>}><Routes>
         {/* Public */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -57,16 +38,17 @@ const App = () => {
             <Route path="leave" element={<LeaveManagement />} />
             <Route path="expenses" element={<ExpenseManagement />} />
             <Route path="goals" element={<Goals />} />
+            <Route path="communication" element={<CommunicationHub />} />
 
             {/* Module access is controlled by the RBAC permission matrix. */}
             <Route>
               <Route path="employees" element={<Employee />} />
-              <Route path="add-employee" element={<AddEmployee />} />
-              <Route path="edit-employee/:id" element={<AddEmployee />} />
+            <Route path="add-employee" element={<EmployeeForm />} />
+            <Route path="edit-employee/:id" element={<EmployeeForm />} />
               <Route path="employee/:id" element={<EmployeeDetails />} />
               <Route path="departments" element={<Department />} />
-              <Route path="add-department" element={<AddDepartment />} />
-              <Route path="add-project" element={<AddProject />} />
+            <Route path="add-department" element={<DepartmentForm />} />
+            <Route path="add-project" element={<ProjectForm />} />
               <Route path="assets" element={<AssetManagement />} />
               <Route path="onboarding" element={<Onboarding />} />
               <Route path="training" element={<Training />} />
@@ -77,13 +59,16 @@ const App = () => {
               <Route path="reports" element={<Reports />} />
               <Route path="audit-logs" element={<AuditLogs />} />
               <Route path="admin" element={<AdminLayout />}>
-                <Route index element={<AdminIndex />} />
+              <Route index element={<AdminOverview />} />
+                <Route path="overview" element={<AdminOverview />} />
                 <Route path="users" element={<Users />} />
                 <Route path="roles" element={<Roles />} />
                 <Route path="rbac" element={<RBAC />} />
                 <Route path="departments" element={<Department />} />
                 <Route path="locations" element={<Branches />} />
                 <Route path="organization" element={<Organization />} />
+                <Route path="announcements" element={<Announcements />} />
+                <Route path="holidays" element={<Holidays />} />
                 <Route path="settings" element={<Settings />} />
               </Route>
             </Route>
@@ -91,7 +76,7 @@ const App = () => {
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      </Routes></Suspense>
     </>
   );
 };

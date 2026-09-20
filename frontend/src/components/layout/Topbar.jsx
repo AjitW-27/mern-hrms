@@ -5,16 +5,14 @@ import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useAuth } from "../../context/AuthContext";
 
-const Topbar = ({ open, setOpen }) => {
+const Topbar = ({ open, setOpen, temporaryDrawer = false }) => {
   const { user, logout } = useAuth();
 
   return (
-    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0b1220", borderBottom: "1px solid rgba(255,255,255,.08)" }}>
+    <AppBar position="sticky" elevation={0} sx={{ bgcolor: "#0F172A", borderBottom: "1px solid rgba(255,255,255,.08)" }}>
       <Toolbar sx={{ minHeight: 78, px: 3, display: "flex", justifyContent: "space-between" }}>
         <Stack direction="row" alignItems="center" spacing={2}>
-          <IconButton onClick={() => setOpen(!open)} sx={{ color: "#fff" }}>
-            <MenuRoundedIcon />
-          </IconButton>
+          {temporaryDrawer ? <IconButton onClick={() => setOpen(!open)} sx={{ color: "#FFFFFF" }} aria-label="Open navigation"><MenuRoundedIcon /></IconButton> : null}
           <Box>
             <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.15 }}>
               Enterprise HRMS
@@ -25,7 +23,7 @@ const Topbar = ({ open, setOpen }) => {
           </Box>
         </Stack>
         <Stack direction="row" alignItems="center" spacing={1.5}>
-          <IconButton sx={{ color: "#fff" }}>
+          <IconButton sx={{ color: "#FFFFFF" }}>
             <NotificationsRoundedIcon />
           </IconButton>
           <Stack direction="row" alignItems="center" spacing={1.2}>
@@ -38,7 +36,7 @@ const Topbar = ({ open, setOpen }) => {
                 {user?.email || ""}
               </Typography>
             </Box>
-            <IconButton onClick={logout} sx={{ color: "#fff" }}>
+            <IconButton onClick={logout} sx={{ color: "#FFFFFF" }}>
               <LogoutRoundedIcon />
             </IconButton>
           </Stack>

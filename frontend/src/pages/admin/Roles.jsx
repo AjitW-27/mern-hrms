@@ -9,12 +9,6 @@ import {
   IconButton,
   MenuItem,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -22,10 +16,11 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 import PageHeader from "../../components/common/PageHeader";
+import DataGrid from "../../components/common/DataGrid";
 
-const defaultRoleForm = { name: "", isActive: true };
+const defaultRoleForm = { name: "", code: "", description: "" };
 
 const RoleEditor = ({ roles, onRefresh }) => {
   const [open, setOpen] = useState(false);
@@ -46,7 +41,8 @@ const RoleEditor = ({ roles, onRefresh }) => {
     setError("");
     setForm({
       name: role.name || "",
-      isActive: role.isActive !== false,
+      code: role.code || "",
+      description: role.description || "",
     });
     setOpen(true);
   };
@@ -57,6 +53,13 @@ const RoleEditor = ({ roles, onRefresh }) => {
     setError("");
   };
 
+  const generateCode = (value) =>
+    value
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+      .replace(/[^a-z0-9_]/g, "");
+
   const submit = async () => {
     setSaving(true);
     setError("");
@@ -64,15 +67,16 @@ const RoleEditor = ({ roles, onRefresh }) => {
       const name = form.name.trim();
       const payload = {
         name,
-        isActive: form.isActive !== false,
+        code: form.code.trim(),
+        description: form.description.trim(),
       };
       if (editing?._id) {
         if (editing.isSystemRole) {
-          await api.patch(`/admin/roles/${editing._id}/status`, { isActive: payload.isActive });
+          throw new Error("System roles can only have their status changed from the table.");
         } else {
-          await api.put(`/admin/roles/${editing._id}`, payload);
+          await execReq.put(`/admin/roles/${editing._id}`, payload);
         }
-      } else await api.post("/admin/roles", payload);
+      } else await execReq.post("/admin/roles", payload);
       await onRefresh();
       close();
     } catch (err) {
@@ -85,7 +89,7 @@ const RoleEditor = ({ roles, onRefresh }) => {
   const updateStatus = async (role, value) => {
     const isActive = value === "active";
     try {
-      await api.patch(`/admin/roles/${role._id}/status`, { isActive });
+      await execReq.patch(`/admin/roles/${role._id}/status`, { isActive });
       await onRefresh();
     } catch (err) {
       setError(err?.response?.data?.message || "Unable to update role status.");
@@ -94,7 +98,7 @@ const RoleEditor = ({ roles, onRefresh }) => {
 
   const remove = async (id) => {
     try {
-      await api.delete(`/admin/roles/${id}`);
+      await execReq.delete(`/admin/roles/${id}`);
       await onRefresh();
     } catch (err) {
       setError(err?.response?.data?.message || "Unable to deactivate role.");
@@ -114,45 +118,21 @@ const RoleEditor = ({ roles, onRefresh }) => {
       {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>{error}</Alert>}
 
       <Card>
-        <TableContainer sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Role</TableCell>
-                <TableCell sx={{ fontWeight: 700, width: 280 }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {roles.map((role) => (
-                <TableRow key={role._id} hover>
-                  <TableCell sx={{ fontWeight: 700, textTransform: "capitalize" }}>
-                    {role.name}
-                  </TableCell>
-                  <TableCell>
-                    <Stack direction="row" spacing={0.75} alignItems="center">
-                      <TextField
-                        select
-                        size="small"
-                        value={role.isActive !== false ? "active" : "inactive"}
-                        onChange={(e) => updateStatus(role, e.target.value)}
-                        sx={{ minWidth: 125 }}
-                      >
-                        <MenuItem value="active">Active</MenuItem>
-                        <MenuItem value="inactive">Inactive</MenuItem>
-                      </TextField>
-                      <IconButton onClick={() => openEdit(role)} size="small" aria-label="Edit role">
-                        <EditRoundedIcon fontSize="inherit" />
-                      </IconButton>
-                      <IconButton onClick={() => remove(role._id)} size="small" color="error" aria-label="Deactivate role">
-                        <DeleteRoundedIcon fontSize="inherit" />
-                      </IconButton>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <DataGrid
+          minWidth={900}
+          rows={roles}
+          columns={[
+            { field: "name", headerName: "Role Name", renderCell: (role) => <Typography fontWeight={700} textTransform="capitalize">{role.name}</Typography> },
+            { field: "code", headerName: "Role Code" },
+            { field: "description", headerName: "Description", nowrap: false, valueGetter: (role) => role.description || "—" },
+            { field: "status", headerName: "Status", valueGetter: (role) => role.isActive !== false ? "Active" : "Inactive", renderCell: (role) => <Typography sx={{ fontSize: 12, fontWeight: 700, color: role.isActive !== false ? "#0A5C67" : "#EF4444" }}>{role.isActive !== false ? "Active" : "Inactive"}</Typography> },
+          ]}
+          actions={(role) => <>
+            <TextField select size="small" value={role.isActive !== false ? "active" : "inactive"} onChange={(e) => updateStatus(role, e.target.value)} sx={{ minWidth: 108 }} aria-label="Role status"><MenuItem value="active">Active</MenuItem><MenuItem value="inactive">Inactive</MenuItem></TextField>
+            {!role.isSystemRole && <IconButton onClick={() => openEdit(role)} size="small" aria-label="Edit role"><EditRoundedIcon fontSize="inherit" /></IconButton>}
+            <IconButton onClick={() => remove(role._id)} size="small" color="error" aria-label="Deactivate role"><DeleteRoundedIcon fontSize="inherit" /></IconButton>
+          </>}
+        />
       </Card>
 
       <Drawer
@@ -189,29 +169,43 @@ const RoleEditor = ({ roles, onRefresh }) => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  label="Role"
+                  label="Role Name"
                   value={form.name}
-                  onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((p) => ({
+                      ...p,
+                      name: e.target.value,
+                      code: p.code || generateCode(e.target.value),
+                    }))
+                  }
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
-                  select
-                  label="Status"
-                  value={form.isActive ? "active" : "inactive"}
-                  onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.value === "active" }))}
-                >
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="inactive">Inactive</MenuItem>
-                </TextField>
+                  label="Role Code"
+                  value={form.code}
+                  onChange={(e) => setForm((p) => ({ ...p, code: e.target.value }))}
+                  placeholder="hr_manager"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Description"
+                  multiline
+                  minRows={4}
+                  value={form.description}
+                  onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+                  placeholder="Describe the purpose of this role."
+                />
               </Grid>
             </Grid>
           </Box>
 
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, p: 2.25, borderTop: "1px solid", borderColor: "divider" }}>
             <Button onClick={close}>Cancel</Button>
-            <Button variant="contained" onClick={submit} disabled={saving || !form.name.trim()}>
+            <Button variant="contained" onClick={submit} disabled={saving || !form.name.trim() || !form.code.trim()}>
               {saving ? "Saving..." : "Save"}
             </Button>
           </Box>
@@ -225,7 +219,7 @@ const Roles = () => {
   const [roles, setRoles] = useState([]);
 
   const load = async () => {
-    const { data } = await api.get("/admin/roles");
+    const { data } = await execReq("/admin/roles");
     setRoles(data.data || []);
   };
 

@@ -82,6 +82,12 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+
+    isSystemBot: {
+        type: Boolean,
+        default: false,
+        index: true,
+    },
 }, { timestamps: true });
 
 userSchema.pre("save", async function (next) {

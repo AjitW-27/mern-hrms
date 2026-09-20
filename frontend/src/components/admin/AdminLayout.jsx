@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Tab, Tabs } from "@mui/material";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
-const tabs=[{label:"Users",path:"/dashboard/admin/users"},{label:"Roles",path:"/dashboard/admin/roles"},{label:"Access",path:"/dashboard/admin/rbac"},{label:"Departments",path:"/dashboard/admin/departments"},{label:"Organization",path:"/dashboard/admin/organization"},{label:"Locations",path:"/dashboard/admin/locations"},{label:"Settings",path:"/dashboard/admin/settings"}];
-const AdminLayout=()=>{const navigate=useNavigate();const {pathname}=useLocation();const current=tabs.findIndex(t=>pathname===t.path);return <Box><Box sx={{borderBottom:"1px solid",borderColor:"divider",mb:2,overflowX:"auto"}}><Tabs value={current<0?0:current} onChange={(_,v)=>navigate(tabs[v].path)} variant="scrollable" scrollButtons={false} sx={{minWidth:"max-content","& .MuiTabs-indicator":{height:2,backgroundColor:"primary.main"}}}>{tabs.map(tab=><Tab key={tab.path} label={tab.label} sx={{minHeight:42,px:2,borderRadius:"4px 4px 0 0",color:"text.primary",fontWeight:600,"&.Mui-selected":{color:"primary.main",bgcolor:"primary.light"}}}/>)}</Tabs></Box><Outlet/></Box>};
-export const AdminIndex=()=> <Navigate to="users" replace/>; export default AdminLayout;
+import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
+const AdminLayout = () => <Box sx={{ width: "100%" }}><Outlet /></Box>;
+export default AdminLayout;

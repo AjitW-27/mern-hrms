@@ -29,13 +29,14 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <Box
         sx={{
-          backgroundColor: "#6d28d9",
+          backgroundColor: "#8B5CF6",
           padding: "6px 16px",
-          borderRadius: "8px",
+          borderRadius: "4px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          boxShadow: "0px 4px 12px rgba(0,0,0,0.4)",
+          boxShadow:
+            "0 24px 44px -12px rgba(15,23,42,.22), 0 4px 16px -4px rgba(15,23,42,.08)",
           border: "none",
         }}
       >
@@ -43,13 +44,13 @@ const CustomTooltip = ({ active, payload, label }) => {
           sx={{
             fontWeight: "bold",
             fontSize: "16px",
-            color: "#fff",
+            color: "#FFFFFF",
             lineHeight: 1.2,
           }}
         >
           {payload[0].value}
         </Typography>
-        <Typography sx={{ fontSize: "12px", color: "#e9d5ff" }}>
+        <Typography sx={{ fontSize: "12px", color: "#E0E4FF" }}>
           {label}
         </Typography>
       </Box>
@@ -63,9 +64,9 @@ const EmployeeChart = () => {
     <Box
       sx={{
         p: 2,
-        borderRadius: "16px",
-        backgroundColor: "#131826",
-        color: "#fff",
+        borderRadius: "4px",
+        backgroundColor: "#0F172A",
+        color: "#FFFFFF",
         fontFamily: "sans-serif",
         height: "100%",
         display: "flex",
@@ -88,17 +89,17 @@ const EmployeeChart = () => {
           sx={{
             display: "flex",
             alignItems: "center",
-            backgroundColor: "#161b28",
-            padding: "8px 14px",
-            borderRadius: "8px",
+            backgroundColor: "#0F172A",
+            padding: "4px 14px",
+            borderRadius: "4px",
             fontSize: "0.85rem",
             cursor: "pointer",
-            border: "1px solid #1e293b",
+            border: "1px solid #1E293B",
           }}
         >
           This Month
           <svg
-            style={{ marginLeft: 10, width: 14, height: 14, color: "#94a3b8" }}
+            style={{ marginLeft: 10, width: 14, height: 14, color: "none" }}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -124,19 +125,19 @@ const EmployeeChart = () => {
           >
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#6d28d9" stopOpacity={0.4} />
-                <stop offset="100%" stopColor="#6d28d9" stopOpacity={0} />
+                <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.4} />
+                <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0} />
               </linearGradient>
             </defs>
 
             {/* Solid horizontal lines instead of dashed */}
-            <CartesianGrid vertical={false} stroke="#1e293b" />
+            <CartesianGrid vertical={false} stroke="#1E293B" />
 
             <XAxis
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 13 }}
+              tick={{ fill: "none", fontSize: 13 }}
               dy={15}
               ticks={["Apr 23", "Apr 30", "May 7", "May 14", "May 21"]}
             />
@@ -144,7 +145,7 @@ const EmployeeChart = () => {
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#94a3b8", fontSize: 13 }}
+              tick={{ fill: "none", fontSize: 13 }}
               /* REMOVED dx={-10} here to prevent text squishing */
               domain={[0, 150]}
               ticks={[0, 30, 60, 90, 120, 150]}
@@ -152,16 +153,16 @@ const EmployeeChart = () => {
 
             <Tooltip
               content={<CustomTooltip />}
-              cursor={{ stroke: "#6d28d9", strokeWidth: 1 }}
+              cursor={{ stroke: "#8B5CF6", strokeWidth: 1 }}
             />
 
             <Area
               type="natural"
               dataKey="value"
-              stroke="#7c3aed"
+              stroke="#8B5CF6"
               strokeWidth={3}
               fill="url(#colorValue)"
-              activeDot={{ r: 6, fill: "#7c3aed", strokeWidth: 0 }}
+              activeDot={{ r: 6, fill: "#8B5CF6", strokeWidth: 0 }}
             />
           </AreaChart>
         </ResponsiveContainer>

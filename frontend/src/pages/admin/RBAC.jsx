@@ -17,7 +17,7 @@ import {
 
 import PageHeader from "../../components/common/PageHeader";
 import PermissionMatrix from "../../components/common/PermissionMatrix";
-import api from "../../lib/api";
+import execReq from "../../lib/execReq";
 
 import useAuthStore from "../../strore/authStore";
 
@@ -65,7 +65,7 @@ const Access = () => {
       setLoadingRoles(true);
       setError("");
 
-      const response = await api.get("/admin/roles");
+      const response = await execReq("/admin/roles");
 
       const roleList = response?.data?.data || response?.data?.roles || [];
 
@@ -109,7 +109,7 @@ const Access = () => {
 
   const loadSettings = async () => {
     try {
-      const response = await api.get("/settings");
+      const response = await execReq("/settings");
 
       const enabled =
         response?.data?.data?.rbacEnabled === true ||
@@ -145,7 +145,7 @@ const Access = () => {
       setLoadingPermissions(true);
       setError("");
 
-      const response = await api.get(`/rbac/roles/${id}`);
+      const response = await execReq(`/rbac/roles/${id}`);
 
       const roleData =
         response?.data?.data || response?.data?.role || response?.data || {};
@@ -211,7 +211,7 @@ const Access = () => {
       |--------------------------------------------------------------------------
       */
 
-      const response = await api.patch(`/rbac/roles/${roleId}/permissions`, {
+      const response = await execReq.patch(`/rbac/roles/${roleId}/permissions`, {
         permissions,
       });
 
@@ -310,7 +310,7 @@ const Access = () => {
       setError("");
       setMessage("");
 
-      const response = await api.put("/settings", {
+      const response = await execReq.put("/settings", {
         rbacEnabled: enabled,
       });
 

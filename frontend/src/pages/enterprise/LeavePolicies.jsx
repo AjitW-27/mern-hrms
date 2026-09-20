@@ -1,7 +1,7 @@
 import React from "react";
-import CrudPage from "../../components/common/CrudPage";
+import ModulePage from "../../components/common/ModulePage";
 import { leavePolicyConfig } from "../../config/moduleConfigs";
 
-const LeavePolicies = () => <CrudPage config={leavePolicyConfig} />;
+const LeavePolicies = () => <ModulePage config={leavePolicyConfig} />;
 
 export default LeavePolicies;

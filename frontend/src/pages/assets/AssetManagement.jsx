@@ -1,9 +1,9 @@
 import React from "react";
-import CrudPage from "../../components/common/CrudPage";
+import ModulePage from "../../components/common/ModulePage";
 import { assetConfig } from "../../config/moduleConfigs";
 
 const AssetManagement = () => (
-  <CrudPage
+  <ModulePage
     config={assetConfig}
     transformItem={(asset) => ({
       ...asset,

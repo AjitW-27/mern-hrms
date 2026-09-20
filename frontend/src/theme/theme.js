@@ -4,11 +4,11 @@ const theme = createTheme({
     palette: {
         mode: "light",
         primary: {
-            main: "#86e7ea",
+            main: "#55C0C9",
         },
         background: {
-            default: "#ffffff",
-            paper: "#ffffff",
+            default: "#FFFFFF",
+            paper: "#FFFFFF",
         },
     },
     typography: {
