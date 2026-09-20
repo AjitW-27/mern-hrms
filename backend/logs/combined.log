@@ -1800,3 +1800,8 @@
 [2026-09-20 13:09:08] INFO: Client disconnected: 7F_cALh874ZZ7GkyAAAn
 [2026-09-20 13:09:23] INFO: Frontend connected: IbD23Zn-9_KimqZFAAAp
 [2026-09-20 13:09:27] INFO: Client disconnected: IbD23Zn-9_KimqZFAAAp
+[2026-09-20 13:09:52] INFO: MongoDB Connected ✅
+[2026-09-20 13:09:52] INFO: Server running on http://0.0.0.0:5000 🚀
+[2026-09-20 13:09:52] INFO: LAN API: http://10.28.64.135:5000/api
+[2026-09-20 13:10:13] ERROR: ❌ Biometric connection failed:
+[2026-09-20 13:10:13] INFO: 🔁 Retrying biometric connection in 15 minutes...

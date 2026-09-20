@@ -52,3 +52,4 @@
 [2026-09-20 13:04:21] ERROR: ❌ Biometric connection failed:
 [2026-09-20 13:07:42] ERROR: 500 - CORS blocked for origin: https://mern-hrms-git-main-ajits-projects-4ecab577.vercel.app - /api/auth/login - OPTIONS - 127.0.0.1
 [2026-09-20 13:07:46] ERROR: 500 - CORS blocked for origin: https://mern-hrms-git-main-ajits-projects-4ecab577.vercel.app - /api/auth/login - OPTIONS - 127.0.0.1
+[2026-09-20 13:10:13] ERROR: ❌ Biometric connection failed:
