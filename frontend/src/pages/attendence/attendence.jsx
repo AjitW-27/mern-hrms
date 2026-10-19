@@ -75,7 +75,9 @@ const Attendance = () => {
     // 2. Fetch records for the selected date
     const fetchAttendance = async () => {
       try {
-        const response = await execReq(`/attendance?date=${encodeURIComponent(filterDate)}`);
+        const response = await execReq(
+          `/attendance?date=${encodeURIComponent(filterDate)}`,
+        );
         const result = response.data;
 
         if (result?.success && Array.isArray(result?.data)) {
@@ -278,7 +280,8 @@ const Attendance = () => {
 
                 border: "1px solid #E2E8F0",
 
-                boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+                boxShadow:
+                  "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
 
                 display: "flex",
                 alignItems: "center",
@@ -289,7 +292,8 @@ const Attendance = () => {
                 "&:hover": {
                   transform: "translateY(-6px) scale(1.015)",
 
-                  boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+                  boxShadow:
+                    "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
 
                   borderColor: `${stat.color}55`,
                 },
@@ -444,7 +448,8 @@ const Attendance = () => {
           background: "#FFFFFF",
           borderRadius: "4px",
           border: "1px solid #E2E8F0",
-          boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+          boxShadow:
+            "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
           overflow: "hidden",
         }}
       >

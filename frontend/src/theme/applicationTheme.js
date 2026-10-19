@@ -59,7 +59,7 @@ export const createApplicationTheme = (
     hrms: tokens,
 
     shape: {
-      borderRadius: 4,
+      borderRadius: tokens.radius,
     },
 
     spacing: tokens.spacing,
@@ -141,18 +141,13 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             minHeight: 40,
-            borderRadius: 4,
+            borderRadius: tokens.radius,
             boxShadow: "none",
             fontWeight: 600,
 
-            "&:focus": {
-              outline: "none",
-              boxShadow: "none",
-            },
-
             "&:focus-visible": {
-              outline: "none",
-              boxShadow: "none",
+              outline: `3px solid ${tokens.primaryLight}`,
+              outlineOffset: 2,
             },
           },
 
@@ -171,11 +166,11 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             minHeight: 40,
-            borderRadius: 4,
+            borderRadius: tokens.radius,
             backgroundColor: tokens.surface,
 
             "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: tokens.border,
+              borderColor: tokens.primary,
               borderWidth: "1px",
             },
 
@@ -187,7 +182,7 @@ export const createApplicationTheme = (
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
               borderColor: tokens.border,
               borderWidth: "1px",
-              boxShadow: "none",
+              boxShadow: `0 0 0 3px ${tokens.primaryLight}`,
             },
 
             "&.Mui-focused": {
@@ -232,7 +227,7 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             backgroundColor: tokens.surface,
-            borderRadius: 4,
+            borderRadius: tokens.cardRadius,
             border: `1px solid ${tokens.border}`,
             boxShadow: tokens.shadowSm,
           },
@@ -243,7 +238,7 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             backgroundColor: tokens.surface,
-            borderRadius: 4,
+            borderRadius: tokens.cardRadius,
           },
         },
       },
@@ -251,7 +246,7 @@ export const createApplicationTheme = (
       MuiTableContainer: {
         styleOverrides: {
           root: {
-            borderRadius: 4,
+            borderRadius: tokens.cardRadius,
             border: `1px solid ${tokens.border}`,
             overflow: "hidden",
           },
@@ -266,7 +261,7 @@ export const createApplicationTheme = (
           },
 
           head: {
-            backgroundColor: "#F5F7FA",
+            backgroundColor: tokens.tableHeader,
             color: tokens.text,
             fontWeight: 600,
           },
@@ -282,7 +277,7 @@ export const createApplicationTheme = (
           },
 
           columnHeaders: {
-            backgroundColor: "#F5F7FA",
+            backgroundColor: tokens.tableHeader,
             color: tokens.text,
             borderBottom: `1px solid ${tokens.border}`,
           },

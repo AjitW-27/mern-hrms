@@ -57,6 +57,7 @@ import execReq, { SOCKET_BASE_URL } from "../../lib/execReq";
 import useAuthStore from "../../strore/authStore";
 import MeetingRoomModal from "./MeetingRoomModal";
 import PageHeader from "../../components/common/PageHeader";
+import { enableNotificationSound, startRingtone, stopRingtone } from "../../lib/notificationSound";
 
 const formatDate = (value) => {
   const date = new Date(value);
@@ -151,6 +152,7 @@ const CommunicationHub = () => {
   const typingTimerRef = useRef(null);
   const contactsRef = useRef([]);
   const draftInputRef = useRef(null);
+  const incomingCallRef = useRef(null);
 
   useEffect(() => {
     selectedConversationRef.current = selectedConversationId;
@@ -163,6 +165,20 @@ const CommunicationHub = () => {
   useEffect(() => {
     activeCallRef.current = activeCall;
   }, [activeCall]);
+
+  useEffect(() => {
+    incomingCallRef.current = incomingCall;
+  }, [incomingCall]);
+
+  useEffect(() => {
+    const unlockAudio = () => enableNotificationSound();
+    window.addEventListener("pointerdown", unlockAudio, { once: true });
+    window.addEventListener("keydown", unlockAudio, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, []);
 
   useEffect(() => {
     contactsRef.current = contacts;
@@ -326,6 +342,13 @@ const CommunicationHub = () => {
             return current;
           return [...current, incoming];
         });
+        updateConversation(conversationId, (conversation) => ({
+          ...conversation,
+          unreadCount: 0,
+        }));
+        execReq.put(`/communication/conversations/${conversationId}/read`)
+          .then(() => window.dispatchEvent(new Event("hrms:communication-refresh")))
+          .catch(() => {});
       }
     });
 
@@ -349,7 +372,9 @@ const CommunicationHub = () => {
       const contact = contactsRef.current.find(
         (item) => getId(item) === String(payload.fromUserId),
       );
+      if (incomingCallRef.current?.callId === String(payload.callId)) return;
       setIncomingCall({ ...payload, contact });
+      startRingtone();
     });
 
     socket.on("call:accepted", async (payload) => {
@@ -453,6 +478,10 @@ const CommunicationHub = () => {
     });
 
     socket.on("call:end", async (payload) => {
+      if (incomingCallRef.current?.callId === String(payload.callId)) {
+        stopRingtone();
+        setIncomingCall(null);
+      }
       if (activeCallRef.current?.id === String(payload.callId)) {
         await endCall({ notify: false, status: "ended" });
       }
@@ -491,6 +520,7 @@ const CommunicationHub = () => {
       socket.disconnect();
       socketRef.current = null;
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      stopRingtone();
       cleanupPeerConnection();
     };
   }, [token, userId, updateConversation]);
@@ -870,6 +900,7 @@ const CommunicationHub = () => {
   const acceptIncomingCall = async () => {
     const call = incomingCall;
     if (!call) return;
+    stopRingtone();
 
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
@@ -940,6 +971,7 @@ const CommunicationHub = () => {
   const rejectIncomingCall = async () => {
     const call = incomingCall;
     if (!call) return;
+    stopRingtone();
     socketRef.current?.emit("call:rejected", {
       toUserId: call.fromUserId,
       callId: call.callId,
@@ -958,6 +990,7 @@ const CommunicationHub = () => {
     async ({ notify = true, status = "ended" } = {}) => {
       const call = activeCallRef.current;
       if (!call) return;
+      stopRingtone();
       if (notify)
         socketRef.current?.emit("call:end", {
           toUserId: call.peerId,
@@ -1114,7 +1147,7 @@ const CommunicationHub = () => {
         </Tabs>
 
         {tab === 1 && (
-          <Grid container sx={{ minHeight: 590 }}>
+          <Grid container sx={{ minHeight: { xs: "auto", md: 590 } }}>
             <Grid
               item
               xs={12}
@@ -1769,7 +1802,7 @@ const CommunicationHub = () => {
                     borderRadius: "4px",
                     border: "1px solid #E2E8F0",
                     background:
-                      "linear-gradient(145deg,#FFFFFF 0%,#F0FBFC 100%)",
+                      "#F0FBFC",
                     boxShadow: "none",
                   }}
                 >
@@ -2100,7 +2133,7 @@ const CommunicationHub = () => {
                     p: 2.5,
                     borderRadius: "4px",
                     border: "1px solid #E2E8F0",
-                    background: "linear-gradient(135deg,#FFFFFF,#F0FDF7)",
+                    background: "#F0FBFC",
                     boxShadow: "none",
                     height: "100%",
                   }}
@@ -2145,7 +2178,7 @@ const CommunicationHub = () => {
                     p: 2.5,
                     borderRadius: "4px",
                     border: "1px solid #E2E8F0",
-                    background: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
+                    background: "#F0FBFC",
                     boxShadow: "none",
                     height: "100%",
                   }}

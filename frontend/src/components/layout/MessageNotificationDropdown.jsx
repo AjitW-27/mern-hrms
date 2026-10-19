@@ -31,6 +31,7 @@ import { io } from "socket.io-client";
 import { useLocation, useNavigate } from "react-router-dom";
 import execReq, { SOCKET_BASE_URL } from "../../lib/execReq";
 import useAuthStore from "../../strore/authStore";
+import { enableNotificationSound, playMessageSound } from "../../lib/notificationSound";
 
 const SOCKET_URL = SOCKET_BASE_URL;
 
@@ -74,8 +75,23 @@ export default function MessageNotificationDropdown() {
   }, [token]);
 
   useEffect(() => {
+    const unlockAudio = () => enableNotificationSound();
+    window.addEventListener("pointerdown", unlockAudio, { once: true });
+    window.addEventListener("keydown", unlockAudio, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, []);
+
+  useEffect(() => {
     fetchUnread();
   }, [fetchUnread, location.pathname]);
+
+  useEffect(() => {
+    window.addEventListener("hrms:communication-refresh", fetchUnread);
+    return () => window.removeEventListener("hrms:communication-refresh", fetchUnread);
+  }, [fetchUnread]);
 
   useEffect(() => {
     if (!token) return undefined;
@@ -95,6 +111,7 @@ export default function MessageNotificationDropdown() {
           if (first) seenMessageIdsRef.current.delete(first);
         }
       }
+      playMessageSound();
       const conversationId = getId(incoming?.conversation);
       if (!conversationId) {
         fetchUnread();

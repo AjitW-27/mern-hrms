@@ -7,13 +7,13 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import PageHeader from "../../components/common/PageHeader";
 import ModulePage from "../../components/common/ModulePage";
 import { payrollConfig } from "../../config/moduleConfigs";
 import execReq from "../../lib/execReq";
+
 const months = [
   "January",
   "February",
@@ -28,23 +28,14 @@ const months = [
   "November",
   "December",
 ];
+
 export default function Payroll() {
   const today = new Date();
   const [month, setMonth] = useState(today.getMonth() + 1);
   const [year, setYear] = useState(today.getFullYear());
   const [generating, setGenerating] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const config = useMemo(
-    () => ({
-      ...payrollConfig,
-      endpoint: `${payrollConfig.endpoint}?month=${month}&year=${year}&refresh=${refreshKey}`,
-      mutationEndpoint: payrollConfig.endpoint,
-      canCreate: false,
-      canEdit: false,
-      canDelete: false,
-    }),
-    [month, year, refreshKey],
-  );
+
   const run = async () => {
     if (!window.confirm(`Generate payroll for ${months[month - 1]} ${year}?`))
       return;
@@ -56,29 +47,44 @@ export default function Payroll() {
       setGenerating(false);
     }
   };
+
+  const config = useMemo(
+    () => ({
+      ...payrollConfig,
+      endpoint: `${payrollConfig.endpoint}?month=${month}&year=${year}&refresh=${refreshKey}`,
+      mutationEndpoint: payrollConfig.endpoint,
+      canCreate: true, // Enables toolbar action button
+      addBtn: generating ? "Generating..." : "Run Payroll",
+      onAddClick: run,
+      canEdit: false,
+      canDelete: false,
+    }),
+    [month, year, refreshKey, generating],
+  );
+
   const approve = async (id, refresh) => {
     await execReq.put(`${payrollConfig.endpoint}/${id}/approve`);
     await refresh();
   };
+
   const paid = async (id, refresh) => {
     await execReq.put(`${payrollConfig.endpoint}/${id}/mark-paid`, {
       paymentMode: "Bank Transfer",
     });
     await refresh();
   };
+
   return (
-    <Box>
-      <PageHeader
-        title="Payroll"
-        actionLabel={generating ? "Generating..." : "Run Payroll"}
-        onAction={run}
-        actionIcon={PaymentsOutlinedIcon}
-      />
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      {/* Header without top right button */}
+      <PageHeader title="Payroll" />
+
+      {/* Month & Year Filters */}
       <Stack
         direction="row"
         spacing={1}
         justifyContent="flex-end"
-        sx={{ mb: 2 }}
+        sx={{ mb: 1.5 }}
       >
         <TextField
           select
@@ -113,6 +119,8 @@ export default function Payroll() {
           ))}
         </TextField>
       </Stack>
+
+      {/* Data Table */}
       <ModulePage
         config={config}
         hideHeader

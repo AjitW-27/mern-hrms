@@ -23,8 +23,8 @@ body,
   -moz-osx-font-smoothing: grayscale;
 }
 body {
-  background: #f4f7fa;
-  color: #0f172a;
+  background: #f7f8fa;
+  color: #111827;
   font-family: inherit;
 }
 button,
@@ -43,8 +43,8 @@ canvas {
   max-width: 100%;
 }
 :focus-visible {
-  outline: none;
-  box-shadow: none !important;
+  outline: 3px solid #fff0e8;
+  outline-offset: 2px;
 }
 ::-webkit-scrollbar {
   width: 7px;
@@ -58,5 +58,5 @@ canvas {
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: none;
+  background: #94a3b8;
 }

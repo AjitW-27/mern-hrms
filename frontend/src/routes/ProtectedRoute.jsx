@@ -25,6 +25,8 @@ const routeModule = (pathname) => {
         organization: "organizations",
         locations: "organizations",
         settings: "settings",
+        announcements: "announcements",
+        holidays: "holidays",
       }[child] || "users",
       "read",
     ];

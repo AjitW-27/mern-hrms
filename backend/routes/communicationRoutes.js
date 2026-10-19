@@ -10,6 +10,7 @@ router.get("/unread-summary", permit("communication", "read"), controller.unread
 router.get("/conversations", permit("communication", "read"), controller.listConversations);
 router.post("/conversations", permit("communication", "create"), controller.createConversation);
 router.get("/conversations/:id/messages", permit("communication", "read"), controller.listMessages);
+router.put("/conversations/:id/read", permit("communication", "update"), controller.markConversationRead);
 router.post("/conversations/:id/messages", permit("communication", "create"), controller.createMessage);
 router.get("/meetings", permit("communication", "read"), controller.listMeetings);
 router.post("/meetings", permit("communication", "create"), controller.createMeeting);

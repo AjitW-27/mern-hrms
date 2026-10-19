@@ -88,6 +88,36 @@ const userSchema = new mongoose.Schema({
         default: false,
         index: true,
     },
+
+    // Session and lockout fields are selected explicitly by the auth controller.
+    // They must be part of the schema; otherwise Mongoose strict mode silently
+    // drops them and refresh-token rotation can never succeed.
+    refreshToken: {
+        type: String,
+        select: false,
+        default: null,
+    },
+    refreshTokenVersion: {
+        type: Number,
+        select: false,
+        default: 0,
+    },
+    failedLoginAttempts: {
+        type: Number,
+        default: 0,
+    },
+    lockUntil: {
+        type: Date,
+        default: null,
+    },
+    lastLogin: {
+        type: Date,
+        default: null,
+    },
+    loginCount: {
+        type: Number,
+        default: 0,
+    },
 }, { timestamps: true });
 
 userSchema.pre("save", async function (next) {

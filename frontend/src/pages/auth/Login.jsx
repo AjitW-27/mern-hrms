@@ -84,7 +84,9 @@ const Login = () => {
       return false;
     }
 
-    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    // Employee IDs are valid login identifiers too. Only validate email syntax
+    // when the supplied identifier is an email address.
+    if (formData.email.includes("@") && !/\S+@\S+\.\S+/.test(formData.email)) {
       setError("Please enter a valid email address");
       return false;
     }
@@ -129,16 +131,18 @@ const Login = () => {
         throw new Error("Login response is missing token or user details.");
       }
 
-      if (formData.rememberMe) {
-        localStorage.setItem("rememberMe", "true");
-        localStorage.setItem("token", accessToken);
-        localStorage.setItem("hrms_token", accessToken);
-      } else {
-        localStorage.setItem("rememberMe", "false");
-        sessionStorage.setItem("token", accessToken);
-        localStorage.setItem("hrms_token", accessToken);
+      const storage = formData.rememberMe ? localStorage : sessionStorage;
+      const otherStorage = formData.rememberMe ? sessionStorage : localStorage;
+      ["token", "hrms_token", "refreshToken", "hrms_refresh_token"].forEach((key) => {
+        otherStorage.removeItem(key);
+      });
+      storage.setItem("token", accessToken);
+      storage.setItem("hrms_token", accessToken);
+      if (payload.refreshToken) {
+        storage.setItem("refreshToken", payload.refreshToken);
+        storage.setItem("hrms_refresh_token", payload.refreshToken);
       }
-
+      localStorage.setItem("rememberMe", String(formData.rememberMe));
       localStorage.setItem("hrms_user", JSON.stringify(user));
 
       setAuth({

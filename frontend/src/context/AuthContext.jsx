@@ -8,14 +8,14 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const refreshUser = async () => {
-    const token = localStorage.getItem("hrms_token");
+    const token = localStorage.getItem("hrms_token") || sessionStorage.getItem("hrms_token");
     if (!token) {
       setUser(null);
       setLoading(false);
       return;
     }
     try {
-      const { data } = await execReq("/auth/me");
+      const { data } = await execReq("/auth/profile");
       setUser(data.user);
     } catch (error) {
       localStorage.removeItem("hrms_token");
@@ -40,10 +40,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const { data } = await execReq.post("/auth/login", { email, password });
-    localStorage.setItem("hrms_token", data.token);
-    localStorage.setItem("hrms_user", JSON.stringify(data.user));
-    setUser(data.user);
-    return data.user;
+    const payload = data?.data || data || {};
+    const token = payload.accessToken || payload.token;
+    if (!token || !payload.user) throw new Error("Login response is missing token or user details.");
+    sessionStorage.setItem("hrms_token", token);
+    sessionStorage.setItem("token", token);
+    if (payload.refreshToken) sessionStorage.setItem("hrms_refresh_token", payload.refreshToken);
+    localStorage.setItem("rememberMe", "false");
+    localStorage.setItem("hrms_user", JSON.stringify(payload.user));
+    setUser(payload.user);
+    return payload.user;
   };
 
   const logout = () => {

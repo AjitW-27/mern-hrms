@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Box, CssBaseline, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Appbar from "./appbar";
-// import Sidebar from "./sidebar";
 import { Outlet } from "react-router-dom";
+import Appbar from "./appbar";
+import Sidebar from "./sidebar";
 import SessionManager from "../../strore/sessionManager";
 import PageSetup from "../common/PageSetup";
-import Sidebar from "./sidebar";
 
 const SIDEBAR_COLLAPSED_WIDTH = 70;
 
@@ -23,9 +22,9 @@ const DashboardLayout = () => {
       sx={{
         display: "flex",
         backgroundColor: "background.default",
-        minHeight: "100vh",
-        width: "100%",
-        overflow: "hidden",
+        height: "100vh", // CHANGED: Strictly lock outer viewport to 100vh
+        width: "100vw",
+        overflow: "hidden", // CHANGED: Prevents whole page from scrolling
       }}
     >
       <CssBaseline />
@@ -39,6 +38,7 @@ const DashboardLayout = () => {
         onOpen={() => setOpen(true)}
       />
 
+      {/* Main Content Area (Appbar + Body) */}
       <Box
         sx={{
           flex: 1,
@@ -47,11 +47,14 @@ const DashboardLayout = () => {
           marginLeft: temporaryDrawer ? 0 : `${SIDEBAR_COLLAPSED_WIDTH}px`,
           display: "flex",
           flexDirection: "column",
-          minHeight: "100vh",
+          height: "100vh", // CHANGED: Locks right side to 100vh
+          overflow: "hidden", // CHANGED: Appbar stays completely fixed
         }}
       >
+        {/* Top Appbar Wrapper - Fixed at top, will never scroll */}
         <Box
           sx={{
+            flexShrink: 0, // CHANGED: Prevents Appbar from collapsing/shrinking
             position: "relative",
             zIndex: 1100,
             width: "100%",
@@ -64,16 +67,25 @@ const DashboardLayout = () => {
           />
         </Box>
 
+        {/* Scrollable Main Content - ONLY THIS SCROLLS */}
         <Box
           component="main"
           sx={{
             flex: 1,
             minWidth: 0,
-            p:2,
+            p: 2,
             width: "100%",
             overflowX: "hidden",
-            overflowY: "auto",
+            overflowY: "auto", // CHANGED: Vertical scrollbar starts BELOW the Appbar
             boxSizing: "border-box",
+            /* Custom sleek scrollbar below appbar */
+            "&::-webkit-scrollbar": {
+              width: "6px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#CBD5E1",
+              borderRadius: "4px",
+            },
           }}
         >
           <PageSetup>

@@ -77,7 +77,35 @@ const client = axios.create({
 const getToken = () =>
   localStorage.getItem("hrms_token") ||
   localStorage.getItem("token") ||
+  sessionStorage.getItem("hrms_token") ||
   sessionStorage.getItem("token");
+
+const getRefreshToken = () =>
+  localStorage.getItem("hrms_refresh_token") ||
+  localStorage.getItem("refreshToken") ||
+  sessionStorage.getItem("hrms_refresh_token") ||
+  sessionStorage.getItem("refreshToken");
+
+const clearAuth = () => {
+  ["token", "hrms_token", "refreshToken", "hrms_refresh_token", "rememberMe"].forEach((key) => {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+  });
+  localStorage.removeItem("hrms_user");
+  sessionStorage.removeItem("hrms_user");
+};
+
+const storeTokens = ({ accessToken, refreshToken }) => {
+  const storage = localStorage.getItem("rememberMe") === "true" ? localStorage : sessionStorage;
+  if (accessToken) {
+    storage.setItem("token", accessToken);
+    storage.setItem("hrms_token", accessToken);
+  }
+  if (refreshToken) {
+    storage.setItem("refreshToken", refreshToken);
+    storage.setItem("hrms_refresh_token", refreshToken);
+  }
+};
 
 client.interceptors.request.use(
   (config) => {
@@ -93,22 +121,43 @@ client.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+let refreshPromise = null;
+
 client.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error?.response?.status === 401) {
-      ["token", "hrms_token", "refreshToken", "hrms_refresh_token"].forEach(
-        (key) => {
-          localStorage.removeItem(key);
-          sessionStorage.removeItem(key);
-        }
-      );
+  async (error) => {
+    const request = error?.config;
+    const path = String(request?.url || "");
+    const isAuthRequest = path.includes("/auth/login") || path.includes("/auth/refresh-token");
 
-      if (window.location.pathname !== "/") {
-        window.location.href = "/";
-      }
+    // Invalid credentials must be shown by Login.jsx, not treated as an
+    // expired session. Protected requests refresh once before signing out.
+    if (error?.response?.status !== 401 || !request || isAuthRequest || request._retry) {
+      return Promise.reject(error);
     }
 
+    const refreshToken = getRefreshToken();
+    if (refreshToken) {
+      request._retry = true;
+      try {
+        refreshPromise ||= client.post("/auth/refresh-token", { refreshToken });
+        const response = await refreshPromise;
+        const payload = response?.data?.data || response?.data || {};
+        if (!payload.accessToken) throw new Error("Refresh response is missing an access token.");
+        storeTokens(payload);
+        request.headers = request.headers || {};
+        request.headers.Authorization = `Bearer ${payload.accessToken}`;
+        return client(request);
+      } catch {
+        clearAuth();
+      } finally {
+        refreshPromise = null;
+      }
+    } else {
+      clearAuth();
+    }
+
+    if (window.location.pathname !== "/") window.location.assign("/");
     return Promise.reject(error);
   }
 );

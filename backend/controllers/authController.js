@@ -96,9 +96,10 @@ const registerUser = async (req, res) => {
 // ─── LOGIN ───────────────────────────────────────────────────────────────────
 const loginUser = async (req, res) => {
     try {
-        const { email, password, rememberMe } = req.body;
+        const { email, password } = req.body;
+        const loginId = String(email || "").trim();
 
-        if (!email || !password) {
+        if (!loginId || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Email and password are required",
@@ -106,7 +107,14 @@ const loginUser = async (req, res) => {
         }
 
         // ── Find user with password ──
-        const user = await User.findOne({ email: email.toLowerCase() }).select(
+        // The login form explicitly supports both an email address and employee
+        // ID. Search both fields without changing the password verification path.
+        const user = await User.findOne({
+            $or: [
+                { email: loginId.toLowerCase() },
+                { employeeId: loginId },
+            ],
+        }).select(
             "+password +refreshToken +refreshTokenVersion"
         );
 
@@ -154,8 +162,9 @@ const loginUser = async (req, res) => {
             "employeeId department designation avatar"
         );
 
+        const normalizedRole = String(user.role || "employee").trim().toLowerCase();
         const roleDoc = await Role.findOne({
-            $or: [{ code: user.role }, { name: user.role }]
+            $or: [{ code: normalizedRole }, { name: normalizedRole }]
         }).lean({ flattenMaps: true });
 
         res.status(200).json({

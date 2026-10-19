@@ -171,6 +171,7 @@ const meetingRoutes = require("./routes/meetingRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
+app.set("trust proxy", 1);
 const server = http.createServer(app);
 
 // ─── CORS Origins ──────────────────────────────────────────────────────────────
@@ -275,6 +276,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/auth", authRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/leaves", leaveRoutes);
+app.use("/api/leave", leaveRoutes);
 app.use("/api/payroll", payrollRoutes);
 app.use("/api/communication", require("./routes/communicationRoutes"));
 app.use("/api/meetings", meetingRoutes);

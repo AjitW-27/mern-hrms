@@ -42,6 +42,7 @@ const AddEmployee = () => {
   const [assetGiven, setAssetGiven] = useState("no");
   const [activeStep, setActiveStep] = useState(0);
   const [availableRoles, setAvailableRoles] = useState([]);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -261,25 +262,80 @@ const AddEmployee = () => {
     };
   }, [id, navigate]);
 
+  const getFieldValue = (data, field) =>
+    field.split(".").reduce((value, key) => value?.[key], data);
+
+  const getFieldError = (field, data = formData, assets = assetDetails) => {
+    const value = field.startsWith("asset.")
+      ? getFieldValue(assets, field.replace("asset.", ""))
+      : getFieldValue(data, field);
+    if (!String(value || "").trim()) return "This field is required.";
+    if (field === "email" && !/^\S+@\S+\.\S+$/.test(String(value))) {
+      return "Enter a valid email address.";
+    }
+    return "";
+  };
+
+  const requiredFieldsByStep = {
+    0: ["fullName", "email", "mobileNo"],
+    2: ["designation", "role", "department"],
+    7:
+      !isEditMode && assetGiven === "yes"
+        ? ["asset.assetName", "asset.assetId", ...(assetDetails?.type === "Serialized" ? ["asset.serialNumber"] : [])]
+        : [],
+  };
+
+  const validateStep = (step) => {
+    const errors = (requiredFieldsByStep[step] || []).reduce((next, field) => {
+      const error = getFieldError(field);
+      if (error) next[field] = error;
+      return next;
+    }, {});
+    setFieldErrors((current) => ({ ...current, ...errors }));
+    return Object.keys(errors).length === 0;
+  };
+
   const handleEmployeeChange = (e) => {
     const { name, value } = e.target;
+    let nextFormData;
     if (name.includes(".")) {
       const [parent, child] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: { ...prev[parent], [child]: value },
-      }));
+      nextFormData = {
+        ...formData,
+        [parent]: { ...formData[parent], [child]: value },
+      };
+      setFormData(nextFormData);
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      nextFormData = { ...formData, [name]: value };
+      setFormData(nextFormData);
+    }
+    if (fieldErrors[name]) {
+      setFieldErrors((current) => {
+        const error = getFieldError(name, nextFormData);
+        if (error) return { ...current, [name]: error };
+        const { [name]: _, ...remaining } = current;
+        return remaining;
+      });
     }
   };
 
   const handleAssetChange = (e) => {
     const { name, value } = e.target;
-    setAssetDetails((prev) => ({ ...prev, [name]: value }));
+    const nextAssetDetails = { ...assetDetails, [name]: value };
+    setAssetDetails(nextAssetDetails);
+    const field = `asset.${name}`;
+    if (fieldErrors[field]) {
+      setFieldErrors((current) => {
+        const error = getFieldError(field, formData, nextAssetDetails);
+        if (error) return { ...current, [field]: error };
+        const { [field]: _, ...remaining } = current;
+        return remaining;
+      });
+    }
   };
 
   const handleNext = () => {
+    if (!validateStep(activeStep)) return;
     setActiveStep((prev) => Math.min(prev + 1, employeeSteps.length - 1));
   };
 
@@ -287,10 +343,46 @@ const AddEmployee = () => {
     setActiveStep((prev) => Math.max(prev - 1, 0));
   };
 
+  const applyBackendFieldErrors = (message, details) => {
+    const text = String(message || "");
+    if (details && typeof details === "object") {
+      const entries = Object.entries(details);
+      if (entries.length) {
+        const errors = entries.reduce((next, [field, detail]) => {
+          const errorField = ["assetName", "assetId", "serialNumber"].includes(field)
+            ? `asset.${field}`
+            : field;
+          next[errorField] = detail?.message || detail || text;
+          return next;
+        }, {});
+        setFieldErrors((current) => ({ ...current, ...errors }));
+        return true;
+      }
+    }
+    const field = [
+      "fullName",
+      "email",
+      "mobileNo",
+      "designation",
+      "role",
+      "department",
+      "assetName",
+      "assetId",
+      "serialNumber",
+    ].find((name) => new RegExp(`\\b${name}\\b`, "i").test(text));
+
+    if (!field) return false;
+    const errorField = ["assetName", "assetId", "serialNumber"].includes(field)
+      ? `asset.${field}`
+      : field;
+    setFieldErrors((current) => ({ ...current, [errorField]: text }));
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!String(formData?.mobileNo || "").trim()) {
-      alert("Mobile Number is required.");
+      setFieldErrors((current) => ({ ...current, mobileNo: "This field is required." }));
       setActiveStep(0);
       setLoading(false);
       return;
@@ -324,7 +416,8 @@ const AddEmployee = () => {
 
       const result = response?.data;
       if (result?.success === false) {
-        alert(result?.message || result?.error || "Unable to save employee.");
+        const errorMessage = result?.message || result?.error || "Unable to save employee.";
+        if (!applyBackendFieldErrors(errorMessage)) alert(errorMessage);
         return;
       }
 
@@ -340,7 +433,7 @@ const AddEmployee = () => {
         error?.response?.data?.message ||
         error?.response?.data?.error ||
         "Failed to connect to the server.";
-      alert(errorMessage);
+      if (!applyBackendFieldErrors(errorMessage, error?.response?.data?.errors)) alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -387,6 +480,7 @@ const AddEmployee = () => {
     <Box
       component="form"
       onSubmit={handleSubmit}
+      noValidate
       sx={{
         width: "100%",
         height: "89vh",
@@ -545,6 +639,8 @@ const AddEmployee = () => {
                   value={formData?.fullName}
                   onChange={handleEmployeeChange}
                   required
+                  error={Boolean(fieldErrors.fullName)}
+                  helperText={fieldErrors.fullName}
                   sx={inputStyles}
                   placeholder="e.g. Sarah Jenkins"
                 />
@@ -558,6 +654,8 @@ const AddEmployee = () => {
                   value={formData?.email}
                   onChange={handleEmployeeChange}
                   required
+                  error={Boolean(fieldErrors.email)}
+                  helperText={fieldErrors.email}
                   sx={inputStyles}
                   disabled={isEditMode}
                   placeholder="sarah.jenkins@company.com"
@@ -571,6 +669,8 @@ const AddEmployee = () => {
                   value={formData?.mobileNo}
                   onChange={handleEmployeeChange}
                   required
+                  error={Boolean(fieldErrors.mobileNo)}
+                  helperText={fieldErrors.mobileNo}
                   sx={inputStyles}
                   placeholder="+1 (555) 000-0000"
                 />
@@ -815,6 +915,8 @@ const AddEmployee = () => {
                   value={formData?.designation}
                   onChange={handleEmployeeChange}
                   required
+                  error={Boolean(fieldErrors.designation)}
+                  helperText={fieldErrors.designation}
                   sx={inputStyles}
                   placeholder="e.g. Senior Software Engineer"
                 />
@@ -828,6 +930,8 @@ const AddEmployee = () => {
                   value={formData?.role}
                   onChange={handleEmployeeChange}
                   required
+                  error={Boolean(fieldErrors.role)}
+                  helperText={fieldErrors.role}
                   sx={inputStyles}
                   InputLabelProps={{ shrink: true }}
                   SelectProps={{
@@ -864,6 +968,8 @@ const AddEmployee = () => {
                   value={formData?.department}
                   onChange={handleEmployeeChange}
                   required
+                  error={Boolean(fieldErrors.department)}
+                  helperText={fieldErrors.department}
                   sx={inputStyles}
                   InputLabelProps={{ shrink: true }}
                   SelectProps={{
@@ -1370,6 +1476,8 @@ const AddEmployee = () => {
                             value={assetDetails?.assetName}
                             onChange={handleAssetChange}
                             required
+                            error={Boolean(fieldErrors["asset.assetName"])}
+                            helperText={fieldErrors["asset.assetName"]}
                             sx={inputStyles}
                           />
                         </Grid>
@@ -1382,6 +1490,8 @@ const AddEmployee = () => {
                             value={assetDetails?.assetId}
                             onChange={handleAssetChange}
                             required
+                            error={Boolean(fieldErrors["asset.assetId"])}
+                            helperText={fieldErrors["asset.assetId"]}
                             sx={inputStyles}
                           />
                         </Grid>
@@ -1435,6 +1545,8 @@ const AddEmployee = () => {
                               value={assetDetails?.serialNumber}
                               onChange={handleAssetChange}
                               required
+                              error={Boolean(fieldErrors["asset.serialNumber"])}
+                              helperText={fieldErrors["asset.serialNumber"]}
                               sx={inputStyles}
                             />
                           </Grid>

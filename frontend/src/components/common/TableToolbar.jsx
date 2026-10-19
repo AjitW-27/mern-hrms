@@ -29,6 +29,7 @@ const TableToolbar = ({
   filterValue,
   onFilterApply,
   onFilterClear,
+  actions,
 }) => (
   <Box
     sx={{
@@ -39,7 +40,7 @@ const TableToolbar = ({
     }}
   >
     <Stack
-      direction="row"
+      direction={{ xs: "column", md: "row" }}
       alignItems="center"
       justifyContent="space-between"
       gap={1.5}
@@ -60,7 +61,7 @@ const TableToolbar = ({
           fontSize: 14,
         }}
       />
-      <Stack direction="row" spacing={1} alignItems="center">
+      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" justifyContent="flex-end">
         {/* Sort Button with explicit Up/Down arrows */}
         <Tooltip title="Sort">
           <IconButton
@@ -142,6 +143,7 @@ const TableToolbar = ({
             <DownloadOutlinedIcon sx={{ fontSize: 20 }} />
           </IconButton>
         </Tooltip>
+        {actions}
       </Stack>
     </Stack>
   </Box>

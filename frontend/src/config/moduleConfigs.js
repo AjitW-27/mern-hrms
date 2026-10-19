@@ -91,28 +91,108 @@ export const projectConfig = {
   ]
 };
 
+// export const attendanceConfig = {
+//   title: "Attendance",
+//   endpoint: "/attendance",
+//   description: "Record biometric, mobile, and manual attendance punches.",
+//   columns: [
+//     { field: "employeeName", headerName: "Employee" },
+//     { field: "date", headerName: "Date" },
+//     { field: "checkIn", headerName: "Check In" },
+//     { field: "checkOut", headerName: "Check Out" },
+//     { field: "source", headerName: "Source" },
+//     { field: "status", headerName: "Status" }
+//   ],
+//   fields: [
+//     { name: "employee", label: "Employee", required: true, md: 6, optionsEndpoint: "/employees", optionValueKey: "_id", optionLabelKey: "fullName", optionSecondaryKey: "employeeId" },
+//     { name: "date", label: "Date", type: "date", required: true, md: 6 },
+//     { name: "checkIn", label: "Check In", md: 6 },
+//     { name: "checkOut", label: "Check Out", md: 6 },
+//     { name: "source", label: "Source", md: 6, options: ["Biometric", "Manual", "Mobile"] },
+//     { name: "status", label: "Status", md: 6, options: ["Present", "Absent", "Half Day", "Leave", "Holiday"] },
+//     { name: "biometricId", label: "Biometric ID", md: 6 },
+//     { name: "notes", label: "Notes", multiline: true, rows: 3, md: 12 }
+//   ]
+// };
 export const attendanceConfig = {
   title: "Attendance",
   endpoint: "/attendance",
   description: "Record biometric, mobile, and manual attendance punches.",
+  addBtn: "Add Attendance", // Renders '+ Add Attendance' right of export button
   columns: [
-    { field: "employeeName", headerName: "Employee" },
+    {
+      field: "employeeName",
+      headerName: "Employee",
+      // Safely displays the employee name from API response
+      valueGetter: (row) =>
+        row?.employeeName ||
+        row?.employee?.fullName ||
+        row?.employeeId?.fullName ||
+        row?.employee?.name ||
+        "—",
+    },
     { field: "date", headerName: "Date" },
     { field: "checkIn", headerName: "Check In" },
     { field: "checkOut", headerName: "Check Out" },
     { field: "source", headerName: "Source" },
-    { field: "status", headerName: "Status" }
+    { field: "status", headerName: "Status" },
   ],
   fields: [
-    { name: "employee", label: "Employee", required: true, md: 6, optionsEndpoint: "/employees", optionValueKey: "_id", optionLabelKey: "fullName", optionSecondaryKey: "employeeId" },
-    { name: "date", label: "Date", type: "date", required: true, md: 6 },
-    { name: "checkIn", label: "Check In", md: 6 },
-    { name: "checkOut", label: "Check Out", md: 6 },
-    { name: "source", label: "Source", md: 6, options: ["Biometric", "Manual", "Mobile"] },
-    { name: "status", label: "Status", md: 6, options: ["Present", "Absent", "Half Day", "Leave", "Holiday"] },
-    { name: "biometricId", label: "Biometric ID", md: 6 },
-    { name: "notes", label: "Notes", multiline: true, rows: 3, md: 12 }
-  ]
+    {
+      // CHANGED: name from "employee" to "employeeId" to match backend schema
+      name: "employeeId",
+      label: "Employee",
+      required: true,
+      md: 6,
+      optionsEndpoint: "/employees",
+      optionValueKey: "_id",
+      optionLabelKey: "fullName",
+      optionSecondaryKey: "employeeId",
+    },
+    {
+      name: "date",
+      label: "Date",
+      type: "date",
+      required: true,
+      md: 6,
+    },
+    {
+      name: "checkIn",
+      label: "Check In",
+      type: "time", // Uses time picker and prevents browser autofilling env variables
+      md: 6,
+    },
+    {
+      name: "checkOut",
+      label: "Check Out",
+      type: "time",
+      md: 6,
+    },
+    {
+      name: "source",
+      label: "Source",
+      md: 6,
+      options: ["Biometric", "Manual", "Mobile"],
+    },
+    {
+      name: "status",
+      label: "Status",
+      md: 6,
+      options: ["Present", "Absent", "Half Day", "Leave", "Holiday"],
+    },
+    {
+      name: "biometricId",
+      label: "Biometric ID",
+      md: 6,
+    },
+    {
+      name: "notes",
+      label: "Notes",
+      multiline: true,
+      rows: 3,
+      md: 12,
+    },
+  ],
 };
 
 export const payrollConfig = {

@@ -165,6 +165,17 @@ const listMessages = asyncHandler(async (req, res) => {
   res.json({ success: true, data });
 });
 
+const markConversationRead = asyncHandler(async (req, res) => {
+  const conversation = await findConversationForUser(req.params.id, req.user._id);
+  if (!conversation) return res.status(404).json({ success: false, message: "Conversation not found." });
+
+  await Message.updateMany(
+    { conversation: conversation._id, sender: { $ne: req.user._id }, readBy: { $ne: req.user._id } },
+    { $addToSet: { readBy: req.user._id } }
+  );
+  res.json({ success: true });
+});
+
 const createMessage = asyncHandler(async (req, res) => {
   const conversation = await findConversationForUser(req.params.id, req.user._id);
   if (!conversation) return res.status(404).json({ success: false, message: "Conversation not found." });
@@ -391,6 +402,7 @@ module.exports = {
   unreadSummary,
   createConversation,
   listMessages,
+  markConversationRead,
   createMessage,
   listMeetings,
   createMeeting,
