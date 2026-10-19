@@ -78,3 +78,4 @@
 [2026-10-19 08:23:32] ERROR: 400 - Attendance validation failed: employeeId: Path `employeeId` is required. - /api/attendance - POST - 127.0.0.1
 [2026-10-19 08:23:59] ERROR: ❌ Biometric connection failed:
 [2026-10-19 08:39:33] ERROR: ❌ Biometric connection failed:
+[2026-10-19 08:49:06] ERROR: ❌ Biometric connection failed:
