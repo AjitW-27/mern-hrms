@@ -1,5 +1,6 @@
+import { colors as themeColors } from "./designTokens";
 import { createTheme } from "@mui/material/styles";
-import { defaultThemeTokens } from "../strore/themeStore";
+import { defaultThemeTokens, createCssVariables } from "./designTokens";
 
 export const createApplicationTheme = (
   tokens = defaultThemeTokens
@@ -12,11 +13,11 @@ export const createApplicationTheme = (
         main: tokens.primary,
         dark: tokens.primaryDark,
         light: tokens.primaryLight,
-        contrastText: "#FFFFFF",
+        contrastText: tokens.cardBg,
       },
 
       secondary: {
-        main: tokens.indigo,
+        main: tokens.secondaryDark,
         light: tokens.indigoLight,
       },
 
@@ -69,7 +70,7 @@ export const createApplicationTheme = (
       fontSize: tokens.fontSize.body,
 
       h1: {
-        fontSize: 28,
+        fontSize: 24,
         lineHeight: "36px",
         fontWeight: 700,
         letterSpacing: "-0.02em",
@@ -77,15 +78,15 @@ export const createApplicationTheme = (
       },
 
       h2: {
-        fontSize: 22,
-        lineHeight: "30px",
+        fontSize: 16,
+        lineHeight: "24px",
         fontWeight: 600,
         letterSpacing: "-0.01em",
         color: tokens.text,
       },
 
       h3: {
-        fontSize: 18,
+        fontSize: 16,
         lineHeight: "26px",
         fontWeight: 600,
         color: tokens.slate700,
@@ -105,7 +106,7 @@ export const createApplicationTheme = (
       },
 
       body2: {
-        fontSize: 13,
+        fontSize: 14,
         lineHeight: "20px",
         color: tokens.textSecondary,
       },
@@ -124,8 +125,14 @@ export const createApplicationTheme = (
     },
 
     components: {
+      MuiIconButton: { styleOverrides: { root: { borderRadius: "4px" } } },
+      MuiFab: { styleOverrides: { root: { borderRadius: "4px" } } },
+      MuiBadge: { styleOverrides: { badge: { borderRadius: "4px" } } },
+      MuiPaginationItem: { styleOverrides: { root: { borderRadius: "4px" } } },
+      MuiLinearProgress: { styleOverrides: { root: { borderRadius: "4px" }, bar: { borderRadius: "4px" } } },
       MuiCssBaseline: {
         styleOverrides: {
+          ":root": createCssVariables(tokens),
           body: {
             backgroundColor: tokens.background,
             color: tokens.text,
@@ -141,7 +148,7 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             minHeight: 40,
-            borderRadius: tokens.radius,
+            borderRadius: "4px",
             boxShadow: "none",
             fontWeight: 600,
 
@@ -166,11 +173,11 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             minHeight: 40,
-            borderRadius: tokens.radius,
+            borderRadius: "4px",
             backgroundColor: tokens.surface,
 
             "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: tokens.primary,
+              borderColor: tokens.border,
               borderWidth: "1px",
             },
 
@@ -227,7 +234,7 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             backgroundColor: tokens.surface,
-            borderRadius: tokens.cardRadius,
+            borderRadius: "4px",
             border: `1px solid ${tokens.border}`,
             boxShadow: tokens.shadowSm,
           },
@@ -238,7 +245,7 @@ export const createApplicationTheme = (
         styleOverrides: {
           root: {
             backgroundColor: tokens.surface,
-            borderRadius: tokens.cardRadius,
+            borderRadius: "4px",
           },
         },
       },
@@ -246,9 +253,9 @@ export const createApplicationTheme = (
       MuiTableContainer: {
         styleOverrides: {
           root: {
-            borderRadius: tokens.cardRadius,
+            borderRadius: "4px",
             border: `1px solid ${tokens.border}`,
-            overflow: "hidden",
+            overflowX: "auto",
           },
         },
       },
@@ -256,22 +263,26 @@ export const createApplicationTheme = (
       MuiTableCell: {
         styleOverrides: {
           root: {
-            borderColor: "#F1F5F9",
+            borderColor: tokens.border,
             color: tokens.textSecondary,
+            padding: "12px 16px",
           },
 
           head: {
             backgroundColor: tokens.tableHeader,
             color: tokens.text,
             fontWeight: 600,
+            fontSize: 13,
           },
         },
       },
 
+      MuiTableRow: { styleOverrides: { root: { height: 64, "&.MuiTableRow-hover:hover": { backgroundColor: tokens.hover } }, head: { height: "auto" } } },
+
       MuiDataGrid: {
         styleOverrides: {
           root: {
-            borderRadius: 4,
+            borderRadius: "4px",
             border: `1px solid ${tokens.border}`,
             backgroundColor: tokens.surface,
           },
@@ -283,7 +294,7 @@ export const createApplicationTheme = (
           },
 
           columnHeader: {
-            backgroundColor: "#F5F7FA",
+            backgroundColor: themeColors.pageBg,
 
             "&:focus": {
               outline: "none",
@@ -299,7 +310,7 @@ export const createApplicationTheme = (
           },
 
           cell: {
-            borderColor: "#EEF2F6",
+            borderColor: themeColors.tableHeader,
 
             "&:focus": {
               outline: "none",
@@ -324,7 +335,7 @@ export const createApplicationTheme = (
       MuiDialog: {
         styleOverrides: {
           paper: {
-            borderRadius: 4,
+            borderRadius: "4px",
             boxShadow: tokens.shadowXl,
           },
         },
@@ -334,7 +345,7 @@ export const createApplicationTheme = (
         styleOverrides: {
           paper: {
             border: `1px solid ${tokens.border}`,
-            borderRadius: 4,
+            borderRadius: "4px",
             boxShadow: tokens.shadowLg,
           },
         },
@@ -344,7 +355,7 @@ export const createApplicationTheme = (
         styleOverrides: {
           paper: {
             border: `1px solid ${tokens.border}`,
-            borderRadius: 4,
+            borderRadius: "4px",
             boxShadow: tokens.shadowLg,
           },
         },
@@ -353,7 +364,7 @@ export const createApplicationTheme = (
       MuiChip: {
         styleOverrides: {
           root: {
-            borderRadius: 999,
+            borderRadius: "4px",
             fontWeight: 600,
           },
         },
@@ -364,7 +375,7 @@ export const createApplicationTheme = (
           tooltip: {
             backgroundColor: tokens.text,
             fontSize: 12,
-            borderRadius: 4,
+            borderRadius: "4px",
           },
         },
       },

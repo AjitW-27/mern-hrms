@@ -1,6 +1,8 @@
+import { Skeleton } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Divider, Skeleton } from "@mui/material";
+import { Box, Typography, Divider } from "@mui/material";
 import {
   PersonAdd as PersonAddIcon,
   Work as WorkIcon,
@@ -9,10 +11,10 @@ import {
 } from "@mui/icons-material";
 
 const ICON_MAP = {
-  employee: { icon: PersonAddIcon, bg: "#10B981" },
-  project: { icon: WorkIcon, bg: "#4F46E5" },
-  leave: { icon: LeaveIcon, bg: "#F59E0B" },
-  payroll: { icon: PaymentIcon, bg: "#8B5CF6" },
+  employee: { icon: PersonAddIcon, bg: themeColors.success },
+  project: { icon: WorkIcon, bg: themeColors.info },
+  leave: { icon: LeaveIcon, bg: themeColors.warning },
+  payroll: { icon: PaymentIcon, bg: themeColors.purple },
 };
 
 const timeAgo = (dateStr) => {

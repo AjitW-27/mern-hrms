@@ -1,21 +1,8 @@
+import DataTable from "../../components/common/DataTable";
+import { Button, Card as Paper, Badge as Chip, Input as TextField, Avatar } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Grid,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Chip,
-  TextField,
-  InputAdornment,
-  Avatar,
-} from "@mui/material";
+import { Box, Typography, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, InputAdornment } from "@mui/material";
 
 import {
   Search as SearchIcon,
@@ -143,56 +130,56 @@ const Attendance = () => {
       title: "Present Today",
       count: stats.present,
       icon: <PresentIcon />,
-      color: "#10b981",
-      bg: "rgba(16,185,129,.12)",
+      color: themeColors.success,
+      bg: themeColors.overlay16,
     },
     {
       title: "Absent",
       count: stats.absent,
       icon: <AbsentIcon />,
-      color: "#ef4444",
-      bg: "rgba(239,68,68,.12)",
+      color: themeColors.primary,
+      bg: themeColors.overlay17,
     },
     {
       title: "Late Check-in",
       count: stats.late,
       icon: <LateIcon />,
-      color: "#f59e0b",
-      bg: "rgba(245,158,11,.12)",
+      color: themeColors.warning,
+      bg: themeColors.overlay18,
     },
   ];
 
   // Enhanced Status Chip based on Backend Enum
   const renderStatusChip = (status) => {
-    let color = "#64748B";
-    let bgColor = "#F1F5F9";
+    let color = themeColors.textMuted;
+    let bgColor = themeColors.tableHeader;
 
     switch (status) {
       case "Present":
-        color = "#10b981";
-        bgColor = "rgba(16,185,129,.12)";
+        color = themeColors.success;
+        bgColor = themeColors.overlay16;
         break;
 
       case "Absent":
-        color = "#ef4444";
-        bgColor = "rgba(239,68,68,.12)";
+        color = themeColors.primary;
+        bgColor = themeColors.overlay17;
         break;
 
       case "Late":
-        color = "#f59e0b";
-        bgColor = "rgba(245,158,11,.12)";
+        color = themeColors.warning;
+        bgColor = themeColors.overlay18;
         break;
 
       case "Half Day":
-        color = "#8b5cf6";
-        bgColor = "rgba(139,92,246,.12)";
+        color = themeColors.purple;
+        bgColor = themeColors.overlay19;
         break;
 
       case "On Leave":
       case "Holiday":
       case "Weekend":
-        color = "#4F46E5";
-        bgColor = "rgba(79,70,229,.125)";
+        color = themeColors.info;
+        bgColor = themeColors.overlay20;
         break;
 
       default:
@@ -207,7 +194,7 @@ const Attendance = () => {
           background: bgColor,
           color: color,
           fontWeight: 600,
-          borderRadius: "6px",
+          borderRadius: "4px",
           fontSize: "12px",
         }}
       />
@@ -218,9 +205,9 @@ const Attendance = () => {
     <Box
       sx={{
         p: { xs: 2, md: 3 },
-        background: "#F8FAFC",
+        background: themeColors.hover,
         minHeight: "100vh",
-        color: "#0F172A",
+        color: themeColors.navyDark,
       }}
     >
       {/* Header Section */}
@@ -233,11 +220,9 @@ const Attendance = () => {
         flexWrap="wrap"
       >
         <Box>
-          <Typography fontSize={24} fontWeight={600} color="#0F172A">
-            Attendance Overview
-          </Typography>
 
-          <Typography fontSize={14} color="#64748B" mt={0.5}>
+
+          <Typography fontSize={14} color={themeColors.textMuted} mt={0.5}>
             Monitor daily employee check-ins and working hours
           </Typography>
         </Box>
@@ -246,9 +231,9 @@ const Attendance = () => {
           variant="outlined"
           startIcon={<DownloadIcon />}
           sx={{
-            color: "#334155",
-            borderColor: "#E2E8F0",
-            background: "#FFFFFF",
+            color: themeColors.secondaryDark,
+            borderColor: themeColors.border,
+            background: themeColors.cardBg,
             textTransform: "none",
             fontWeight: 600,
             borderRadius: "4px",
@@ -256,8 +241,8 @@ const Attendance = () => {
             px: 2,
 
             "&:hover": {
-              borderColor: "#CBD5E1",
-              backgroundColor: "#F8FAFC",
+              borderColor: themeColors.border,
+              backgroundColor: themeColors.hover,
             },
           }}
         >
@@ -276,12 +261,12 @@ const Attendance = () => {
                 borderRadius: "4px",
 
                 // Same soft gradient style as Department
-                background: "linear-gradient(135deg,#F0FBFC,#D5F1F4)",
+                background: "linear-gradient(135deg," + themeColors.primarySoft + "," + themeColors.primarySoft + ")",
 
-                border: "1px solid #E2E8F0",
+                border: "1px solid " + themeColors.border,
 
                 boxShadow:
-                  "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+                  "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
 
                 display: "flex",
                 alignItems: "center",
@@ -293,9 +278,9 @@ const Attendance = () => {
                   transform: "translateY(-6px) scale(1.015)",
 
                   boxShadow:
-                    "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+                    "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2,
 
-                  borderColor: `${stat.color}55`,
+                  borderColor: `color-mix(in srgb, ${stat.color} 30%, transparent)`,
                 },
               }}
             >
@@ -323,12 +308,12 @@ const Attendance = () => {
                   fontSize={24}
                   fontWeight={600}
                   lineHeight={1.2}
-                  color="#0F172A"
+                  color={themeColors.navyDark}
                 >
                   {stat.count}
                 </Typography>
 
-                <Typography fontSize={14} color="#64748B" mt={0.5}>
+                <Typography fontSize={14} color={themeColors.textMuted} mt={0.5}>
                   {stat.title}
                 </Typography>
               </Box>
@@ -359,7 +344,7 @@ const Attendance = () => {
               <InputAdornment position="start">
                 <SearchIcon
                   sx={{
-                    color: "#64748B",
+                    color: themeColors.textMuted,
                   }}
                 />
               </InputAdornment>
@@ -367,7 +352,7 @@ const Attendance = () => {
           }}
           sx={{
             flexGrow: 1,
-            background: "#FFFFFF",
+            background: themeColors.cardBg,
             borderRadius: "4px",
 
             "& .MuiInputBase-root": {
@@ -376,25 +361,25 @@ const Attendance = () => {
             },
 
             "& input": {
-              color: "#0F172A",
+              color: themeColors.navyDark,
               fontSize: 14,
             },
 
             "& input::placeholder": {
-              color: "#64748B",
+              color: themeColors.textMuted,
               opacity: 1,
             },
 
             "& fieldset": {
-              border: "1px solid #E2E8F0",
+              border: "1px solid " + themeColors.border,
             },
 
             "&:hover fieldset": {
-              borderColor: "#CBD5E1",
+              borderColor: themeColors.border,
             },
 
             "& .Mui-focused fieldset": {
-              borderColor: "#8b5cf6 !important",
+              borderColor: themeColors.purple + " !important",
             },
           }}
         />
@@ -408,7 +393,7 @@ const Attendance = () => {
           onChange={(e) => setFilterDate(e.target.value)}
           sx={{
             flexGrow: 1,
-            background: "#FFFFFF",
+            background: themeColors.cardBg,
             borderRadius: "4px",
 
             "& .MuiInputBase-root": {
@@ -417,20 +402,20 @@ const Attendance = () => {
             },
 
             "& input": {
-              color: "#0F172A",
+              color: themeColors.navyDark,
               fontSize: 14,
             },
 
             "& fieldset": {
-              border: "1px solid #E2E8F0",
+              border: "1px solid " + themeColors.border,
             },
 
             "&:hover fieldset": {
-              borderColor: "#CBD5E1",
+              borderColor: themeColors.border,
             },
 
             "& .Mui-focused fieldset": {
-              borderColor: "#8b5cf6 !important",
+              borderColor: themeColors.purple + " !important",
             },
 
             "& input::-webkit-calendar-picker-indicator": {
@@ -442,181 +427,11 @@ const Attendance = () => {
       </Box>
 
       {/* Table Section */}
-      <TableContainer
-        component={Paper}
-        sx={{
-          background: "#FFFFFF",
-          borderRadius: "4px",
-          border: "1px solid #E2E8F0",
-          boxShadow:
-            "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
-          overflow: "hidden",
-        }}
-      >
-        <Table>
-          {/* Table Header */}
-          <TableHead
-            sx={{
-              background: "#F8FAFC",
-            }}
-          >
-            <TableRow>
-              {[
-                "Employee",
-                "Date",
-                "Status",
-                "Check In",
-                "Check Out",
-                "Total Hours",
-              ].map((head) => (
-                <TableCell
-                  key={head}
-                  sx={{
-                    color: "#475569",
-                    fontWeight: 600,
-                    fontSize: 13,
-                    borderBottom: "1px solid #E2E8F0",
-                  }}
-                >
-                  {head}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-
-          {/* Table Body */}
-          <TableBody>
-            {attendanceRecords
-              .filter((row) => {
-                const fullName = (
-                  row?.employeeId?.fullName || ""
-                ).toLowerCase();
-
-                return fullName.includes(searchTerm.toLowerCase());
-              })
-              .map((row) => (
-                <TableRow
-                  key={row?._id}
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: "#F8FAFC",
-                    },
-
-                    transition: "background-color 0.2s ease",
-                  }}
-                >
-                  {/* Employee */}
-                  <TableCell
-                    sx={{
-                      borderBottom: "1px solid #E2E8F0",
-                    }}
-                  >
-                    <Box display="flex" alignItems="center">
-                      <Avatar
-                        src={row?.employeeId?.avatar}
-                        sx={{
-                          mr: 2,
-                          bgcolor: "#8b5cf6",
-                          width: 35,
-                          height: 35,
-                          fontSize: 14,
-                        }}
-                      >
-                        {row?.employeeId?.fullName?.[0] || "?"}
-                      </Avatar>
-
-                      <Box>
-                        <Typography
-                          fontWeight={600}
-                          color="#0F172A"
-                          fontSize={14}
-                        >
-                          {row?.employeeId?.fullName || "Unknown"}
-                        </Typography>
-
-                        <Typography fontSize={12} color="#64748B">
-                          {row?.employeeId?.designation || "N/A"}
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </TableCell>
-
-                  {/* Date */}
-                  <TableCell
-                    sx={{
-                      color: "#334155",
-                      borderBottom: "1px solid #E2E8F0",
-                      fontSize: 14,
-                    }}
-                  >
-                    {row?.date}
-                  </TableCell>
-
-                  {/* Status */}
-                  <TableCell
-                    sx={{
-                      borderBottom: "1px solid #E2E8F0",
-                    }}
-                  >
-                    {renderStatusChip(row?.status)}
-                  </TableCell>
-
-                  {/* Check In */}
-                  <TableCell
-                    sx={{
-                      color: "#334155",
-                      borderBottom: "1px solid #E2E8F0",
-                      fontSize: 14,
-                    }}
-                  >
-                    {row?.checkIn}
-                  </TableCell>
-
-                  {/* Check Out */}
-                  <TableCell
-                    sx={{
-                      color: "#334155",
-                      borderBottom: "1px solid #E2E8F0",
-                      fontSize: 14,
-                    }}
-                  >
-                    {row?.checkOut}
-                  </TableCell>
-
-                  {/* Total Hours */}
-                  <TableCell
-                    sx={{
-                      color: "#0F172A",
-                      fontWeight: 600,
-                      borderBottom: "1px solid #E2E8F0",
-                      fontSize: 14,
-                    }}
-                  >
-                    {row?.totalHours}
-                  </TableCell>
-                </TableRow>
-              ))}
-
-            {/* Empty State */}
-            {attendanceRecords.length === 0 && (
-              <TableRow>
-                <TableCell
-                  colSpan={6}
-                  sx={{
-                    textAlign: "center",
-                    py: 4,
-                    color: "#64748B",
-                    borderBottom: "none",
-                    fontSize: 14,
-                  }}
-                >
-                  No attendance records found for this date.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <DataTable rows={attendanceRecords} searchValue={searchTerm} onSearchChange={setSearchTerm} columns={[
+{ field: "employeeId", headerName: "Employee", valueGetter: row => row.employeeId?.fullName || "Unavailable profile" },
+{ field: "date", headerName: "Date" }, { field: "status", headerName: "Status", renderCell: row => renderStatusChip(row.status) },
+{ field: "checkIn", headerName: "Check In" }, { field: "checkOut", headerName: "Check Out" }, { field: "totalHours", headerName: "Total Hours" }
+]} />
     </Box>
   );
 };

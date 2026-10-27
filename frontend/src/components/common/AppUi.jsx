@@ -1,19 +1,10 @@
+import { Button, Badge as Chip, Select, Input as TextField } from "./UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
-import {
-  Box,
-  Button,
-  Chip,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, FormControl, FormHelperText, InputLabel, MenuItem, Typography } from "@mui/material";
 
 export const AppButton = ({ sx, ...props }) => (
-  <Button {...props} sx={{ minHeight: 40, borderRadius: 1.25, px: 2, ...sx }} />
+  <Button {...props} sx={{ minHeight: 40, borderRadius: "4px", px: 2, ...sx }} />
 );
 
 export const AppInput = ({ sx, ...props }) => (
@@ -49,11 +40,11 @@ export const AppFormField = ({ label, required, helperText, error, children }) =
 export const AppStatusBadge = ({ status }) => {
   const value = String(status || "Unknown");
   const tone = /active|approved|paid|completed|published/i.test(value)
-    ? { bg: "#DCFCE7", color: "#15803D" }
+    ? { bg: themeColors.successSoft, color: themeColors.secondaryDark }
     : /inactive|rejected|blocked|terminated/i.test(value)
-      ? { bg: "#FEE2E2", color: "#B91C1C" }
+      ? { bg: themeColors.dangerSoft, color: themeColors.danger }
       : /pending|notice|maintenance|planned|leave/i.test(value)
-        ? { bg: "#FEF3C7", color: "#B45309" }
-        : { bg: "#DBEAFE", color: "#1D4ED8" };
-  return <Chip label={value} size="small" sx={{ height: 26, bgcolor: tone.bg, color: tone.color, borderRadius: 1, fontWeight: 700 }} />;
+        ? { bg: themeColors.warningSoft, color: themeColors.primary }
+        : { bg: themeColors.infoSoft, color: themeColors.info };
+  return <Chip label={value} size="small" sx={{ height: 26, bgcolor: tone.bg, color: tone.color, borderRadius: "4px", fontWeight: 700 }} />;
 };

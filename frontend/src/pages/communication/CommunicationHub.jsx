@@ -1,3 +1,5 @@
+import { Avatar, Button, Badge as Chip, Modal as Dialog, IconButton, Card as Paper, Tab, Tabs, Input as TextField } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, {
   useCallback,
   useEffect,
@@ -5,29 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  Alert,
-  Autocomplete,
-  Avatar,
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  Grid,
-  IconButton,
-  Paper,
-  Stack,
-  Tab,
-  Tabs,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Alert, Autocomplete, Box, CircularProgress, DialogActions, DialogContent, DialogTitle, Divider, Grid, Stack, Tooltip, Typography } from "@mui/material";
 import {
   AddRounded,
   CallRounded,
@@ -1101,10 +1081,10 @@ const CommunicationHub = () => {
         sx={{
           borderRadius: "4px",
           overflow: "hidden",
-          border: "1px solid #E2E8F0",
+          border: "1px solid " + themeColors.border,
           boxShadow:
-            "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
-          background: "#FFFFFF",
+            "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
+          background: themeColors.cardBg,
         }}
       >
         <Tabs
@@ -1116,7 +1096,7 @@ const CommunicationHub = () => {
             px: 1,
             borderBottom: "1px solid",
             borderColor: "divider",
-            bgcolor: "#F8FAFC",
+            bgcolor: themeColors.hover,
             "& .MuiTab-root": {
               minHeight: 50,
               textTransform: "none",
@@ -1155,15 +1135,15 @@ const CommunicationHub = () => {
               sx={{
                 borderRight: { md: "1px solid" },
                 borderColor: "divider",
-                bgcolor: "#F8FAFC",
+                bgcolor: themeColors.hover,
               }}
             >
-              <Box sx={{ p: 1.25, background: "#FFFFFF" }}>
+              <Box sx={{ p: 1.25, background: themeColors.cardBg }}>
                 <Typography
                   sx={{
                     fontSize: 12,
                     fontWeight: 800,
-                    color: "#334155",
+                    color: themeColors.secondaryDark,
                     letterSpacing: 0.3,
                     mb: 1,
                   }}
@@ -1189,7 +1169,7 @@ const CommunicationHub = () => {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       borderRadius: "4px",
-                      bgcolor: "#FFFFFF",
+                      bgcolor: themeColors.cardBg,
                     },
                   }}
                 />
@@ -1211,8 +1191,8 @@ const CommunicationHub = () => {
                       borderRadius: "4px",
                       fontSize: 11,
                       fontWeight: 700,
-                      color: chatFilter === "all" ? "#0A5C67" : "#64748B",
-                      bgcolor: chatFilter === "all" ? "#E6F7F8" : "transparent",
+                      color: chatFilter === "all" ? themeColors.secondaryDark : themeColors.textMuted,
+                      bgcolor: chatFilter === "all" ? themeColors.primarySoft : "transparent",
                     }}
                   >
                     All
@@ -1228,9 +1208,9 @@ const CommunicationHub = () => {
                       borderRadius: "4px",
                       fontSize: 11,
                       fontWeight: 700,
-                      color: chatFilter === "unread" ? "#0A5C67" : "#64748B",
+                      color: chatFilter === "unread" ? themeColors.secondaryDark : themeColors.textMuted,
                       bgcolor:
-                        chatFilter === "unread" ? "#E6F7F8" : "transparent",
+                        chatFilter === "unread" ? themeColors.primarySoft : "transparent",
                     }}
                   >
                     Unread
@@ -1259,9 +1239,9 @@ const CommunicationHub = () => {
                           borderColor: "divider",
                           bgcolor:
                             getId(conversation) === selectedConversationId
-                              ? "rgba(14,143,154,.08)"
+                              ? themeColors.overlay21
                               : "transparent",
-                          "&:hover": { bgcolor: "rgba(14,143,154,.05)" },
+                          "&:hover": { bgcolor: themeColors.overlay22 },
                         }}
                       >
                         <Stack
@@ -1319,9 +1299,9 @@ const CommunicationHub = () => {
                                       minWidth: 17,
                                       height: 17,
                                       px: 0.4,
-                                      borderRadius: "9px",
-                                      bgcolor: "#0E8F9A",
-                                      color: "#FFFFFF",
+                                      borderRadius: "4px",
+                                      bgcolor: themeColors.primary,
+                                      color: themeColors.cardBg,
                                       display: "grid",
                                       placeItems: "center",
                                       fontSize: 9,
@@ -1393,7 +1373,7 @@ const CommunicationHub = () => {
                   p: 1.5,
                   borderBottom: "1px solid",
                   borderColor: "divider",
-                  bgcolor: "#FFFFFF",
+                  bgcolor: themeColors.cardBg,
                 }}
               >
                 <Stack
@@ -1460,7 +1440,7 @@ const CommunicationHub = () => {
                   overflowY: "auto",
                   minHeight: 440,
                   maxHeight: 440,
-                  bgcolor: "#F8FAFC",
+                  bgcolor: themeColors.hover,
                 }}
               >
                 {messagesLoading ? (
@@ -1530,10 +1510,10 @@ const CommunicationHub = () => {
                                 display: "flex",
                                 gap: 0.25,
                                 p: 0.35,
-                                borderRadius: 2,
+                                borderRadius: "4px",
                                 boxShadow:
-                                  "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
-                                border: "1px solid #E2E8F0",
+                                  "0 10px 15px -3px " + themeColors.overlay5 + ", 0 4px 6px -4px " + themeColors.overlay1,
+                                border: "1px solid " + themeColors.border,
                               }}
                             >
                               {["👍", "❤️", "🚀", "💡"].map((emoji) => (
@@ -1553,9 +1533,9 @@ const CommunicationHub = () => {
                           <Paper
                             sx={{
                               p: 1.35,
-                              bgcolor: mine ? "#E6F7F8" : "#FFFFFF",
+                              bgcolor: mine ? themeColors.primarySoft : themeColors.cardBg,
                               border: "1px solid",
-                              borderColor: mine ? "#C2EBEE" : "divider",
+                              borderColor: mine ? themeColors.border : "divider",
                               boxShadow: "none",
                             }}
                           >
@@ -1589,8 +1569,8 @@ const CommunicationHub = () => {
                                     sx={{
                                       px: 0.5,
                                       py: 0.1,
-                                      borderRadius: 0.5,
-                                      bgcolor: "rgba(15,23,42,.06)",
+                                      borderRadius: "4px",
+                                      bgcolor: themeColors.overlay1,
                                       fontFamily: "monospace",
                                       fontSize: 12,
                                     }}
@@ -1603,9 +1583,9 @@ const CommunicationHub = () => {
                                     component="pre"
                                     sx={{
                                       p: 1,
-                                      borderRadius: 1,
-                                      bgcolor: "#0F172A",
-                                      color: "#E2E8F0",
+                                      borderRadius: "4px",
+                                      bgcolor: themeColors.navyDark,
+                                      color: themeColors.border,
                                       overflowX: "auto",
                                       fontSize: 12,
                                       fontFamily: "monospace",
@@ -1622,7 +1602,7 @@ const CommunicationHub = () => {
                                     target="_blank"
                                     rel="noreferrer"
                                     sx={{
-                                      color: "#0A5C67",
+                                      color: themeColors.secondaryDark,
                                       textDecoration: "underline",
                                     }}
                                   >
@@ -1671,7 +1651,7 @@ const CommunicationHub = () => {
                                     label={`${emoji} ${count}`}
                                     size="small"
                                     sx={{
-                                      borderRadius: 1,
+                                      borderRadius: "4px",
                                       height: 22,
                                       fontSize: 10,
                                     }}
@@ -1702,7 +1682,7 @@ const CommunicationHub = () => {
                   p: 1.2,
                   borderTop: "1px solid",
                   borderColor: "divider",
-                  bgcolor: "#FFFFFF",
+                  bgcolor: themeColors.cardBg,
                 }}
               >
                 <Stack direction="row" spacing={0.25} sx={{ mb: 0.6 }}>
@@ -1779,7 +1759,7 @@ const CommunicationHub = () => {
                     sx={{
                       width: 40,
                       height: 40,
-                      borderRadius: 2,
+                      borderRadius: "4px",
                       bgcolor: "primary.light",
                     }}
                   >
@@ -1800,9 +1780,9 @@ const CommunicationHub = () => {
                     p: 2.5,
                     height: "100%",
                     borderRadius: "4px",
-                    border: "1px solid #E2E8F0",
+                    border: "1px solid " + themeColors.border,
                     background:
-                      "#F0FBFC",
+                      themeColors.primarySoft,
                     boxShadow: "none",
                   }}
                 >
@@ -1987,9 +1967,9 @@ const CommunicationHub = () => {
                             sx={{
                               p: 1.75,
                               borderRadius: "4px",
-                              border: "1px solid #E2E8F0",
+                              border: "1px solid " + themeColors.border,
                               boxShadow: "none",
-                              background: "#FFFFFF",
+                              background: themeColors.cardBg,
                             }}
                           >
                             <Stack
@@ -2094,7 +2074,7 @@ const CommunicationHub = () => {
                           p: 5,
                           borderRadius: "4px",
                           textAlign: "center",
-                          border: "1px solid #E2E8F0",
+                          border: "1px solid " + themeColors.border,
                           boxShadow: "none",
                         }}
                       >
@@ -2132,8 +2112,8 @@ const CommunicationHub = () => {
                   sx={{
                     p: 2.5,
                     borderRadius: "4px",
-                    border: "1px solid #E2E8F0",
-                    background: "#F0FBFC",
+                    border: "1px solid " + themeColors.border,
+                    background: themeColors.primarySoft,
                     boxShadow: "none",
                     height: "100%",
                   }}
@@ -2143,7 +2123,7 @@ const CommunicationHub = () => {
                       sx={{
                         width: 48,
                         height: 48,
-                        bgcolor: "rgba(14,143,154,.12)",
+                        bgcolor: themeColors.overlay23,
                         color: "primary.main",
                       }}
                     >
@@ -2177,8 +2157,8 @@ const CommunicationHub = () => {
                   sx={{
                     p: 2.5,
                     borderRadius: "4px",
-                    border: "1px solid #E2E8F0",
-                    background: "#F0FBFC",
+                    border: "1px solid " + themeColors.border,
+                    background: themeColors.primarySoft,
                     boxShadow: "none",
                     height: "100%",
                   }}
@@ -2188,8 +2168,8 @@ const CommunicationHub = () => {
                       sx={{
                         width: 48,
                         height: 48,
-                        bgcolor: "rgba(79,70,229,.10)",
-                        color: "#4F46E5",
+                        bgcolor: themeColors.overlay24,
+                        color: themeColors.info,
                       }}
                     >
                       <VideoCallRounded />
@@ -2242,10 +2222,10 @@ const CommunicationHub = () => {
                             width: 32,
                             height: 32,
                             bgcolor:
-                              call.type === "video" ? "#EEF0FF" : "#E6F7F8",
+                              call.type === "video" ? themeColors.infoSoft : themeColors.primarySoft,
                             color:
                               call.type === "video"
-                                ? "#4F46E5"
+                                ? themeColors.info
                                 : "primary.main",
                           }}
                         >
@@ -2372,7 +2352,7 @@ const CommunicationHub = () => {
             <CloseRounded fontSize="small" />
           </IconButton>
         </DialogTitle>
-        <DialogContent sx={{ bgcolor: "#0A4952", p: 1.5 }}>
+        <DialogContent sx={{ bgcolor: themeColors.secondaryDark, p: 1.5 }}>
           {callError ? (
             <Alert severity="error" sx={{ mb: 1.5, borderRadius: "4px" }}>
               {callError}
@@ -2386,7 +2366,7 @@ const CommunicationHub = () => {
               placeItems: "center",
               borderRadius: "4px",
               overflow: "hidden",
-              background: "#0A5C67",
+              background: themeColors.secondaryDark,
             }}
           >
             {activeCall?.type === "video" ? (
@@ -2399,7 +2379,7 @@ const CommunicationHub = () => {
                     width: "100%",
                     height: 420,
                     objectFit: "cover",
-                    background: "#0A3A42",
+                    background: themeColors.textPrimary,
                   }}
                 />
                 <video
@@ -2414,21 +2394,21 @@ const CommunicationHub = () => {
                     right: 16,
                     bottom: 16,
                     objectFit: "cover",
-                    borderRadius: 4,
-                    border: "1px solid rgba(255,255,255,.25)",
-                    background: "#0A4952",
+                    borderRadius: "4px",
+                    border: "1px solid " + themeColors.overlay25,
+                    background: themeColors.secondaryDark,
                   }}
                 />
               </>
             ) : (
               <>
-                <Box sx={{ textAlign: "center", color: "#FFFFFF" }}>
+                <Box sx={{ textAlign: "center", color: themeColors.cardBg }}>
                   <Avatar
                     sx={{
                       mx: "auto",
                       width: 76,
                       height: 76,
-                      bgcolor: "rgba(255,255,255,.15)",
+                      bgcolor: themeColors.overlay26,
                       fontSize: 26,
                     }}
                   >
@@ -2443,7 +2423,7 @@ const CommunicationHub = () => {
                     sx={{
                       mt: 0.5,
                       fontSize: 12,
-                      color: "rgba(255,255,255,.7)",
+                      color: themeColors.overlay27,
                     }}
                   >
                     {activeCall?.status || "connecting"}
@@ -2462,9 +2442,9 @@ const CommunicationHub = () => {
             <IconButton
               onClick={() => endCall()}
               sx={{
-                bgcolor: "#ef4444",
-                color: "#FFFFFF",
-                "&:hover": { bgcolor: "#EF4444" },
+                bgcolor: themeColors.primary,
+                color: themeColors.cardBg,
+                "&:hover": { bgcolor: themeColors.primary },
               }}
             >
               <CallRounded />
@@ -2612,7 +2592,7 @@ const MailPanel = ({ user, canSeeAllLeaves, navigate }) => {
           sx={{
             borderRight: { md: "1px solid" },
             borderColor: "divider",
-            bgcolor: "#F8FAFC",
+            bgcolor: themeColors.hover,
           }}
         >
           {allMails.length ? (
@@ -2627,7 +2607,7 @@ const MailPanel = ({ user, canSeeAllLeaves, navigate }) => {
                   borderColor: "divider",
                   bgcolor:
                     selected?.id === mail.id
-                      ? "rgba(14,143,154,.08)"
+                      ? themeColors.overlay21
                       : "transparent",
                 }}
               >
@@ -2716,9 +2696,9 @@ const MailPanel = ({ user, canSeeAllLeaves, navigate }) => {
                   mt: 2.5,
                   p: 2,
                   borderRadius: "4px",
-                  border: "1px solid #E2E8F0",
+                  border: "1px solid " + themeColors.border,
                   boxShadow: "none",
-                  bgcolor: "#F8FAFC",
+                  bgcolor: themeColors.hover,
                 }}
               >
                 <Typography sx={{ fontSize: 13, lineHeight: 1.7 }}>

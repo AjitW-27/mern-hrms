@@ -1,5 +1,7 @@
+import { Avatar, Badge as Chip } from "./UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
-import { Avatar, Box, Chip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const EmployeeCard = ({ employee, onClick }) => {
   const name = employee.fullName || employee.name || "Employee";
@@ -15,18 +17,18 @@ const EmployeeCard = ({ employee, onClick }) => {
       onClick={onClick}
       sx={{
         textAlign: "left",
-        border: "1px solid #E2E8F0",
-        borderRadius: 1,
+        border: "1px solid " + themeColors.border,
+        borderRadius: "4px",
         p: 2,
-        bgcolor: "#FFFFFF",
-        boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+        bgcolor: themeColors.cardBg,
+        boxShadow: "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
         cursor: "pointer",
         transition: "180ms ease",
         "&:hover": {
           transform: "translateY(-2px)",
-          borderColor: "#8DD8DE",
+          borderColor: themeColors.textLight,
           boxShadow:
-            "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05), 0 4px 24px -6px rgba(14,143,154,.35)",
+            "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2 + ", 0 4px 24px -6px " + themeColors.overlay4,
         },
       }}
     >
@@ -36,9 +38,9 @@ const EmployeeCard = ({ employee, onClick }) => {
           sx={{
             width: 48,
             height: 48,
-            bgcolor: "#0E8F9A",
-            background: "linear-gradient(135deg,#26A8B3,#4F46E5)",
-            color: "#FFFFFF",
+            bgcolor: themeColors.primary,
+            background: "linear-gradient(135deg," + themeColors.info + "," + themeColors.info + ")",
+            color: themeColors.cardBg,
             fontWeight: 700,
           }}
         >
@@ -50,14 +52,14 @@ const EmployeeCard = ({ employee, onClick }) => {
               fontSize: 16,
               lineHeight: "24px",
               fontWeight: 600,
-              color: "#1E293B",
+              color: themeColors.textPrimary,
             }}
             noWrap
           >
             {name}
           </Typography>
           <Typography
-            sx={{ fontSize: 13, lineHeight: "20px", color: "#475569" }}
+            sx={{ fontSize: 13, lineHeight: "20px", color: themeColors.textMuted }}
             noWrap
           >
             {role}
@@ -67,7 +69,7 @@ const EmployeeCard = ({ employee, onClick }) => {
       <Chip
         label={department}
         size="small"
-        sx={{ mt: 2, bgcolor: "#E6F7F8", color: "#0A5C67", height: 26 }}
+        sx={{ mt: 2, bgcolor: themeColors.primarySoft, color: themeColors.secondaryDark, height: 26 }}
       />
       <Typography
         sx={{ mt: 1.5, fontSize: 12, lineHeight: "16px", color: "none" }}

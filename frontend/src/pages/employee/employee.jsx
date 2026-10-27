@@ -1,15 +1,7 @@
+import { Input as TextField, Button, Avatar, Badge as Chip } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  Button,
-  Grid,
-  Avatar,
-  Chip,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, InputAdornment, Grid, Divider } from "@mui/material";
 import {
   Search as SearchIcon,
   Add as AddIcon,
@@ -54,9 +46,9 @@ const Employee = () => {
     <Box
       sx={{
         p: { xs: 1, md: 1 },
-        background: "#F4F7FA",
+        background: themeColors.pageBg,
         // minHeight: "100vh",
-        color: "#0F172A",
+        color: themeColors.navyDark,
       }}
     >
       {/* Header */}
@@ -91,23 +83,23 @@ const Employee = () => {
             "& .MuiOutlinedInput-root": {
               height: 44,
               borderRadius: "4px",
-              background: "#1E293B",
+              background: themeColors.textPrimary,
 
               "& fieldset": {
-                border: "1px solid #334155",
+                border: "1px solid " + themeColors.secondaryDark,
               },
 
               "&:hover fieldset": {
-                borderColor: "#64748B",
+                borderColor: themeColors.textMuted,
               },
 
               "&.Mui-focused fieldset": {
-                borderColor: "#8b5cf6",
+                borderColor: themeColors.purple,
               },
             },
 
             "& input": {
-              color: "#FFFFFF",
+              color: themeColors.cardBg,
               fontSize: 14,
             },
 
@@ -128,8 +120,8 @@ const Employee = () => {
             height: 44,
             px: 2.5,
             borderRadius: "4px",
-            background: "#8b5cf6",
-            color: "#FFFFFF",
+            background: themeColors.purple,
+            color: themeColors.cardBg,
             textTransform: "none",
             fontSize: 14,
             fontWeight: 600,
@@ -137,7 +129,7 @@ const Employee = () => {
             boxShadow: "none",
 
             "&:hover": {
-              background: "#8B5CF6",
+              background: themeColors.purple,
               boxShadow: "none",
             },
           }}
@@ -155,17 +147,17 @@ const Employee = () => {
               sx={{
                 p: 3,
                 borderRadius: "4px",
-                background: "linear-gradient(135deg,#062B31,#0B7480,#4F46E5)",
-                border: "1px solid #334155",
+                background: "linear-gradient(135deg," + themeColors.navyDark + "," + themeColors.primary + "," + themeColors.info + ")",
+                border: "1px solid " + themeColors.secondaryDark,
                 boxShadow:
-                  "0 24px 44px -12px rgba(15,23,42,.22), 0 4px 16px -4px rgba(15,23,42,.08)",
+                  "0 24px 44px -12px " + themeColors.overlay6 + ", 0 4px 16px -4px " + themeColors.overlay7,
                 cursor: "pointer",
                 transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-5px)",
-                  borderColor: "#8b5cf6",
+                  borderColor: themeColors.purple,
                   boxShadow:
-                    "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
+                    "0 10px 15px -3px " + themeColors.overlay5 + ", 0 4px 6px -4px " + themeColors.overlay1,
                 },
               }}
             >
@@ -175,7 +167,7 @@ const Employee = () => {
                     width: 56,
                     height: 56,
                     mr: 2,
-                    bgcolor: "#8b5cf6",
+                    bgcolor: themeColors.purple,
                     fontSize: 24,
                   }}
                 >
@@ -184,7 +176,7 @@ const Employee = () => {
                 <Box>
                   <Typography
                     fontWeight="bold"
-                    color="#E2E8F0"
+                    color={themeColors.border}
                     fontSize={18}
                     noWrap
                   >
@@ -196,18 +188,18 @@ const Employee = () => {
                 </Box>
               </Box>
 
-              <Divider sx={{ borderColor: "#334155", my: 2 }} />
+              <Divider sx={{ borderColor: themeColors.secondaryDark, my: 2 }} />
 
               <Box display="flex" flexDirection="column" gap={1.5}>
                 <Box display="flex" alignItems="center" gap={1}>
                   <BadgeIcon sx={{ fontSize: 18, color: "none" }} />
-                  <Typography fontSize={13} color="#C7CDFE">
+                  <Typography fontSize={13} color={themeColors.border}>
                     {emp.employeeId || "N/A"}
                   </Typography>
                 </Box>
                 <Box display="flex" alignItems="center" gap={1}>
                   <EmailIcon sx={{ fontSize: 18, color: "none" }} />
-                  <Typography fontSize={13} color="#C7CDFE" noWrap>
+                  <Typography fontSize={13} color={themeColors.border} noWrap>
                     {emp.email}
                   </Typography>
                 </Box>
@@ -218,8 +210,8 @@ const Employee = () => {
                   label={emp.department}
                   size="small"
                   sx={{
-                    bgcolor: "rgba(139, 92, 246, 0.15)",
-                    color: "#C7CDFE",
+                    bgcolor: themeColors.overlay31,
+                    color: themeColors.border,
                     fontWeight: "bold",
                   }}
                 />
@@ -227,8 +219,8 @@ const Employee = () => {
                   label={emp.role}
                   size="small"
                   sx={{
-                    bgcolor: "rgba(14, 165, 233, 0.15)",
-                    color: "#55C0C9",
+                    bgcolor: themeColors.overlay32,
+                    color: themeColors.textLight,
                     textTransform: "capitalize",
                   }}
                 />

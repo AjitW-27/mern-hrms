@@ -1,17 +1,7 @@
+import { Button, Card, IconButton, Input as TextField } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useEffect, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  Drawer,
-  Grid,
-  IconButton,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, Drawer, Grid, MenuItem, Stack, Typography } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
@@ -22,7 +12,7 @@ import DataGrid from "../../components/common/DataGrid";
 
 const defaultRoleForm = { name: "", code: "", description: "" };
 
-const RoleEditor = ({ roles, onRefresh }) => {
+const RoleEditor = ({ roles, onRefresh, loading, loadError }) => {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(defaultRoleForm);
@@ -110,22 +100,20 @@ const RoleEditor = ({ roles, onRefresh }) => {
       <PageHeader
         title="Roles"
         description="Create and manage role names and role status. Access permissions are managed separately."
-        actionLabel="Add Role"
-        onAction={openCreate}
-        actionIcon={AddRoundedIcon}
       />
 
       {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>{error}</Alert>}
 
       <Card>
         <DataGrid
+          loading={loading} error={loadError} onRetry={onRefresh} onRefresh={onRefresh} addBtn="Add Role" onAddClick={openCreate}
           minWidth={900}
           rows={roles}
           columns={[
             { field: "name", headerName: "Role Name", renderCell: (role) => <Typography fontWeight={700} textTransform="capitalize">{role.name}</Typography> },
             { field: "code", headerName: "Role Code" },
             { field: "description", headerName: "Description", nowrap: false, valueGetter: (role) => role.description || "—" },
-            { field: "status", headerName: "Status", valueGetter: (role) => role.isActive !== false ? "Active" : "Inactive", renderCell: (role) => <Typography sx={{ fontSize: 12, fontWeight: 700, color: role.isActive !== false ? "#0A5C67" : "#EF4444" }}>{role.isActive !== false ? "Active" : "Inactive"}</Typography> },
+            { field: "status", headerName: "Status", valueGetter: (role) => role.isActive !== false ? "Active" : "Inactive", renderCell: (role) => <Typography sx={{ fontSize: 12, fontWeight: 700, color: role.isActive !== false ? themeColors.secondaryDark : themeColors.primary }}>{role.isActive !== false ? "Active" : "Inactive"}</Typography> },
           ]}
           actions={(role) => <>
             <TextField select size="small" value={role.isActive !== false ? "active" : "inactive"} onChange={(e) => updateStatus(role, e.target.value)} sx={{ minWidth: 108 }} aria-label="Role status"><MenuItem value="active">Active</MenuItem><MenuItem value="inactive">Inactive</MenuItem></TextField>
@@ -217,17 +205,15 @@ const RoleEditor = ({ roles, onRefresh }) => {
 
 const Roles = () => {
   const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true), [loadError, setLoadError] = useState("");
 
-  const load = async () => {
-    const { data } = await execReq("/admin/roles");
-    setRoles(data.data || []);
-  };
+  const load = async () => { setLoading(true); setLoadError(""); try { const { data } = await execReq("/admin/roles"); setRoles(data.data || []); } catch (err) { setLoadError(err?.response?.data?.message || "Unable to load roles."); } finally { setLoading(false); } };
 
   useEffect(() => {
     load().catch(() => {});
   }, []);
 
-  return <RoleEditor roles={roles} onRefresh={load} />;
+  return <RoleEditor roles={roles} onRefresh={load} loading={loading} loadError={loadError} />;
 };
 
 export default Roles;

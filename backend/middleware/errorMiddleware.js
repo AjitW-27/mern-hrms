@@ -20,7 +20,7 @@ const errorHandler = (err, req, res, next) => {
     // Mongoose Validation Error
     else if (err.name === "ValidationError") {
         message = Object.values(err.errors)
-            .map((e) => e.message)
+            .map((e) => e.name === "CastError" || e.kind === "ObjectId" ? `Select a valid ${e.path || "record"}.` : e.message)
             .join(", ");
 
         statusCode = 400;
@@ -46,6 +46,11 @@ const errorHandler = (err, req, res, next) => {
     else if (err.name === "TokenExpiredError") {
         message = "Token expired";
         statusCode = 401;
+    }
+
+    else if (Number(err.statusCode) >= 400 && Number(err.statusCode) < 500) {
+        statusCode = Number(err.statusCode);
+        message = err.message;
     }
 
     // 404 route

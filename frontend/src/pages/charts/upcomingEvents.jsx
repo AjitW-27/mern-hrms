@@ -1,3 +1,4 @@
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
@@ -9,10 +10,10 @@ const UpcomingEvents = ({ events = [], loading = false }) => (
       width: "100%",
       height: "100%",
       minHeight: 300,
-      bgcolor: "#FFFFFF",
-      border: "1px solid #E2E8F0",
-      borderRadius: 1,
-      boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+      bgcolor: themeColors.cardBg,
+      border: "1px solid " + themeColors.border,
+      borderRadius: "4px",
+      boxShadow: "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
     }}
   >
     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
@@ -22,18 +23,18 @@ const UpcomingEvents = ({ events = [], loading = false }) => (
           height: 42,
           display: "grid",
           placeItems: "center",
-          borderRadius: 1,
-          bgcolor: "#E6F7F8",
-          color: "#0E8F9A",
+          borderRadius: "4px",
+          bgcolor: themeColors.primarySoft,
+          color: themeColors.primary,
         }}
       >
         <EventOutlinedIcon />
       </Box>
       <Box>
-        <Typography sx={{ fontSize: 16, fontWeight: 600, color: "#1E293B" }}>
+        <Typography sx={{ fontSize: 16, fontWeight: 600, color: themeColors.textPrimary }}>
           Upcoming Events
         </Typography>
-        <Typography sx={{ fontSize: 13, color: "#64748B" }}>
+        <Typography sx={{ fontSize: 13, color: themeColors.textMuted }}>
           Meetings scheduled for you
         </Typography>
       </Box>
@@ -50,7 +51,7 @@ const UpcomingEvents = ({ events = [], loading = false }) => (
             display: "flex",
             gap: 1.5,
             py: 1.25,
-            borderBottom: "1px solid #F1F5F9",
+            borderBottom: "1px solid " + themeColors.tableHeader,
           }}
         >
           <Box
@@ -58,12 +59,12 @@ const UpcomingEvents = ({ events = [], loading = false }) => (
               minWidth: 48,
               textAlign: "center",
               p: 0.75,
-              bgcolor: "#F8FAFC",
-              borderRadius: 8,
+              bgcolor: themeColors.hover,
+              borderRadius: "4px",
             }}
           >
             <Typography
-              sx={{ fontSize: 16, fontWeight: 700, color: "#0F172A" }}
+              sx={{ fontSize: 16, fontWeight: 700, color: themeColors.navyDark }}
             >
               {new Date(event.startAt).getDate()}
             </Typography>
@@ -75,7 +76,7 @@ const UpcomingEvents = ({ events = [], loading = false }) => (
           </Box>
           <Box>
             <Typography
-              sx={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}
+              sx={{ fontSize: 13, fontWeight: 600, color: themeColors.navyDark }}
             >
               {event.title}
             </Typography>

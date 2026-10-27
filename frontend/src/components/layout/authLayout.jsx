@@ -1,3 +1,5 @@
+import Logo from "../comps/logo";
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
 import { Box, Grid, Typography, Stack } from "@mui/material";
 
@@ -41,7 +43,7 @@ const AuthLayout = ({ children }) => {
           flexDirection: "column",
           justifyContent: "center",
           px: { md: 8, lg: 12 },
-          color: "#FFFFFF",
+          color: themeColors.cardBg,
           position: "relative",
           zIndex: 2,
           perspective: "1200px", // Enables 3D Space
@@ -57,8 +59,8 @@ const AuthLayout = ({ children }) => {
             ml: 2,
           }}
         >
-          <Box display="flex" alignItems="center" mb={6}>
-            {/* <BusinessIcon sx={{ fontSize: 40, mr: 1, color: "#CBD5E1" }} /> */}
+          <Box display="flex" alignItems="center" mb={6}><Logo />
+            {/* <BusinessIcon sx={{ fontSize: 40, mr: 1, color: "var(--border)" }} /> */}
             {/* <Box>
               <Typography
                 variant="h5"
@@ -84,7 +86,7 @@ const AuthLayout = ({ children }) => {
           >
             Empowering People,
             <br />
-            Building <span style={{ color: "#8B5CF6" }}>Better Workplaces</span>
+            Building <span style={{ color: themeColors.purple }}>Better Workplaces</span>
           </Typography>
 
           <Typography
@@ -97,7 +99,7 @@ const AuthLayout = ({ children }) => {
 
           <Stack direction="row" spacing={5} mb={8}>
             <Stack alignItems="center" spacing={1}>
-              <GroupsOutlinedIcon sx={{ color: "#8B5CF6", fontSize: 32 }} />
+              <GroupsOutlinedIcon sx={{ color: themeColors.purple, fontSize: 32 }} />
               <Typography
                 variant="body2"
                 textAlign="center"
@@ -109,7 +111,7 @@ const AuthLayout = ({ children }) => {
               </Typography>
             </Stack>
             <Stack alignItems="center" spacing={1}>
-              <CalendarTodayIcon sx={{ color: "#8B5CF6", fontSize: 28 }} />
+              <CalendarTodayIcon sx={{ color: themeColors.purple, fontSize: 28 }} />
               <Typography
                 variant="body2"
                 textAlign="center"
@@ -122,7 +124,7 @@ const AuthLayout = ({ children }) => {
             </Stack>
             <Stack alignItems="center" spacing={1}>
               <VerifiedUserOutlinedIcon
-                sx={{ color: "#8B5CF6", fontSize: 32 }}
+                sx={{ color: themeColors.purple, fontSize: 32 }}
               />
               <Typography
                 variant="body2"
@@ -135,7 +137,7 @@ const AuthLayout = ({ children }) => {
             </Stack>
           </Stack>
 
-          <Box sx={{ borderLeft: "3px solid #818cf8", pl: 2, maxWidth: 350 }}>
+          <Box sx={{ borderLeft: "3px solid " + themeColors.textLight, pl: 2, maxWidth: 350 }}>
             <Typography
               variant="body2"
               sx={{ fontStyle: "italic", opacity: 0.9, mt: -2 }}

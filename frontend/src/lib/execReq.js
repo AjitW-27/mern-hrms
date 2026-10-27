@@ -128,7 +128,7 @@ client.interceptors.response.use(
   async (error) => {
     const request = error?.config;
     const path = String(request?.url || "");
-    const isAuthRequest = path.includes("/auth/login") || path.includes("/auth/refresh-token");
+    const isAuthRequest = path.includes("/auth/login") || path.includes("/auth/refresh-token") || path.includes("/auth/google");
 
     // Invalid credentials must be shown by Login.jsx, not treated as an
     // expired session. Protected requests refresh once before signing out.

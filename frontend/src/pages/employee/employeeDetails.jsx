@@ -1,14 +1,7 @@
+import { Button, Avatar, Card as Paper, Badge as Chip, IconButton } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Grid,
-  Avatar,
-  Paper,
-  Chip,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
   Edit as EditIcon,
@@ -78,7 +71,7 @@ const EmployeeDetails = () => {
 
   if (!employee)
     return (
-      <Typography color="#0F172A" p={4}>
+      <Typography color={themeColors.navyDark} p={4}>
         Loading...
       </Typography>
     );
@@ -89,8 +82,8 @@ const EmployeeDetails = () => {
         sx={{
           p: 1.5,
           borderRadius: "4px",
-          bgcolor: "#F8FAFC",
-          color: "#0E8F9A",
+          bgcolor: themeColors.hover,
+          color: themeColors.primary,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -99,10 +92,10 @@ const EmployeeDetails = () => {
         <Icon fontSize="small" />
       </Box>
       <Box>
-        <Typography fontSize={12} color="#64748B">
+        <Typography fontSize={12} color={themeColors.textMuted}>
           {label}
         </Typography>
-        <Typography fontSize={15} color="#0F172A" fontWeight="500">
+        <Typography fontSize={15} color={themeColors.navyDark} fontWeight="500">
           {value || "N/A"}
         </Typography>
       </Box>
@@ -111,8 +104,8 @@ const EmployeeDetails = () => {
 
   const SectionTitle = ({ icon: Icon, title }) => (
     <Box display="flex" alignItems="center" gap={1.5} mb={3}>
-      <Icon sx={{ color: "#0E8F9A" }} />
-      <Typography variant="h6" color="#0F172A" fontWeight="bold">
+      <Icon sx={{ color: themeColors.primary }} />
+      <Typography variant="h6" color={themeColors.navyDark} fontWeight="bold">
         {title}
       </Typography>
     </Box>
@@ -122,9 +115,9 @@ const EmployeeDetails = () => {
     <Box
       sx={{
         p: { xs: 2, md: 4 },
-        background: "#F8FAFC",
+        background: themeColors.hover,
         minHeight: "100vh",
-        color: "#0F172A",
+        color: themeColors.navyDark,
       }}
     >
       <Box
@@ -135,7 +128,7 @@ const EmployeeDetails = () => {
       >
         <Box display="flex" alignItems="center">
           <IconButton
-            sx={{ color: "#64748B", mr: 1.5, borderRadius: "4px" }}
+            sx={{ color: themeColors.textMuted, mr: 1.5, borderRadius: "4px" }}
             onClick={() => navigate("/dashboard/employees")}
           >
             <ArrowBackIcon />
@@ -147,13 +140,13 @@ const EmployeeDetails = () => {
             startIcon={<EditIcon />}
             onClick={() => navigate(`/dashboard/edit-employee/${id}`)}
             sx={{
-              color: "#0EA5E9",
-              borderColor: "#0EA5E9",
+              color: themeColors.primary,
+              borderColor: themeColors.primary,
               textTransform: "none",
               fontWeight: "bold",
               "&:hover": {
-                borderColor: "#0EA5E9",
-                bgcolor: "rgba(14, 165, 233, 0.1)",
+                borderColor: themeColors.primary,
+                bgcolor: themeColors.overlay33,
               },
             }}
           >
@@ -177,8 +170,8 @@ const EmployeeDetails = () => {
             sx={{
               p: 4,
               borderRadius: "4px",
-              bgcolor: "#FFFFFF",
-              border: "1px solid #E2E8F0",
+              bgcolor: themeColors.cardBg,
+              border: "1px solid " + themeColors.border,
               textAlign: "center",
             }}
           >
@@ -188,17 +181,17 @@ const EmployeeDetails = () => {
                 height: 110,
                 mx: "auto",
                 mb: 2,
-                bgcolor: "#0E8F9A",
+                bgcolor: themeColors.primary,
                 fontSize: 45,
-                boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+                boxShadow: "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2,
               }}
             >
               {employee.fullName?.[0]}
             </Avatar>
-            <Typography variant="h5" fontWeight="bold" color="#0F172A">
+            <Typography variant="h5" fontWeight="bold" color={themeColors.navyDark}>
               {employee.fullName}
             </Typography>
-            <Typography color="#64748B" mb={2}>
+            <Typography color={themeColors.textMuted} mb={2}>
               {employee.designation}
             </Typography>
             <Chip
@@ -215,8 +208,8 @@ const EmployeeDetails = () => {
               sx={{
                 p: 4,
                 borderRadius: "4px",
-                bgcolor: "#FFFFFF",
-                border: "1px solid #E2E8F0",
+                bgcolor: themeColors.cardBg,
+                border: "1px solid " + themeColors.border,
               }}
             >
               <SectionTitle icon={InfoOutlined} title="Detailed Information" />
@@ -427,8 +420,8 @@ const EmployeeDetails = () => {
               sx={{
                 p: 4,
                 borderRadius: "4px",
-                bgcolor: "#FFFFFF",
-                border: "1px solid #E2E8F0",
+                bgcolor: themeColors.cardBg,
+                border: "1px solid " + themeColors.border,
               }}
             >
               <SectionTitle icon={CreditCard} title="Bank Details" />
@@ -482,8 +475,8 @@ const EmployeeDetails = () => {
               sx={{
                 p: 4,
                 borderRadius: "4px",
-                bgcolor: "#FFFFFF",
-                border: "1px solid #E2E8F0",
+                bgcolor: themeColors.cardBg,
+                border: "1px solid " + themeColors.border,
               }}
             >
               <SectionTitle icon={WorkHistory} title="Salary & Leave" />
@@ -580,8 +573,8 @@ const EmployeeDetails = () => {
               sx={{
                 p: 4,
                 borderRadius: "4px",
-                bgcolor: "#FFFFFF",
-                border: "1px solid #E2E8F0",
+                bgcolor: themeColors.cardBg,
+                border: "1px solid " + themeColors.border,
               }}
             >
               <SectionTitle icon={DevicesIcon} title="Assigned Assets" />
@@ -595,8 +588,8 @@ const EmployeeDetails = () => {
                           p: 2.5,
                           borderRadius: "4px",
                           background:
-                            "#0F172A",
-                          border: "1px solid #E2E8F0",
+                            themeColors.navyDark,
+                          border: "1px solid " + themeColors.border,
                           position: "relative",
                           overflow: "hidden",
                         }}
@@ -608,14 +601,14 @@ const EmployeeDetails = () => {
                             left: 0,
                             width: "100%",
                             height: "3px",
-                            bgcolor: "#0E8F9A",
+                            bgcolor: themeColors.primary,
                           }}
                         />
 
                         <Typography
                           fontSize={16}
                           fontWeight="bold"
-                          color="#0F172A"
+                          color={themeColors.navyDark}
                           mb={1}
                         >
                           {asset.assetName}
@@ -629,11 +622,11 @@ const EmployeeDetails = () => {
                         >
                           <Box display="flex" alignItems="center" gap={1}>
                             <QrCodeIcon
-                              sx={{ fontSize: 16, color: "#64748B" }}
+                              sx={{ fontSize: 16, color: themeColors.textMuted }}
                             />
                             <Typography
                               fontSize={13}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               sx={{ fontFamily: "monospace" }}
                             >
                               Asset ID: {asset.assetId}
@@ -644,11 +637,11 @@ const EmployeeDetails = () => {
                             asset.serialNumber && (
                               <Box display="flex" alignItems="center" gap={1}>
                                 <SerialIcon
-                                  sx={{ fontSize: 16, color: "#64748B" }}
+                                  sx={{ fontSize: 16, color: themeColors.textMuted }}
                                 />
                                 <Typography
                                   fontSize={13}
-                                  color="#64748B"
+                                  color={themeColors.textMuted}
                                   sx={{ fontFamily: "monospace" }}
                                 >
                                   S/N: {asset.serialNumber}
@@ -661,72 +654,72 @@ const EmployeeDetails = () => {
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               textTransform="uppercase"
                             >
                               Category
                             </Typography>
-                            <Typography fontSize={13} color="#0F172A">
+                            <Typography fontSize={13} color={themeColors.navyDark}>
                               {asset.category} ({asset.type})
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               textTransform="uppercase"
                             >
                               Ownership
                             </Typography>
-                            <Typography fontSize={13} color="#0F172A">
+                            <Typography fontSize={13} color={themeColors.navyDark}>
                               {asset.ownership || "N/A"}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               textTransform="uppercase"
                             >
                               Brand & Model
                             </Typography>
-                            <Typography fontSize={13} color="#0F172A">
+                            <Typography fontSize={13} color={themeColors.navyDark}>
                               {asset.brand || "N/A"} {asset.model || ""}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               textTransform="uppercase"
                             >
                               Condition
                             </Typography>
-                            <Typography fontSize={13} color="#0F172A">
+                            <Typography fontSize={13} color={themeColors.navyDark}>
                               {asset.condition}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               textTransform="uppercase"
                             >
                               Status
                             </Typography>
-                            <Typography fontSize={13} color="#0F172A">
+                            <Typography fontSize={13} color={themeColors.navyDark}>
                               {asset.status || "N/A"}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
                             <Typography
                               fontSize={11}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               textTransform="uppercase"
                             >
                               Assigned On
                             </Typography>
-                            <Typography fontSize={13} color="#0F172A">
+                            <Typography fontSize={13} color={themeColors.navyDark}>
                               {asset.assignedDate
                                 ? new Date(
                                     asset.assignedDate,
@@ -737,12 +730,12 @@ const EmployeeDetails = () => {
                           <Grid item xs={12}>
                             <Typography
                               fontSize={11}
-                              color="#64748B"
+                              color={themeColors.textMuted}
                               textTransform="uppercase"
                             >
                               Return Date
                             </Typography>
-                            <Typography fontSize={13} color="#0F172A">
+                            <Typography fontSize={13} color={themeColors.navyDark}>
                               {asset.returnDate
                                 ? new Date(
                                     asset.returnDate,
@@ -756,7 +749,7 @@ const EmployeeDetails = () => {
                   ))}
                 </Grid>
               ) : (
-                <Typography color="#64748B">No assets assigned.</Typography>
+                <Typography color={themeColors.textMuted}>No assets assigned.</Typography>
               )}
             </Paper>
           </Box>

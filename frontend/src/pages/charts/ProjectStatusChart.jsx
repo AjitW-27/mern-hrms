@@ -1,5 +1,6 @@
+import { Skeleton } from "../../components/common/UI";
 import React from "react";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { ChartCard, ChartHeading, ChartTooltip, useChartTheme } from "../../components/common/ChartComponents";
 

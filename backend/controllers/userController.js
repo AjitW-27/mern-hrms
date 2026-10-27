@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const User = require("../models/userModel");
 const Role = require("../models/roleModel");
+const Employee = require("../models/employeeModel");
 const asyncHandler = require("../utils/asyncHandler");
 const { sendEmail } = require("../utils/emailService");
 
@@ -107,5 +108,21 @@ module.exports = {
   updateUser,
   deleteUser,
   assignRole,
-  adminResetPassword
+  adminResetPassword,
+  linkEmployee: asyncHandler(async (req, res) => {
+    const role = req.userRole || String(req.user?.role?.code || req.user?.role || "").toLowerCase();
+    if (!["admin", "hr", "superadmin", "super_admin"].includes(role)) return res.status(403).json({ success: false, message: "Only HR or administrators can link employee profiles" });
+    const employeeId = req.body.employeeRef;
+    if (!/^[a-f0-9]{24}$/i.test(String(employeeId || ""))) return res.status(400).json({ success: false, message: "Select a valid employee record" });
+    const [user, employee] = await Promise.all([User.findById(req.params.id), Employee.findById(employeeId)]);
+    if (!user || !employee) return res.status(404).json({ success: false, message: "User or employee not found" });
+    if (user.employeeRef && String(user.employeeRef) !== String(employee._id)) return res.status(409).json({ success: false, message: "This user is already linked to another employee. Review the existing link first." });
+    if (employee.userId && String(employee.userId) !== String(user._id)) return res.status(409).json({ success: false, message: "This employee is already linked to another user" });
+    const owner = await User.findOne({ employeeRef: employee._id, _id: { $ne: user._id } }).select("_id");
+    if (owner) return res.status(409).json({ success: false, message: "Another user already references this employee" });
+    const claimed = await Employee.updateOne({ _id: employee._id, $or: [{ userId: null }, { userId: user._id }] }, { $set: { userId: user._id } });
+    if (!claimed.matchedCount) return res.status(409).json({ success: false, message: "Employee link changed. Refresh and retry." });
+    await User.updateOne({ _id: user._id }, { $set: { employeeRef: employee._id } });
+    return res.json({ success: true, message: "Employee profile linked", data: { userId: user._id, employeeRef: employee._id } });
+  }),
 };

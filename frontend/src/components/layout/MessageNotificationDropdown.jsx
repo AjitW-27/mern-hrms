@@ -1,3 +1,5 @@
+import { Button, IconButton, Avatar, Input as TextField } from "../common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, {
   useCallback,
   useEffect,
@@ -5,21 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  Badge,
-  Box,
-  Button,
-  Divider,
-  IconButton,
-  List,
-  ListItemButton,
-  Popover,
-  Stack,
-  Typography,
-  Avatar,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
+import { Badge, Box, Divider, List, ListItemButton, Popover, Stack, Typography, InputAdornment } from "@mui/material";
 import {
   ChatBubbleRounded,
   SearchRounded,
@@ -195,9 +183,9 @@ export default function MessageNotificationDropdown() {
             width: { xs: "calc(100vw - 24px)", sm: 390 },
             maxWidth: 390,
             borderRadius: "4px",
-            border: "1px solid #C2EBEE",
+            border: "1px solid " + themeColors.border,
             boxShadow:
-              "0 24px 44px -12px rgba(15,23,42,.22), 0 4px 16px -4px rgba(15,23,42,.08)",
+              "0 24px 44px -12px " + themeColors.overlay6 + ", 0 4px 16px -4px " + themeColors.overlay7,
             overflow: "hidden",
           },
         }}
@@ -205,7 +193,7 @@ export default function MessageNotificationDropdown() {
         <Box
           sx={{
             p: 1.75,
-            background: "linear-gradient(135deg,#F0FBFC,#D5F1F4)",
+            background: "linear-gradient(135deg," + themeColors.primarySoft + "," + themeColors.primarySoft + ")",
           }}
         >
           <Stack
@@ -216,11 +204,11 @@ export default function MessageNotificationDropdown() {
           >
             <Box>
               <Typography
-                sx={{ fontSize: 15, fontWeight: 800, color: "#0F172A" }}
+                sx={{ fontSize: 15, fontWeight: 800, color: themeColors.navyDark }}
               >
                 Messages
               </Typography>
-              <Typography sx={{ fontSize: 11, color: "#64748B", mt: 0.3 }}>
+              <Typography sx={{ fontSize: 11, color: themeColors.textMuted, mt: 0.3 }}>
                 Direct messages and team conversations
               </Typography>
             </Box>
@@ -251,7 +239,7 @@ export default function MessageNotificationDropdown() {
               mt: 1.3,
               "& .MuiOutlinedInput-root": {
                 borderRadius: "4px",
-                bgcolor: "#FFFFFF",
+                bgcolor: themeColors.cardBg,
               },
             }}
             InputProps={{
@@ -274,9 +262,9 @@ export default function MessageNotificationDropdown() {
           }}
         >
           <Stack direction="row" alignItems="center" spacing={0.7}>
-            <MarkChatUnreadRounded sx={{ fontSize: 16, color: "#0E8F9A" }} />
+            <MarkChatUnreadRounded sx={{ fontSize: 16, color: themeColors.primary }} />
             <Typography
-              sx={{ fontSize: 11, fontWeight: 800, color: "#475569" }}
+              sx={{ fontSize: 11, fontWeight: 800, color: themeColors.textMuted }}
             >
               {unreadCount ? `${unreadCount} unread` : "All caught up"}
             </Typography>
@@ -294,7 +282,7 @@ export default function MessageNotificationDropdown() {
         </Box>
         <List
           disablePadding
-          sx={{ maxHeight: 420, overflowY: "auto", bgcolor: "#FFFFFF" }}
+          sx={{ maxHeight: 420, overflowY: "auto", bgcolor: themeColors.cardBg }}
         >
           {filtered.length ? (
             filtered.map((item) => (
@@ -306,7 +294,7 @@ export default function MessageNotificationDropdown() {
                   py: 1.25,
                   alignItems: "flex-start",
                   gap: 1.1,
-                  borderTop: "1px solid #F1F5F9",
+                  borderTop: "1px solid " + themeColors.tableHeader,
                 }}
               >
                 <Avatar
@@ -314,7 +302,7 @@ export default function MessageNotificationDropdown() {
                   sx={{
                     width: 34,
                     height: 34,
-                    bgcolor: "#0E8F9A",
+                    bgcolor: themeColors.primary,
                     fontSize: 12,
                     flexShrink: 0,
                   }}
@@ -326,7 +314,7 @@ export default function MessageNotificationDropdown() {
                 <Box minWidth={0} flex={1}>
                   <Stack direction="row" justifyContent="space-between" gap={1}>
                     <Typography
-                      sx={{ fontSize: 12.5, fontWeight: 800, color: "#0F172A" }}
+                      sx={{ fontSize: 12.5, fontWeight: 800, color: themeColors.navyDark }}
                       noWrap
                     >
                       {item.sender?.name || item.title || "Conversation"}
@@ -340,7 +328,7 @@ export default function MessageNotificationDropdown() {
                   <Typography
                     sx={{
                       fontSize: 11.5,
-                      color: "#64748B",
+                      color: themeColors.textMuted,
                       mt: 0.35,
                       lineHeight: 1.45,
                     }}
@@ -354,9 +342,9 @@ export default function MessageNotificationDropdown() {
                     minWidth: 18,
                     height: 18,
                     px: 0.4,
-                    borderRadius: "9px",
-                    bgcolor: "#E6F7F8",
-                    color: "#0A5C67",
+                    borderRadius: "4px",
+                    bgcolor: themeColors.primarySoft,
+                    color: themeColors.secondaryDark,
                     display: "grid",
                     placeItems: "center",
                     fontSize: 9,
@@ -369,9 +357,9 @@ export default function MessageNotificationDropdown() {
             ))
           ) : (
             <Box sx={{ p: 4, textAlign: "center" }}>
-              <ChatBubbleRounded sx={{ fontSize: 34, color: "#8DD8DE" }} />
+              <ChatBubbleRounded sx={{ fontSize: 34, color: themeColors.textLight }} />
               <Typography
-                sx={{ fontSize: 13, fontWeight: 700, mt: 1, color: "#334155" }}
+                sx={{ fontSize: 13, fontWeight: 700, mt: 1, color: themeColors.secondaryDark }}
               >
                 No unread messages
               </Typography>
@@ -391,10 +379,10 @@ function TooltiplessIconButton({ children, ...props }) {
     <IconButton
       {...props}
       sx={{
-        color: "#64748B",
+        color: themeColors.textMuted,
         borderRadius: "4px",
         p: 0.75,
-        "&:hover": { bgcolor: "rgba(14,143,154,.07)", color: "#0E8F9A" },
+        "&:hover": { bgcolor: themeColors.overlay9, color: themeColors.primary },
         ...(props.sx || {}),
       }}
     >

@@ -14,7 +14,7 @@ const logger = require("./logger");
  * @param {string} [options.relatedModel]
  * @param {string} [options.priority]
  */
-const createNotification = async ({ recipientId, recipientRole, title, message, type, relatedId, relatedModel, priority = "normal" }) => {
+const createNotification = async ({ recipientId, recipientRole, title, message, type, relatedId, relatedModel, priority = "normal", io }) => {
     try {
         let recipientIds = [];
 
@@ -39,6 +39,7 @@ const createNotification = async ({ recipientId, recipientRole, title, message, 
 
         const created = await Notification.insertMany(notifications);
         logger.info(`${created.length} notifications created`);
+        if (io) created.forEach(notification => io.to("user_" + notification.recipient).emit("notification:new", notification));
         return created;
     } catch (error) {
         logger.error(`Notification creation failed: ${error.message}`);

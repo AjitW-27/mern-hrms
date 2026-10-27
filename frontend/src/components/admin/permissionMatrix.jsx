@@ -1,16 +1,6 @@
 import React, { useMemo } from "react";
-import {
-  Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Checkbox,
-  Typography,
-} from "@mui/material";
+import { Checkbox } from "@mui/material";
+import DataTable from "../common/DataTable";
 
 const ACTIONS = ["create", "read", "update", "delete", "approve", "export"];
 
@@ -57,84 +47,6 @@ const PermissionMatrix = ({
     }
   };
 
-  return (
-    <Paper elevation={0}>
-      <Box p={2}>
-        <Typography variant="h6" fontWeight={600} mb={2}>
-          Permission Matrix
-        </Typography>
-
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <strong>Module</strong>
-                </TableCell>
-
-                {ACTIONS.map((action) => (
-                  <TableCell key={action} align="center">
-                    <strong>{action.toUpperCase()}</strong>
-                  </TableCell>
-                ))}
-
-                <TableCell align="center">
-                  <strong>ALL</strong>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {Object.entries(groupedPermissions).map(
-                ([module, modulePermissions]) => (
-                  <TableRow key={module}>
-                    <TableCell
-                      sx={{
-                        fontWeight: 600,
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {module}
-                    </TableCell>
-
-                    {ACTIONS.map((action) => {
-                      const permissionId = modulePermissions[action];
-
-                      return (
-                        <TableCell key={action} align="center">
-                          {permissionId ? (
-                            <Checkbox
-                              checked={selectedPermissions.includes(
-                                permissionId,
-                              )}
-                              onChange={() =>
-                                handlePermissionToggle(permissionId)
-                              }
-                            />
-                          ) : (
-                            "-"
-                          )}
-                        </TableCell>
-                      );
-                    })}
-
-                    <TableCell align="center">
-                      <Checkbox
-                        checked={Object.values(modulePermissions).every((id) =>
-                          selectedPermissions.includes(id),
-                        )}
-                        onChange={() => handleModuleToggle(modulePermissions)}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ),
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-    </Paper>
-  );
+  return <DataTable fill={false} toolbar={false} pagination={false} maxHeight={520} rows={Object.entries(groupedPermissions).map(([module, permissions]) => ({ id: module, module, permissions }))} columns={[{ field: "module", headerName: "Module" }, ...ACTIONS.map(action => ({ field: action, headerName: action, align: "center", minWidth: 85, renderCell: row => row.permissions[action] ? <Checkbox inputProps={{ "aria-label": row.module + " " + action }} checked={selectedPermissions.includes(row.permissions[action])} onChange={() => handlePermissionToggle(row.permissions[action])} /> : null })), { field: "all", headerName: "All", align: "center", minWidth: 85, renderCell: row => <Checkbox inputProps={{ "aria-label": row.module + " all permissions" }} checked={Object.values(row.permissions).every(id => selectedPermissions.includes(id))} onChange={() => handleModuleToggle(row.permissions)} /> }]} />;
 };
-
 export default PermissionMatrix;

@@ -9,8 +9,29 @@ const defaultRoles = [
   { name: "admin", code: "admin", description: "Company administrator", permissions: buildAccess({ full: true }), level: 2, isSystemRole: true },
   { name: "hr", code: "hr", description: "Human resources operations", permissions: buildAccess({ hr: true }), level: 10, isSystemRole: true },
   { name: "manager", code: "manager", description: "Team manager", permissions: buildAccess({ manager: true }), level: 20, isSystemRole: true },
-  { name: "employee", code: "employee", description: "Standard employee", permissions: buildAccess({ employee: true }), level: 30, isSystemRole: true }
+  { name: "employee", code: "employee", description: "Standard employee", permissions: buildAccess({ employee: true }), level: 30, isSystemRole: true },
+  { name: "system", code: "system", description: "System account; permissions assigned explicitly", permissions: buildAccess({}), level: 40, isSystemRole: true }
 ];
+
+const ensureDefaultRoles = async () => {
+  for (const role of defaultRoles) {
+    await Role.findOneAndUpdate(
+      { code: role.code },
+      {
+        $setOnInsert: {
+          name: role.name,
+          code: role.code,
+          description: role.description,
+          permissions: role.permissions,
+          level: role.level,
+          isSystemRole: true,
+          isActive: true
+        }
+      },
+      { upsert: true, new: true }
+    );
+  }
+};
 
 const bootstrap = async () => {
   const orgCount = await Organization.countDocuments();
@@ -29,23 +50,7 @@ const bootstrap = async () => {
     });
   }
 
-  for (const role of defaultRoles) {
-    await Role.findOneAndUpdate(
-      { code: role.code },
-      {
-        $setOnInsert: {
-          name: role.name,
-          code: role.code,
-          description: role.description,
-          permissions: role.permissions,
-          level: role.level,
-          isSystemRole: true,
-          isActive: true
-        }
-      },
-      { upsert: true, new: true }
-    );
-  }
+  await ensureDefaultRoles();
 
   let settings = await Settings.findOne();
   if (!settings) {
@@ -75,3 +80,5 @@ const bootstrap = async () => {
 };
 
 module.exports = bootstrap;
+
+module.exports.ensureDefaultRoles = ensureDefaultRoles;

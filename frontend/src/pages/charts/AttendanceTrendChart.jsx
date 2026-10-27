@@ -1,5 +1,6 @@
+import { Skeleton } from "../../components/common/UI";
 import React from "react";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   Area,
   AreaChart,
@@ -17,15 +18,9 @@ import {
   useChartTheme,
 } from "../../components/common/ChartComponents";
 
-const FALLBACK = [
-  { date: "Mon", Present: 0, Absent: 0, Late: 0 },
-  { date: "Tue", Present: 0, Absent: 0, Late: 0 },
-  { date: "Wed", Present: 0, Absent: 0, Late: 0 },
-];
-
 const AttendanceTrendChart = ({ data, loading }) => {
   const c = useChartTheme();
-  const chartData = data?.length ? data : FALLBACK;
+  const chartData = data || [];
   const series = [
     { key: "Present", color: c.primary },
     { key: "Absent", color: c.error },
@@ -62,6 +57,8 @@ const AttendanceTrendChart = ({ data, loading }) => {
           height={260}
           sx={{ bgcolor: "action.hover", borderRadius: "4px" }}
         />
+      ) : !chartData.length ? (
+        <Box sx={{ minHeight: 260, display: "grid", placeItems: "center" }}><Typography color="text.secondary">No attendance records in this period.</Typography></Box>
       ) : (
         <ResponsiveContainer width="100%" height={275}>
           <AreaChart

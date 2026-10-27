@@ -1,21 +1,15 @@
+import { Input as TextField, Button } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  Switch,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, Grid, Switch, Divider } from "@mui/material";
 
 const Settings = () => {
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#FFFFFF",
-      backgroundColor: "#1E293B",
+      color: themeColors.cardBg,
+      backgroundColor: themeColors.textPrimary,
       borderRadius: "4px",
-      "& fieldset": { borderColor: "#334155" },
+      "& fieldset": { borderColor: themeColors.secondaryDark },
     },
     "& .MuiInputLabel-root": { color: "none" },
   };
@@ -24,24 +18,22 @@ const Settings = () => {
     <Box
       sx={{
         p: { xs: 2, md: 4 },
-        background: "#0F172A",
+        background: themeColors.navyDark,
         minHeight: "100vh",
-        color: "#FFFFFF",
+        color: themeColors.cardBg,
       }}
     >
-      <Typography fontSize={24} fontWeight="bold" mb={4}>
-        System Settings
-      </Typography>
+
 
       <Grid container spacing={4}>
         {/* Profile Settings */}
         <Grid item xs={12} md={6}>
           <Box
             sx={{
-              background: "#0F172A",
+              background: themeColors.navyDark,
               p: 4,
               borderRadius: "4px",
-              border: "1px solid #1E293B",
+              border: "1px solid " + themeColors.textPrimary,
             }}
           >
             <Typography fontSize={18} fontWeight="bold" mb={3}>
@@ -68,9 +60,9 @@ const Settings = () => {
                 <Button
                   variant="contained"
                   sx={{
-                    background: "#8b5cf6",
+                    background: themeColors.purple,
                     textTransform: "none",
-                    "&:hover": { background: "#8B5CF6" },
+                    "&:hover": { background: themeColors.purple },
                   }}
                 >
                   Save Profile
@@ -84,10 +76,10 @@ const Settings = () => {
         <Grid item xs={12} md={6}>
           <Box
             sx={{
-              background: "#0F172A",
+              background: themeColors.navyDark,
               p: 4,
               borderRadius: "4px",
-              border: "1px solid #1E293B",
+              border: "1px solid " + themeColors.textPrimary,
             }}
           >
             <Typography fontSize={18} fontWeight="bold" mb={3}>
@@ -109,14 +101,14 @@ const Settings = () => {
               <Switch
                 defaultChecked
                 sx={{
-                  "& .MuiSwitch-switchBase.Mui-checked": { color: "#8b5cf6" },
+                  "& .MuiSwitch-switchBase.Mui-checked": { color: themeColors.purple },
                   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                    backgroundColor: "#8b5cf6",
+                    backgroundColor: themeColors.purple,
                   },
                 }}
               />
             </Box>
-            <Divider sx={{ borderColor: "#1E293B", my: 2 }} />
+            <Divider sx={{ borderColor: themeColors.textPrimary, my: 2 }} />
             <Box
               display="flex"
               justifyContent="space-between"
@@ -131,9 +123,9 @@ const Settings = () => {
               <Switch
                 defaultChecked
                 sx={{
-                  "& .MuiSwitch-switchBase.Mui-checked": { color: "#8b5cf6" },
+                  "& .MuiSwitch-switchBase.Mui-checked": { color: themeColors.purple },
                   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-                    backgroundColor: "#8b5cf6",
+                    backgroundColor: themeColors.purple,
                   },
                 }}
               />

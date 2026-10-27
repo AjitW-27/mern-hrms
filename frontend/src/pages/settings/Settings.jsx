@@ -1,17 +1,6 @@
+import { Button, Card, Input as TextField } from "../../components/common/UI";
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  MenuItem,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, CardContent, Divider, Grid, MenuItem, Stack, Switch, Typography } from "@mui/material";
 import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
 import NotificationsActiveRoundedIcon from "@mui/icons-material/NotificationsActiveRounded";
 import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";

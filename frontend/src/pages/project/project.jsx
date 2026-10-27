@@ -1,15 +1,7 @@
+import { Button, Badge as Chip, Avatar } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Grid,
-  Button,
-  LinearProgress,
-  Chip,
-  Avatar,
-  AvatarGroup,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, Grid, LinearProgress, AvatarGroup, Divider } from "@mui/material";
 import { Add as AddIcon, Business as ClientIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -19,30 +11,30 @@ import execReq from "../../lib/execReq";
 const getStatusStyles = (status) => {
   switch (status) {
     case "Completed":
-      return { bg: "rgba(16,185,129,.12)", color: "#10b981" }; // Green
+      return { bg: themeColors.overlay16, color: themeColors.success }; // Green
     case "In Progress":
-      return { bg: "rgba(79,70,229,.125)", color: "#4F46E5" }; // Blue
+      return { bg: themeColors.overlay20, color: themeColors.info }; // Blue
     case "Delayed":
-      return { bg: "rgba(239,68,68,.12)", color: "#ef4444" }; // Red
+      return { bg: themeColors.overlay17, color: themeColors.primary }; // Red
     case "On Hold":
-      return { bg: "rgba(245,158,11,.12)", color: "#f59e0b" }; // Orange
+      return { bg: themeColors.overlay18, color: themeColors.warning };
     case "Not Started":
     default:
-      return { bg: "rgba(100,116,139,.12)", color: "none" }; // Gray
+      return { bg: themeColors.overlay34, color: "none" }; // Gray
   }
 };
 
 const getPriorityColor = (priority) => {
   switch (priority) {
     case "Critical":
-      return "#ef4444"; // Red
+      return themeColors.primary; // Red
     case "High":
-      return "#f59e0b"; // Orange
+      return themeColors.warning;
     case "Medium":
-      return "#4F46E5"; // Blue
+      return themeColors.info; // Blue
     case "Low":
     default:
-      return "#10b981"; // Green
+      return themeColors.success; // Green
   }
 };
 
@@ -68,9 +60,9 @@ const Project = () => {
     <Box
       sx={{
         p: { xs: 1.5, sm: 2, md: 2.5 },
-        background: "#FFFFFF",
+        background: themeColors.cardBg,
         minHeight: "100vh",
-        color: "#0F172A",
+        color: themeColors.navyDark,
       }}
     >
       <Box
@@ -84,12 +76,12 @@ const Project = () => {
           startIcon={<AddIcon />}
           onClick={() => navigate("/dashboard/add-project")}
           sx={{
-            background: "#0E8F9A",
+            background: themeColors.primary,
             textTransform: "none",
             borderRadius: "4px",
             fontWeight: 700,
             boxShadow: "none",
-            "&:hover": { background: "#0B7480", boxShadow: "none" },
+            "&:hover": { background: themeColors.primary, boxShadow: "none" },
           }}
         >
           New Project
@@ -107,16 +99,16 @@ const Project = () => {
                 sx={{
                   p: 3,
                   borderRadius: "4px",
-                  background: "#FFFFFF",
-                  border: "1px solid #E2E8F0",
+                  background: themeColors.cardBg,
+                  border: "1px solid " + themeColors.border,
                   boxShadow:
-                    "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+                    "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
                   height: "100%",
                   "&:hover": {
-                    borderColor: "#0E8F9A",
+                    borderColor: themeColors.primary,
                     transition: "0.3s ease-in-out",
                   },
                 }}
@@ -129,14 +121,14 @@ const Project = () => {
                   mb={2}
                 >
                   <Box>
-                    <Typography fontSize={12} color="#64748B" fontWeight={700}>
+                    <Typography fontSize={12} color={themeColors.textMuted} fontWeight={700}>
                       {project.code || "PRJ-0000"}
                     </Typography>
                     <Typography
                       fontSize={18}
                       fontWeight={700}
                       noWrap
-                      sx={{ maxWidth: "200px", color: "#0F172A" }}
+                      sx={{ maxWidth: "200px", color: themeColors.navyDark }}
                     >
                       {project.name}
                     </Typography>
@@ -164,7 +156,7 @@ const Project = () => {
                     display="flex"
                     alignItems="center"
                     gap={0.5}
-                    color="#64748B"
+                    color={themeColors.textMuted}
                   >
                     <ClientIcon fontSize="small" />
                     <Typography fontSize={13}>
@@ -187,10 +179,10 @@ const Project = () => {
                 {/* Progress Bar */}
                 <Box mb={3}>
                   <Box display="flex" justifyContent="space-between" mb={1}>
-                    <Typography fontSize={13} color="#64748B">
+                    <Typography fontSize={13} color={themeColors.textMuted}>
                       Progress
                     </Typography>
-                    <Typography fontSize={13} color="#0F172A" fontWeight={700}>
+                    <Typography fontSize={13} color={themeColors.navyDark} fontWeight={700}>
                       {project.progress || 0}%
                     </Typography>
                   </Box>
@@ -203,7 +195,7 @@ const Project = () => {
                     sx={{
                       height: 8,
                       borderRadius: "4px",
-                      backgroundColor: "#F1F5F9",
+                      backgroundColor: themeColors.tableHeader,
                       "& .MuiLinearProgress-bar": {
                         backgroundColor: statusStyle.color, // Progress bar matches status color
                         borderRadius: "4px",
@@ -212,7 +204,7 @@ const Project = () => {
                   />
                 </Box>
 
-                <Divider sx={{ borderColor: "#E2E8F0", mb: 2 }} />
+                <Divider sx={{ borderColor: themeColors.border, mb: 2 }} />
 
                 {/* Footer: Team & Dates */}
                 <Box
@@ -221,7 +213,7 @@ const Project = () => {
                   alignItems="center"
                 >
                   <Box>
-                    <Typography fontSize={12} color="#64748B">
+                    <Typography fontSize={12} color={themeColors.textMuted}>
                       Deadline
                     </Typography>
                     <Typography
@@ -230,8 +222,8 @@ const Project = () => {
                       color={
                         dayjs(project.deadline).isBefore(dayjs()) &&
                         project.status !== "Completed"
-                          ? "#ef4444"
-                          : "#475569"
+                          ? themeColors.primary
+                          : themeColors.textMuted
                       }
                     >
                       {project.deadline
@@ -248,7 +240,7 @@ const Project = () => {
                         width: 30,
                         height: 30,
                         fontSize: 12,
-                        borderColor: "#FFFFFF",
+                        borderColor: themeColors.cardBg,
                       },
                     }}
                   >

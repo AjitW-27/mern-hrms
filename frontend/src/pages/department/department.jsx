@@ -1,15 +1,8 @@
+import { Button, Avatar, IconButton } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useEffect, useState } from "react";
 
-import {
-  Box,
-  Typography,
-  Grid,
-  Button,
-  Avatar,
-  AvatarGroup,
-  IconButton,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, Grid, AvatarGroup, Divider } from "@mui/material";
 
 import {
   Add as AddIcon,
@@ -45,8 +38,8 @@ const Department = () => {
     <Box
       sx={{
         p: { xs: 2, md: 3 },
-        background: "#F8FAFC",
-        color: "#0F172A",
+        background: themeColors.hover,
+        color: themeColors.navyDark,
         minHeight: "100vh",
       }}
     >
@@ -67,11 +60,11 @@ const Department = () => {
       >
         {/* Title */}
         <Box>
-          <Typography fontSize={20} fontWeight={700} color="#0F172A">
+          <Typography fontSize={20} fontWeight={700} color={themeColors.navyDark}>
             Departments
           </Typography>
 
-          <Typography fontSize={14} color="#64748B" mt={0.5}>
+          <Typography fontSize={14} color={themeColors.textMuted} mt={0.5}>
             Manage your organization's departments and teams
           </Typography>
         </Box>
@@ -85,7 +78,7 @@ const Department = () => {
             height: 44,
             px: 2.5,
 
-            background: "#8b5cf6",
+            background: themeColors.purple,
 
             textTransform: "none",
             fontSize: 14,
@@ -93,11 +86,11 @@ const Department = () => {
 
             borderRadius: "4px",
 
-            boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+            boxShadow: "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2,
 
             "&:hover": {
-              background: "#8B5CF6",
-              boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+              background: themeColors.purple,
+              boxShadow: "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2,
             },
           }}
         >
@@ -108,7 +101,7 @@ const Department = () => {
       {/* ================= DEPARTMENT GRID ================= */}
       <Grid container spacing={3}>
         {departments.map((dept) => {
-          const color = dept.color || "#8b5cf6";
+          const color = dept.color || themeColors.purple;
 
           return (
             <Grid item xs={12} sm={6} md={4} key={dept._id}>
@@ -124,11 +117,11 @@ const Department = () => {
                    * Department color is used only
                    * as a very light background glow.
                    */
-                  background: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
+                  background: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.infoSoft + ")",
 
-                  border: "1px solid #E2E8F0",
+                  border: "1px solid " + themeColors.border,
 
-                  boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+                  boxShadow: "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
 
                   transition:
                     "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
@@ -136,9 +129,9 @@ const Department = () => {
                   "&:hover": {
                     transform: "translateY(-6px) scale(1.015)",
 
-                    boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+                    boxShadow: "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2,
 
-                    borderColor: `${color}55`,
+                    borderColor: `color-mix(in srgb, ${color} 30%, transparent)`,
                   },
                 }}
               >
@@ -183,7 +176,7 @@ const Department = () => {
                     </Box>
 
                     {/* Department Name */}
-                    <Typography fontSize={18} fontWeight={600} color="#0F172A">
+                    <Typography fontSize={18} fontWeight={600} color={themeColors.navyDark}>
                       {dept.name}
                     </Typography>
                   </Box>
@@ -192,7 +185,7 @@ const Department = () => {
                   <IconButton
                     size="small"
                     sx={{
-                      color: "#64748B",
+                      color: themeColors.textMuted,
 
                       "&:hover": {
                         background: `${color}10`,
@@ -208,7 +201,7 @@ const Department = () => {
                 <Box mb={3}>
                   <Typography
                     fontSize={12}
-                    color="#64748B"
+                    color={themeColors.textMuted}
                     textTransform="uppercase"
                     fontWeight={600}
                     letterSpacing={0.5}
@@ -217,7 +210,7 @@ const Department = () => {
                     Head of Department
                   </Typography>
 
-                  <Typography fontSize={15} color="#334155" fontWeight={500}>
+                  <Typography fontSize={15} color={themeColors.secondaryDark} fontWeight={500}>
                     {dept.head || "Not Assigned"}
                   </Typography>
                 </Box>
@@ -225,7 +218,7 @@ const Department = () => {
                 {/* ================= DIVIDER ================= */}
                 <Divider
                   sx={{
-                    borderColor: "#E2E8F0",
+                    borderColor: themeColors.border,
                     mb: 2,
                   }}
                 />
@@ -243,13 +236,13 @@ const Department = () => {
                     <Typography
                       fontSize={20}
                       fontWeight={700}
-                      color="#0F172A"
+                      color={themeColors.navyDark}
                       lineHeight={1.2}
                     >
                       {dept.count || 0}
                     </Typography>
 
-                    <Typography fontSize={13} color="#64748B">
+                    <Typography fontSize={13} color={themeColors.textMuted}>
                       Employees
                     </Typography>
                   </Box>
@@ -263,11 +256,11 @@ const Department = () => {
                         height: 32,
                         fontSize: 14,
 
-                        borderColor: "#FFFFFF",
+                        borderColor: themeColors.cardBg,
                         borderWidth: 2,
 
-                        background: "#E2E8F0",
-                        color: "#475569",
+                        background: themeColors.border,
+                        color: themeColors.textMuted,
                       },
                     }}
                   >
@@ -275,9 +268,9 @@ const Department = () => {
                       <Avatar
                         key={index}
                         sx={{
-                          bgcolor: index === 0 ? color : "#E2E8F0",
+                          bgcolor: index === 0 ? color : themeColors.border,
 
-                          color: index === 0 ? "#FFFFFF" : "#475569",
+                          color: index === 0 ? themeColors.cardBg : themeColors.textMuted,
 
                           fontWeight: 600,
                         }}
@@ -299,13 +292,13 @@ const Department = () => {
               sx={{
                 textAlign: "center",
                 py: 8,
-                color: "#64748B",
+                color: themeColors.textMuted,
               }}
             >
               <FolderIcon
                 sx={{
                   fontSize: 48,
-                  color: "#CBD5E1",
+                  color: themeColors.border,
                   mb: 1,
                 }}
               />

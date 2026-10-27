@@ -19,5 +19,6 @@ router
 
 router.patch("/:id/role", permit("users", "update"), controller.assignRole);
 router.post("/:id/reset-password", permit("users", "update"), controller.adminResetPassword);
+router.put("/:id/employee", permit("users", "update"), permit("employees", "update"), controller.linkEmployee);
 
 module.exports = router;

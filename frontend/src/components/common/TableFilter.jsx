@@ -1,15 +1,7 @@
+import { Button, IconButton, Input as TextField } from "./UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  IconButton,
-  MenuItem,
-  Popover,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Divider, MenuItem, Popover, Stack, Typography } from "@mui/material";
 import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
@@ -77,8 +69,8 @@ const TableFilter = ({ columns = [], value, onApply, onClear }) => {
         sx={{
           minHeight: 40,
           borderRadius: "4px",
-          borderColor: active ? "#F59E0B" : "divider",
-          color: active ? "#F59E0B" : "text.primary",
+          borderColor: active ? themeColors.warning : "divider",
+          color: active ? themeColors.warning : "text.primary",
           px: 1.5,
           fontWeight: 600,
           whiteSpace: "nowrap",
@@ -102,7 +94,7 @@ const TableFilter = ({ columns = [], value, onApply, onClear }) => {
             borderColor: "divider",
             borderRadius: "4px",
             boxShadow:
-              "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
+              "0 10px 15px -3px " + themeColors.overlay5 + ", 0 4px 6px -4px " + themeColors.overlay1,
           },
         }}
       >

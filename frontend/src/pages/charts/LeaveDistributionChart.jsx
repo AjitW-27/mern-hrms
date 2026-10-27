@@ -1,5 +1,6 @@
+import { Skeleton } from "../../components/common/UI";
 import React from "react";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
   Bar,
   BarChart,

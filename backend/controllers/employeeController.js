@@ -99,7 +99,7 @@ const addEmployee = asyncHandler(async (req, res) => {
 
 // GET EMPLOYEES
 const getEmployees = asyncHandler(async (req, res) => {
-    const { search, department, role, page = 1, limit = 20 } = req.query;
+    const { search, department, role, designation, page = 1, limit = 20 } = req.query;
     const filter = { isActive: true };
 
     if (search) {
@@ -111,11 +111,15 @@ const getEmployees = asyncHandler(async (req, res) => {
     }
     if (department) filter.department = department;
     if (role) filter.role = role;
+    if (designation) filter.designation = { $regex: String(designation).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
+    const sortField = ["fullName", "employeeId", "joiningDate"].includes(req.query.sort) ? req.query.sort : "createdAt";
+    const sortDirection = req.query.sort ? (req.query.order === "desc" ? -1 : 1) : -1;
 
     const [total, data] = await Promise.all([
         Employee.countDocuments(filter),
         Employee.find(filter)
-            .sort({ createdAt: -1 })
+            .populate("reportsTo", "fullName")
+            .sort({ [sortField]: sortDirection, _id: 1 })
             .skip((page - 1) * limit)
             .limit(Number(limit))
     ]);

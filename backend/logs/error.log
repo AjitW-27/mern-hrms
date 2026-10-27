@@ -79,3 +79,127 @@
 [2026-10-19 08:23:59] ERROR: ❌ Biometric connection failed:
 [2026-10-19 08:39:33] ERROR: ❌ Biometric connection failed:
 [2026-10-19 08:49:06] ERROR: ❌ Biometric connection failed:
+[2026-10-25 00:55:06] ERROR: ❌ Biometric connection failed:
+[2026-10-25 10:28:10] ERROR: ❌ Biometric connection failed:
+[2026-10-25 10:43:03] ERROR: 404 - Route not found - /favicon.ico - GET - 127.0.0.1
+[2026-10-25 10:43:31] ERROR: ❌ Biometric connection failed:
+[2026-10-25 10:43:58] ERROR: Email failed to ajitwadikar2@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-369e8db7e73sm12877016eec.20 - gsmtp
+[2026-10-25 11:20:36] ERROR: ❌ Biometric connection failed:
+[2026-10-25 11:21:23] ERROR: MongooseServerSelectionError: connect EACCES 127.0.0.1:27017
+    at _handleConnectionErrors (E:\Projects\MeltX\HRMS\backend\node_modules\mongoose\lib\connection.js:1169:11)
+    at NativeConnection.openUri (E:\Projects\MeltX\HRMS\backend\node_modules\mongoose\lib\connection.js:1100:11)
+[2026-10-25 11:24:39] ERROR: MongooseServerSelectionError: connect EACCES 127.0.0.1:27017
+    at _handleConnectionErrors (E:\Projects\MeltX\HRMS\backend\node_modules\mongoose\lib\connection.js:1169:11)
+    at NativeConnection.openUri (E:\Projects\MeltX\HRMS\backend\node_modules\mongoose\lib\connection.js:1100:11)
+[2026-10-25 11:35:57] ERROR: ❌ Biometric connection failed:
+[2026-10-25 11:51:18] ERROR: ❌ Biometric connection failed:
+[2026-10-25 12:06:39] ERROR: ❌ Biometric connection failed:
+[2026-10-25 12:22:00] ERROR: ❌ Biometric connection failed:
+[2026-10-25 12:37:21] ERROR: ❌ Biometric connection failed:
+[2026-10-25 12:52:42] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:09:34] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:14:49] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:15:17] ERROR: 404 - Route not found - /favicon.ico - GET - 127.0.0.1
+[2026-10-27 14:16:36] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:18:37] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:19:23] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:24:38] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:31:17] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:32:10] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:33:54] ERROR: ❌ Biometric connection failed:
+[2026-10-27 14:49:15] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:03:11] ERROR: Email failed to ajitwadikar2050@gmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-36a03bea5d4sm13051008eec.6 - gsmtp
+[2026-10-27 15:04:36] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:12:53] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:13:38] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:17:48] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:30:57] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:38:44] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:44] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/communication/unread-summary - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:44] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/notifications - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:44] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:44] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/dashboard/summary - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:44] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:44] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/auth/profile - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:47] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:47] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/communication/unread-summary - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:47] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/notifications - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:47] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:47] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/dashboard/summary - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:47] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:47] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/auth/profile - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/communication/unread-summary - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/notifications - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/dashboard/summary - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/auth/profile - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/communication/unread-summary - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/notifications - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/departments - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/settings - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/auth/profile - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/employees?search=&department=&designation=&page=1&limit=25&sort=fullName&order=asc - OPTIONS - 127.0.0.1
+[2026-10-27 15:38:55] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/ai-assistant/status - OPTIONS - 127.0.0.1
+[2026-10-27 15:41:51] ERROR: 500 - CORS blocked for origin: http://127.0.0.1:4175 - /api/ai-assistant/chat - POST - 127.0.0.1
+[2026-10-27 15:43:19] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:45:24] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:46:45] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:53:13] ERROR: ❌ Biometric connection failed:
+[2026-10-27 15:59:21] ERROR: ❌ Biometric connection failed:
+[2026-10-27 16:05:32] ERROR: ❌ Biometric connection failed:
+[2026-10-27 16:08:32] ERROR: ❌ Biometric connection failed:
+[2026-10-27 16:23:53] ERROR: ❌ Biometric connection failed:
+[2026-10-27 16:39:14] ERROR: ❌ Biometric connection failed:
+[2026-10-27 16:54:35] ERROR: ❌ Biometric connection failed:
+[2026-10-27 17:09:56] ERROR: ❌ Biometric connection failed:
+[2026-10-27 18:44:25] ERROR: ❌ Biometric connection failed:
+[2026-10-27 18:59:46] ERROR: ❌ Biometric connection failed:
+[2026-10-27 19:15:07] ERROR: ❌ Biometric connection failed:
+[2026-10-27 19:30:28] ERROR: ❌ Biometric connection failed:
+[2026-10-27 19:45:49] ERROR: ❌ Biometric connection failed:
+[2026-10-27 20:01:10] ERROR: ❌ Biometric connection failed:
+[2026-10-27 20:44:24] ERROR: ❌ Biometric connection failed:
+[2026-10-27 20:59:45] ERROR: ❌ Biometric connection failed:
+[2026-10-27 21:08:05] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "" (type string) at path "organization" because of "BSONError" - /api/admin/users/6aab5c5e607f05af042d3944 - PUT - 127.0.0.1
+[2026-10-27 21:08:11] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "" (type string) at path "organization" because of "BSONError" - /api/admin/users/6aab5c5e607f05af042d3944 - PUT - 127.0.0.1
+[2026-10-27 21:09:04] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "" (type string) at path "organization" because of "BSONError" - /api/admin/users/6add901475b37caf6821ceaa - PUT - 127.0.0.1
+[2026-10-27 21:11:37] ERROR: Email failed to ajit1@yopmail.com: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5a478bee46e88-36a1dc68237sm1085776eec.15 - gsmtp
+[2026-10-27 21:14:33] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "" (type string) at path "organization" because of "BSONError" - /api/admin/users/6ae0c62f4f245eb7524ecc44 - PUT - 127.0.0.1
+[2026-10-27 21:15:06] ERROR: ❌ Biometric connection failed:
+[2026-10-27 21:30:28] ERROR: ❌ Biometric connection failed:
+[2026-10-27 21:31:36] ERROR: ❌ Biometric connection failed:
+[2026-10-27 21:36:09] ERROR: ❌ Biometric connection failed:
+[2026-10-27 21:42:15] ERROR: ❌ Biometric connection failed:
+[2026-10-27 21:51:05] ERROR: ❌ Biometric connection failed:
+[2026-10-27 21:52:33] ERROR: 400 - Select an employee profile, or use the email address of an existing employee. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 21:52:34] ERROR: 409 - This employee profile is already linked to another account. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 21:52:34] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "not-an-id" (type string) at path "organization" because of "BSONError" - /api/admin/users/6ae0cfc7675d8032c169af2e - PUT - ::ffff:127.0.0.1
+[2026-10-27 21:52:48] ERROR: ❌ Biometric connection failed:
+[2026-10-27 22:08:09] ERROR: ❌ Biometric connection failed:
+[2026-10-27 22:13:17] ERROR: 400 - Select an employee profile, or use the email address of an existing employee. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 22:13:18] ERROR: 409 - This employee profile is already linked to another account. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 22:13:18] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "not-an-id" (type string) at path "organization" because of "BSONError" - /api/admin/users/6ae0d4a399eaa5cbb651fb90 - PUT - ::ffff:127.0.0.1
+[2026-10-27 22:27:20] ERROR: 400 - Select an employee profile, or use the email address of an existing employee. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 22:27:21] ERROR: 409 - This employee profile is already linked to another account. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 22:27:21] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "not-an-id" (type string) at path "organization" because of "BSONError" - /api/admin/users/6ae0d7ef38723d1217a317b6 - PUT - ::ffff:127.0.0.1
+[2026-10-27 22:27:21] ERROR: 400 - Shift validation failed: code: Path `code` is required. - /api/enterprise/shifts - POST - ::ffff:127.0.0.1
+[2026-10-27 22:27:21] ERROR: 400 - LeavePolicy validation failed: leaveType: Path `leaveType` is required. - /api/enterprise/leave-policies - POST - ::ffff:127.0.0.1
+[2026-10-27 22:27:38] ERROR: ❌ Biometric connection failed:
+[2026-10-27 22:31:37] ERROR: 400 - Select an employee profile, or use the email address of an existing employee. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 22:31:38] ERROR: 409 - This employee profile is already linked to another account. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 22:31:38] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "not-an-id" (type string) at path "organization" because of "BSONError" - /api/admin/users/6ae0d8f087c9e7980c0d01fd - PUT - ::ffff:127.0.0.1
+[2026-10-27 22:31:55] ERROR: ❌ Biometric connection failed:
+[2026-10-27 22:44:00] ERROR: ❌ Biometric connection failed:
+[2026-10-27 22:49:20] ERROR: ❌ Biometric connection failed:
+[2026-10-27 23:04:14] ERROR: ❌ Biometric connection failed:
+[2026-10-27 23:06:09] ERROR: 400 - Select an employee profile, or use the email address of an existing employee. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 23:06:09] ERROR: 409 - This employee profile is already linked to another account. - /api/admin/users - POST - ::ffff:127.0.0.1
+[2026-10-27 23:06:09] ERROR: 400 - User validation failed: organization: Cast to ObjectId failed for value "not-an-id" (type string) at path "organization" because of "BSONError" - /api/admin/users/6ae0e1077ce2e35c3d41a52e - PUT - ::ffff:127.0.0.1
+[2026-10-27 23:19:35] ERROR: ❌ Biometric connection failed:

@@ -3,39 +3,23 @@ const Employee = require("../models/employeeModel");
 const User = require("../models/userModel");
 const { createNotification } = require("../utils/notificationHelper");
 const { sendEmail } = require("../utils/emailService");
+const { getUserRoleCode } = require("../middleware/authMiddleware");
 
 // Helper to reliably find and link employee for the logged in user
 const getEmployeeForUser = async (user) => {
     if (!user) return null;
 
-    // 1. Try finding by userId or user reference
-    let employee = await Employee.findOne({
-        $or: [
-            { userId: user._id },
-            { user: user._id }
-        ]
-    });
-
-    // 2. If not found, try matching by email (case-insensitive)
-    if (!employee && user.email) {
-        employee = await Employee.findOne({
-            email: { $regex: new RegExp(`^${user.email.trim()}$`, "i") }
-        });
-
-        // Auto-link userId to employee document for future queries
-        if (employee) {
-            employee.userId = user._id;
-            await employee.save().catch(() => { });
+    const { resolveEmployee, saveLinkedUser } = require("../services/employeeLinkService");
+    let employee;
+    try {
+        employee = await resolveEmployee({ userId: user._id, email: user.email, employeeRef: user.employeeRef, required: true });
+        if (employee && (!employee.userId || !user.employeeRef)) {
+            const account = await User.findById(user._id);
+            if (account) await saveLinkedUser(account, employee);
         }
-    }
-
-    // 3. Fallback for Admin / HR testing if no employee profile exists
-    if (!employee && ["admin", "hr", "manager"].includes(user.role)) {
-        employee = await Employee.findOne();
-        if (employee && !employee.userId) {
-            employee.userId = user._id;
-            await employee.save().catch(() => { });
-        }
+    } catch (error) {
+        if ([400, 409].includes(error.statusCode)) return null;
+        throw error;
     }
 
     return employee;
@@ -44,7 +28,8 @@ const getEmployeeForUser = async (user) => {
 // ─── APPLY LEAVE ──────────────────────────────────────────────────────────────
 const applyLeave = async (req, res) => {
     try {
-        const { leaveType, fromDate, toDate, reason, isHalfDay, halfDayPeriod } = req.body;
+        const { leaveType, fromDate, toDate, reason, halfDayPeriod, managerId } = req.body;
+        const isHalfDay = req.body.isHalfDay === true || req.body.isHalfDay === "true";
 
         const employee = await getEmployeeForUser(req.user);
         if (!employee) {
@@ -61,6 +46,15 @@ const applyLeave = async (req, res) => {
         const from = new Date(fromDate);
         const to = new Date(toDate);
         const days = isHalfDay ? 0.5 : Math.ceil((to - from) / (1000 * 60 * 60 * 24)) + 1;
+
+        if (!["sick", "casual", "earned", "unpaid"].includes(leaveType) || !Number.isFinite(days) || days <= 0 || to < from) return res.status(400).json({ success: false, message: "Provide a valid leave type and date range" });
+        let approver;
+        const managerEmployeeId = managerId || employee.reportsTo;
+        if (managerEmployeeId) {
+            const manager = await Employee.findById(managerEmployeeId).select("userId role");
+            if (!manager?.userId || !["admin", "hr", "manager", "superadmin", "super_admin"].includes(manager.role)) return res.status(400).json({ success: false, message: "Select a manager with a linked approver account" });
+            approver = manager.userId;
+        }
 
         if (leaveType !== "unpaid" && balance < days) {
             return res.status(400).json({
@@ -93,13 +87,17 @@ const applyLeave = async (req, res) => {
             reason,
             isHalfDay,
             halfDayPeriod: isHalfDay ? halfDayPeriod : undefined,
-            supportingDocument: supportingDoc
+            supportingDocument: supportingDoc,
+            totalDays: days,
+            approver,
         });
+
 
         // Notify manager / HR
         try {
             await createNotification({
-                recipientRole: ["admin", "hr"],
+                ...(approver ? { recipientId: approver } : { recipientRole: ["admin", "hr"] }),
+                io: req.app?.get?.("io"),
                 title: "New Leave Application",
                 message: `${employee.fullName || "An employee"} has applied for ${days} day(s) of ${leaveType} leave.`,
                 type: "leave",
@@ -121,10 +119,7 @@ const getMyLeaves = async (req, res) => {
     try {
         const employee = await getEmployeeForUser(req.user);
         if (!employee) {
-            return res.status(404).json({
-                success: false,
-                message: "Employee profile not found"
-            });
+            return res.json({ success: true, employeeLinked: false, leaveBalance: {}, data: [], message: "Your account is not linked to an employee profile. Please contact HR." });
         }
 
         const { status, year } = req.query;
@@ -148,7 +143,7 @@ const getMyLeaves = async (req, res) => {
             unpaid: 0
         };
 
-        res.json({ success: true, leaveBalance, data: leaves });
+        res.json({ success: true, employeeLinked: true, leaveBalance, data: leaves });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -158,7 +153,7 @@ const getMyLeaves = async (req, res) => {
 const getAllLeaves = async (req, res) => {
     try {
         const { status, department, leaveType, page = 1, limit = 20 } = req.query;
-        const filter = {};
+        const filter = (req.userRole || getUserRoleCode(req.user)) === "manager" ? { approver: req.user._id } : {};
         if (status) filter.status = status;
         if (leaveType) filter.leaveType = leaveType;
 
@@ -188,29 +183,51 @@ const getAllLeaves = async (req, res) => {
 const updateLeaveStatus = async (req, res) => {
     try {
         const { status, comment } = req.body;
-
+        if (!["approved", "rejected"].includes(status)) return res.status(400).json({ success: false, message: "Choose approved or rejected" });
         const leave = await Leave.findById(req.params.id).populate("employee");
         if (!leave) return res.status(404).json({ success: false, message: "Leave not found" });
 
+        // Only pending leaves can be updated
         if (leave.status !== "pending") {
             return res.status(400).json({ success: false, message: `Leave already ${leave.status}` });
         }
 
+        // Authorization logic
+        const isPrivileged = ["admin", "hr", "superadmin", "super_admin"].includes(req.userRole || getUserRoleCode(req.user));
+        const isOwner = leave.employee?.userId?.toString() === req.user._id.toString();
+        const isApprover = leave.approver && leave.approver.toString() === req.user._id.toString();
+        if (!isPrivileged) {
+            if (isOwner) {
+                return res.status(403).json({ success: false, message: "Employees cannot approve their own leave requests" });
+            }
+            if (!isApprover) {
+                return res.status(403).json({ success: false, message: "Not authorized to approve this leave" });
+            }
+        }
+
+        // Claim the pending decision in the database before changing the balance.
+        // A second request with a stale document must not deduct again.
+        const decisionAt = new Date();
+        const claimed = await Leave.updateOne({ _id: leave._id, status: "pending" }, {
+            $set: { status, comment, approvedBy: req.user._id, approvedAt: decisionAt },
+        });
+        if (claimed.modifiedCount !== 1) return res.status(409).json({ success: false, message: "This leave request was already processed. Refresh to see its current status." });
         leave.status = status;
         leave.comment = comment;
         leave.approvedBy = req.user._id;
-        leave.approvedAt = new Date();
-        await leave.save();
-
-        // If approved → deduct from leave balance
-        if (status === "approved" && leave.employee) {
+        leave.approvedAt = decisionAt;
+        // Deduct balance only once
+        if (status === "approved" && leave.leaveType !== "unpaid" && !leave.balanceDeducted && leave.employee) {
             const balanceField = `leaveBalance.${leave.leaveType}`;
             await Employee.findByIdAndUpdate(leave.employee._id, {
-                $inc: { [balanceField]: -leave.totalDays || -1 }
+                $inc: { [balanceField]: -leave.totalDays || -1 },
             });
+            leave.balanceDeducted = true;
         }
+        await leave.save();
 
-        // Notify employee
+        // Notification (include io if available)
+        const io = req.app && typeof req.app.get === "function" ? req.app.get("io") : undefined;
         try {
             if (leave.employee?.userId) {
                 const employeeUser = await User.findById(leave.employee.userId);
@@ -221,16 +238,14 @@ const updateLeaveStatus = async (req, res) => {
                         message: `Your ${leave.leaveType} leave has been ${status}.${comment ? ` Remark: ${comment}` : ""}`,
                         type: "leave",
                         relatedId: leave._id,
-                        relatedModel: "Leave"
+                        relatedModel: "Leave",
+                        io,
                     });
-
                     await sendEmail({
                         to: employeeUser.email,
                         subject: `Leave ${status} - HRMS`,
-                        html: `<p>Hi ${leave.employee.fullName},</p>
-                   <p>Your leave request has been <b style="color:${status === 'approved' ? 'green' : 'red'}">${status}</b>.</p>
-                   ${comment ? `<p><b>Remark:</b> ${comment}</p>` : ""}`
-                    }).catch(() => { });
+                        html: `<p>Hi ${leave.employee.fullName},</p><p>Your leave request has been <b style="color:${status === 'approved' ? 'green' : 'red'}">${status}</b>.</p>${comment ? `<p><b>Remark:</b> ${comment}</p>` : ""}`,
+                    }).catch(() => {});
                 }
             }
         } catch (notifErr) {
@@ -242,6 +257,7 @@ const updateLeaveStatus = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+
 
 // ─── CANCEL LEAVE ─────────────────────────────────────────────────────────────
 const cancelLeave = async (req, res) => {
@@ -262,7 +278,7 @@ const cancelLeave = async (req, res) => {
         }
 
         // Restore balance if was approved
-        if (leave.status === "approved" && leave.employee) {
+        if (leave.status === "approved" && leave.leaveType !== "unpaid" && leave.employee) {
             const balanceField = `leaveBalance.${leave.leaveType}`;
             await Employee.findByIdAndUpdate(leave.employee._id, {
                 $inc: { [balanceField]: leave.totalDays || 1 }

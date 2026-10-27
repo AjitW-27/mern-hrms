@@ -136,7 +136,7 @@
 // module.exports = { app, server };
 
 
-require("dotenv").config();
+require("dotenv").config({ path: require("path").join(__dirname, ".env") });
 
 const express = require("express");
 const mongoose = require("mongoose");

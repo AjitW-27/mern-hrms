@@ -1,5 +1,6 @@
+import { Button } from "../../components/common/UI";
 import React from "react";
-import { Button, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import ModulePage from "../../components/common/ModulePage";

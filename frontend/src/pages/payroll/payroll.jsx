@@ -1,12 +1,6 @@
+import { Button, Input as TextField } from "../../components/common/UI";
 import React, { useMemo, useState } from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  MenuItem,
-  Stack,
-  TextField,
-} from "@mui/material";
+import { Box, CircularProgress, MenuItem, Stack } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import PageHeader from "../../components/common/PageHeader";

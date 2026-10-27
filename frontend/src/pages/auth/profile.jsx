@@ -1,5 +1,7 @@
+import { Avatar } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import { useEffect } from "react";
-import { Box, Avatar, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import execReq from "../../lib/execReq";
 import useAuthStore from "../../strore/authStore";
 
@@ -34,7 +36,7 @@ const Profile = () => {
     <Box display="flex" alignItems="center" gap={1}>
       <Avatar />
       <Box>
-        <Typography sx={{ color: "#FFFFFF", fontSize: 14 }}>
+        <Typography sx={{ color: themeColors.cardBg, fontSize: 14 }}>
           {user?.name || "Loading..."}
         </Typography>
         <Typography sx={{ color: "none", fontSize: 12 }}>

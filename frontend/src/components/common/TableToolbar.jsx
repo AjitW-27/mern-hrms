@@ -1,12 +1,7 @@
+import { IconButton } from "./UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
-import {
-  Box,
-  IconButton,
-  InputAdornment,
-  OutlinedInput,
-  Stack,
-  Tooltip,
-} from "@mui/material";
+import { Box, InputAdornment, OutlinedInput, Stack, Tooltip } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import ArrowUpwardRoundedIcon from "@mui/icons-material/ArrowUpwardRounded";
 import ArrowDownwardRoundedIcon from "@mui/icons-material/ArrowDownwardRounded";
@@ -34,9 +29,9 @@ const TableToolbar = ({
   <Box
     sx={{
       p: "12px 16px",
-      bgcolor: "#FFFFFF",
-      borderRadius: 1,
-      boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+      bgcolor: themeColors.cardBg,
+      borderRadius: "4px",
+      boxShadow: "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
     }}
   >
     <Stack
@@ -51,13 +46,13 @@ const TableToolbar = ({
         placeholder={placeholder}
         startAdornment={
           <InputAdornment position="start">
-            <SearchRoundedIcon sx={{ fontSize: 20, color: "#64748B" }} />
+            <SearchRoundedIcon sx={{ fontSize: 20, color: themeColors.textMuted }} />
           </InputAdornment>
         }
         sx={{
           width: { xs: "100%", md: 340 },
           height: 40,
-          borderRadius: 1,
+          borderRadius: "4px",
           fontSize: 14,
         }}
       />
@@ -70,10 +65,10 @@ const TableToolbar = ({
             sx={{
               width: 40,
               height: 40,
-              border: "1px solid #CBD5E1",
-              borderRadius: 1,
-              bgcolor: sortActive ? "#E6F7F8" : "#FFFFFF",
-              color: sortActive ? "#0A5C67" : "#475569",
+              border: "1px solid " + themeColors.border,
+              borderRadius: "4px",
+              bgcolor: sortActive ? themeColors.primarySoft : themeColors.cardBg,
+              color: sortActive ? themeColors.secondaryDark : themeColors.textMuted,
               position: "relative",
             }}
           >
@@ -92,8 +87,8 @@ const TableToolbar = ({
                   position: "absolute",
                   width: 7,
                   height: 7,
-                  borderRadius: 1,
-                  bgcolor: "#0E8F9A",
+                  borderRadius: "4px",
+                  bgcolor: themeColors.primary,
                   top: 5,
                   right: 5,
                 }}
@@ -110,9 +105,9 @@ const TableToolbar = ({
             sx={{
               width: 40,
               height: 40,
-              border: "1px solid #CBD5E1",
-              borderRadius: 1,
-              color: "#475569",
+              border: "1px solid " + themeColors.border,
+              borderRadius: "4px",
+              color: themeColors.textMuted,
             }}
           >
             <RefreshRoundedIcon sx={{ fontSize: 20 }} />
@@ -135,9 +130,9 @@ const TableToolbar = ({
             sx={{
               width: 40,
               height: 40,
-              borderRadius: 1,
-              color: "#FFFFFF",
-              background: "linear-gradient(135deg,#0E8F9A,#0B7480)",
+              borderRadius: "4px",
+              color: themeColors.cardBg,
+              background: "linear-gradient(135deg," + themeColors.primary + "," + themeColors.primary + ")",
             }}
           >
             <DownloadOutlinedIcon sx={{ fontSize: 20 }} />

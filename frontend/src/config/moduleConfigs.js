@@ -1,3 +1,4 @@
+import { colors as themeColors } from "../theme/designTokens";
 export const employeeConfig = {
   title: "Employees",
   endpoint: "/employees",
@@ -58,16 +59,16 @@ export const projectConfig = {
     { field: "priority", headerName: "Priority" },
     { field: "status", headerName: "Status" },
     { field: "progress", headerName: "Progress", type: "progress" },
-    { field: "endDate", headerName: "Deadline", type: "date" },
+    { field: "deadline", headerName: "Deadline", type: "date" },
     { field: "budget", headerName: "Budget", type: "money" }
   ],
   metrics: [
-    { label: "Total Projects", tone: "#0EA5E9", compute: (rows) => rows.length },
-    { label: "In Delivery", tone: "#10B981", compute: (rows) => rows.filter((row) => /active|progress/i.test(row.status || "")).length },
-    { label: "At Risk", tone: "#ef4444", compute: (rows) => rows.filter((row) => /critical|hold|blocked|delayed/i.test(`${row.priority || ""} ${row.status || ""}`)).length }
+    { label: "Total Projects", tone: themeColors.primary, compute: (rows) => rows.length },
+    { label: "In Delivery", tone: themeColors.success, compute: (rows) => rows.filter((row) => /active|progress/i.test(row.status || "")).length },
+    { label: "At Risk", tone: themeColors.primary, compute: (rows) => rows.filter((row) => /critical|hold|blocked|delayed/i.test(`${row.priority || ""} ${row.status || ""}`)).length }
   ],
   filters: [
-    { field: "status", label: "Status", options: ["Planned", "Active", "In Progress", "On Hold", "Completed", "Delayed"] },
+    { field: "status", label: "Status", options: ["Not Started","In Progress","Completed","Delayed","On Hold","Cancelled"] },
     { field: "priority", label: "Priority", options: ["Low", "Medium", "High", "Critical"] }
   ],
   fields: [
@@ -75,14 +76,14 @@ export const projectConfig = {
     { name: "name", label: "Project Name", required: true, md: 6 },
     { name: "client", label: "Client / Account", md: 6 },
     { name: "owner", label: "Delivery Owner", md: 6 },
-    { name: "status", label: "Status", md: 4, options: ["Planned", "Active", "In Progress", "On Hold", "Completed", "Delayed"] },
+    { name: "status", label: "Status", md: 4, options: ["Not Started","In Progress","Completed","Delayed","On Hold","Cancelled"] },
     { name: "priority", label: "Priority", md: 4, options: ["Low", "Medium", "High", "Critical"] },
     { name: "methodology", label: "Methodology", md: 4, options: ["Agile", "Scrum", "Kanban", "Waterfall", "Hybrid"] },
     { name: "startDate", label: "Start Date", type: "date", md: 4 },
-    { name: "endDate", label: "Target Delivery Date", type: "date", md: 4 },
+    { name: "deadline", label: "Target Delivery Date", type: "date", md: 4 },
     { name: "progress", label: "Progress %", type: "number", md: 4 },
     { name: "budget", label: "Budget", type: "number", md: 4 },
-    { name: "spent", label: "Spent", type: "number", md: 4 },
+    { name: "budgetUsed", label: "Spent", type: "number", md: 4 },
     { name: "billingType", label: "Billing Type", md: 4, options: ["Fixed Bid", "Time & Material", "Retainer", "Internal"] },
     { name: "members", label: "Team Members", type: "array", md: 12, placeholder: "Comma separated names" },
     { name: "milestones", label: "Milestones", type: "array", md: 12, placeholder: "Discovery, Design Signoff, UAT, Go Live" },
@@ -178,7 +179,7 @@ export const attendanceConfig = {
       name: "status",
       label: "Status",
       md: 6,
-      options: ["Present", "Absent", "Half Day", "Leave", "Holiday"],
+      options: ["Present","Absent","Late","Half Day","On Leave","Holiday","Weekend"],
     },
     {
       name: "biometricId",
@@ -208,11 +209,11 @@ export const payrollConfig = {
     { field: "status", headerName: "Status" }
   ],
   metrics: [
-    { label: "Payroll Records", tone: "#0EA5E9", compute: (rows) => rows.length },
-    { label: "Approved / Paid", tone: "#10B981", compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
-    { label: "Pending Review", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /pending|draft/i.test(row.status || "")).length }
+    { label: "Payroll Records", tone: themeColors.primary, compute: (rows) => rows.length },
+    { label: "Approved / Paid", tone: themeColors.success, compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
+    { label: "Pending Review", tone: themeColors.warning, compute: (rows) => rows.filter((row) => /pending|draft/i.test(row.status || "")).length }
   ],
-  filters: [{ field: "status", label: "Status", options: ["Draft", "Pending", "Approved", "Processed", "Paid"] }],
+  filters: [{ field: "status", label: "Status", options: ["Draft","Pending","Approved","Paid","On Hold"] }],
   fields: [
     { name: "employee", label: "Employee", required: true, md: 6, optionsEndpoint: "/employees", optionValueKey: "_id", optionLabelKey: "fullName", optionSecondaryKey: "employeeId" },
     { name: "month", label: "Month", required: true, md: 4, options: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] },
@@ -223,8 +224,8 @@ export const payrollConfig = {
     { name: "totalDeductions", label: "Deductions", type: "number", md: 4 },
     { name: "bonus", label: "Bonus", type: "number", md: 4 },
     { name: "netSalary", label: "Net Pay", type: "number", md: 4 },
-    { name: "paymentMode", label: "Payment Mode", md: 4, options: ["Bank Transfer", "UPI", "Cheque", "Cash"] },
-    { name: "status", label: "Status", md: 4, options: ["Draft", "Pending", "Approved", "Processed", "Paid"] },
+    { name: "paymentMode", label: "Payment Mode", md: 4, options: ["Bank Transfer","Cash","Cheque"] },
+    { name: "status", label: "Status", md: 4, options: ["Draft","Pending","Approved","Paid","On Hold"] },
     { name: "remarks", label: "Remarks", multiline: true, rows: 3, md: 12 }
   ]
 };
@@ -285,9 +286,9 @@ export const performanceConfig = {
     { field: "status", headerName: "Status" }
   ],
   metrics: [
-    { label: "Reviews", tone: "#0EA5E9", compute: (rows) => rows.length },
-    { label: "Closed", tone: "#10B981", compute: (rows) => rows.filter((row) => /closed|reviewed/i.test(row.status || "")).length },
-    { label: "Pending", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /draft|pending/i.test(row.status || "")).length }
+    { label: "Reviews", tone: themeColors.primary, compute: (rows) => rows.length },
+    { label: "Closed", tone: themeColors.success, compute: (rows) => rows.filter((row) => /closed|reviewed/i.test(row.status || "")).length },
+    { label: "Pending", tone: themeColors.warning, compute: (rows) => rows.filter((row) => /draft|pending/i.test(row.status || "")).length }
   ],
   filters: [{ field: "status", label: "Status", options: ["Draft", "Pending Review", "Reviewed", "Closed"] }],
   fields: [
@@ -319,9 +320,9 @@ export const goalConfig = {
     { field: "dueDate", headerName: "Due Date", type: "date" }
   ],
   metrics: [
-    { label: "Goals", tone: "#0EA5E9", compute: (rows) => rows.length },
-    { label: "Achieved", tone: "#10B981", compute: (rows) => rows.filter((row) => /achieved|completed/i.test(row.status || "")).length },
-    { label: "Blocked", tone: "#ef4444", compute: (rows) => rows.filter((row) => /blocked/i.test(row.status || "")).length }
+    { label: "Goals", tone: themeColors.primary, compute: (rows) => rows.length },
+    { label: "Achieved", tone: themeColors.success, compute: (rows) => rows.filter((row) => /achieved|completed/i.test(row.status || "")).length },
+    { label: "Blocked", tone: themeColors.primary, compute: (rows) => rows.filter((row) => /blocked/i.test(row.status || "")).length }
   ],
   filters: [
     { field: "status", label: "Status", options: ["Not Started", "In Progress", "Achieved", "Blocked"] },
@@ -357,18 +358,18 @@ export const assetConfig = {
     { field: "status", headerName: "Status" }
   ],
   metrics: [
-    { label: "Total Assets", tone: "#0EA5E9", compute: (rows) => rows.length },
-    { label: "Assigned", tone: "#10B981", compute: (rows) => rows.filter((row) => /assigned/i.test(row.status || "") || row.assignedTo).length },
-    { label: "Maintenance", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /maintenance|repair/i.test(row.status || "")).length }
+    { label: "Total Assets", tone: themeColors.primary, compute: (rows) => rows.length },
+    { label: "Assigned", tone: themeColors.success, compute: (rows) => rows.filter((row) => /assigned/i.test(row.status || "") || row.assignedTo).length },
+    { label: "Maintenance", tone: themeColors.warning, compute: (rows) => rows.filter((row) => /maintenance|repair/i.test(row.status || "")).length }
   ],
   filters: [
-    { field: "status", label: "Status", options: ["Available", "Assigned", "Under Maintenance", "Retired"] },
-    { field: "category", label: "Category", options: ["IT", "Non-IT", "Furniture", "Vehicle", "Facility"] }
+    { field: "status", label: "Status", options: ["Available","Assigned","Under Maintenance"] },
+    { field: "category", label: "Category", options: ["IT","Non-IT"] }
   ],
   fields: [
     { name: "assetName", label: "Asset Name", required: true, md: 6 },
     { name: "assetId", label: "Asset ID / Serial No", required: true, md: 6 },
-    { name: "category", label: "Category", md: 6, options: ["IT", "Non-IT", "Furniture", "Vehicle", "Facility"] },
+    { name: "category", label: "Category", md: 6, options: ["IT","Non-IT"] },
     { name: "type", label: "Type", required: true, md: 6, options: ["Serialized", "Consumable"] },
     { name: "brand", label: "Brand", md: 6 },
     { name: "model", label: "Model", md: 6 },
@@ -378,7 +379,7 @@ export const assetConfig = {
     { name: "purchaseDate", label: "Purchase Date", type: "date", md: 6 },
     { name: "warrantyTill", label: "Warranty Till", type: "date", md: 6 },
     { name: "location", label: "Location", md: 6 },
-    { name: "status", label: "Status", md: 6, options: ["Available", "Assigned", "Under Maintenance", "Retired"] },
+    { name: "status", label: "Status", md: 6, options: ["Available","Assigned","Under Maintenance"] },
     { name: "notes", label: "Notes", multiline: true, rows: 3, md: 12 }
   ]
 };
@@ -396,20 +397,20 @@ export const expenseConfig = {
     { field: "createdAt", headerName: "Submitted", type: "date" }
   ],
   metrics: [
-    { label: "Claims", tone: "#0EA5E9", compute: (rows) => rows.length },
-    { label: "Approved", tone: "#10B981", compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
-    { label: "Pending", tone: "#f59e0b", compute: (rows) => rows.filter((row) => /pending/i.test(row.status || "")).length }
+    { label: "Claims", tone: themeColors.primary, compute: (rows) => rows.length },
+    { label: "Approved", tone: themeColors.success, compute: (rows) => rows.filter((row) => /approved|paid/i.test(row.status || "")).length },
+    { label: "Pending", tone: themeColors.warning, compute: (rows) => rows.filter((row) => /pending/i.test(row.status || "")).length }
   ],
   filters: [
-    { field: "status", label: "Status", options: ["Pending", "Approved", "Rejected", "Paid"] },
-    { field: "category", label: "Category", options: ["Travel", "Food", "Office Supplies", "Internet", "Client Meeting", "Other"] }
+    { field: "status", label: "Status", options: ["Pending","Approved","Rejected"] },
+    { field: "category", label: "Category", options: ["Travel","Food","Office Supplies","Other"] }
   ],
   fields: [
     { name: "amount", label: "Amount", type: "number", required: true, md: 6 },
-    { name: "category", label: "Category", md: 6, options: ["Travel", "Food", "Office Supplies", "Internet", "Client Meeting", "Other"] },
+    { required: true, name: "category", label: "Category", md: 6, options: ["Travel","Food","Office Supplies","Other"] },
     { name: "billReceiptUrl", label: "Receipt URL", md: 12 },
     { name: "reason", label: "Business Reason", multiline: true, rows: 4, required: true, md: 12 },
-    { name: "status", label: "Status", md: 6, options: ["Pending", "Approved", "Rejected", "Paid"], defaultValue: "Pending" }
+    { name: "status", label: "Status", md: 6, options: ["Pending","Approved","Rejected"], defaultValue: "Pending" }
   ]
 };
 
@@ -446,8 +447,8 @@ export const shiftConfig = {
   ],
   fields: [
     { name: "name", label: "Shift Name", required: true, md: 6 },
-    { name: "startTime", label: "Start Time", md: 6 },
-    { name: "endTime", label: "End Time", md: 6 },
+    { name: "startTime", label: "Start Time", required: true, md: 6 },
+    { name: "endTime", label: "End Time", required: true, md: 6 },
     { name: "graceMinutes", label: "Grace Minutes", type: "number", md: 6 },
     { name: "status", label: "Status", md: 6, options: ["Active", "Inactive"] },
     { name: "description", label: "Description", multiline: true, rows: 3, md: 12 }
@@ -466,7 +467,7 @@ export const leavePolicyConfig = {
   ],
   fields: [
     { name: "name", label: "Policy Name", required: true, md: 6 },
-    { name: "leaveType", label: "Leave Type", md: 6, options: ["Sick", "Casual", "Earned", "Unpaid", "Maternity", "Paternity"] },
+    { name: "leaveType", label: "Leave Type", required: true, md: 6, options: ["Sick", "Casual", "Earned", "Unpaid", "Maternity", "Paternity"] },
     { name: "annualQuota", label: "Annual Quota", type: "number", md: 6 },
     { name: "carryForward", label: "Carry Forward", md: 6, options: ["Yes", "No"] },
     { name: "status", label: "Status", md: 6, options: ["Active", "Inactive"] },

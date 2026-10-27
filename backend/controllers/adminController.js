@@ -1,3 +1,4 @@
+const { resolveEmployee, saveLinkedUser } = require("../services/employeeLinkService");
 const User = require("../models/userModel");
 const Role = require("../models/roleModel");
 const Organization = require("../models/organizationModel");
@@ -98,7 +99,7 @@ const createUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: "User already exists with this email" });
   }
 
-  const user = await User.create({
+  const user = new User({
     name: String(name).trim(),
     email: String(email).toLowerCase().trim(),
     password: password || process.env.DEFAULT_TEMP_PASSWORD || "Temp@12345",
@@ -110,6 +111,9 @@ const createUser = asyncHandler(async (req, res) => {
     avatar: avatar || null,
     isActive: Boolean(isActive)
   });
+
+  const linkedEmployee = await resolveEmployee({ email: user.email, employeeRef: user.employeeRef, required: user.role === "employee" });
+  await saveLinkedUser(user, linkedEmployee);
 
   await audit({
     actor: req.user?._id,
@@ -132,6 +136,7 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 
   const before = user.toObject();
+  for (const field of ["organization", "employeeRef", "roleId"]) if (req.body[field] === "") req.body[field] = field === "organization" ? null : undefined;
 
   const patch = ["name", "email", "mobileNo", "department", "organization", "employeeRef", "avatar", "isActive"];
   patch.forEach((field) => {
@@ -155,7 +160,9 @@ const updateUser = asyncHandler(async (req, res) => {
     user.password = req.body.password;
   }
 
-  await user.save();
+  const linkedEmployee = await resolveEmployee({ userId: user._id, email: user.email, employeeRef: user.employeeRef, required: user.role === "employee" });
+  if (before.employeeRef && linkedEmployee && String(before.employeeRef) !== String(linkedEmployee._id)) return res.status(409).json({ success: false, message: "Review the existing employee link before changing it." });
+  await saveLinkedUser(user, linkedEmployee);
 
   await audit({
     actor: req.user?._id,

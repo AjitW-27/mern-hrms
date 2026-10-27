@@ -1,5 +1,6 @@
+import { Badge as Chip, Skeleton } from "../../components/common/UI";
 import React from "react";
-import { Box, Chip, Skeleton, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { Campaign as CampaignIcon } from "@mui/icons-material";
 import {
   ChartCard,

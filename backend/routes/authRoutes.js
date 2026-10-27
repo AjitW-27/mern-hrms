@@ -12,6 +12,9 @@ const upload = require("../middleware/uploadMiddleware");
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+const googleAuth = require("../controllers/googleAuthController");
+router.get("/google/config", googleAuth.config);
+router.post("/google", googleAuth.login);
 router.post("/refresh-token", refreshToken);
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);

@@ -1,19 +1,7 @@
+import { Avatar, Modal as Dialog, IconButton, Card as Paper, Input as TextField } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  Alert,
-  Avatar,
-  Box,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Drawer,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Alert, Box, DialogContent, DialogTitle, Drawer, Stack, Tooltip, Typography } from "@mui/material";
 import {
   CallEndRounded,
   ChatRounded,
@@ -72,8 +60,8 @@ function ParticipantTile({ participant, local }) {
       sx={{
         position: "relative",
         minHeight: { xs: 170, md: 220 },
-        background: "#0F172A",
-        borderRadius: 2,
+        background: themeColors.navyDark,
+        borderRadius: "4px",
         overflow: "hidden",
       }}
     >
@@ -89,7 +77,7 @@ function ParticipantTile({ participant, local }) {
             minHeight: 170,
             objectFit: "cover",
             display: "block",
-            background: "#0F172A",
+            background: themeColors.navyDark,
           }}
         />
       ) : (
@@ -102,8 +90,8 @@ function ParticipantTile({ participant, local }) {
             sx={{
               width: 72,
               height: 72,
-              bgcolor: "#475569",
-              color: "#FFFFFF",
+              bgcolor: themeColors.textMuted,
+              color: themeColors.cardBg,
               fontSize: 26,
               fontWeight: 700,
             }}
@@ -119,9 +107,9 @@ function ParticipantTile({ participant, local }) {
           bottom: 10,
           px: 1,
           py: 0.45,
-          borderRadius: 1.5,
-          background: "rgba(15,23,42,.58)",
-          color: "#FFFFFF",
+          borderRadius: "4px",
+          background: themeColors.overlay28,
+          color: themeColors.cardBg,
         }}
       >
         <Typography sx={{ fontSize: 11, fontWeight: 700 }}>
@@ -493,8 +481,8 @@ export default function MeetingRoomModal({
     >
       <Box
         sx={{
-          background: "#0F172A",
-          color: "#FFFFFF",
+          background: themeColors.navyDark,
+          color: themeColors.cardBg,
           height: { xs: "80vh", md: "82vh" },
           display: "flex",
           flexDirection: "column",
@@ -504,7 +492,7 @@ export default function MeetingRoomModal({
           <Alert
             severity="error"
             onClose={() => setError("")}
-            sx={{ m: 1.5, borderRadius: 1 }}
+            sx={{ m: 1.5, borderRadius: "4px" }}
           >
             {error}
           </Alert>
@@ -534,7 +522,7 @@ export default function MeetingRoomModal({
               sx={{ gridColumn: "1 / -1", height: "100%" }}
             >
               <CircularPulse />
-              <Typography sx={{ mt: 2, color: "#CBD5E1", fontSize: 14 }}>
+              <Typography sx={{ mt: 2, color: themeColors.border, fontSize: 14 }}>
                 Joining meeting…
               </Typography>
             </Stack>
@@ -556,8 +544,8 @@ export default function MeetingRoomModal({
           sx={{
             px: 1.5,
             py: 1.2,
-            background: "#0F172A",
-            borderTop: "1px solid #334155",
+            background: themeColors.navyDark,
+            borderTop: "1px solid " + themeColors.secondaryDark,
           }}
         >
           <ControlButton
@@ -593,10 +581,10 @@ export default function MeetingRoomModal({
               ml: 1,
               width: 48,
               height: 48,
-              borderRadius: 999,
-              bgcolor: "#EF4444",
-              color: "#FFFFFF",
-              "&:hover": { bgcolor: "#EF4444" },
+              borderRadius: "4px",
+              bgcolor: themeColors.primary,
+              color: themeColors.cardBg,
+              "&:hover": { bgcolor: themeColors.primary },
             }}
           >
             <CallEndRounded />
@@ -608,13 +596,13 @@ export default function MeetingRoomModal({
         open={chatOpen}
         onClose={() => setChatOpen(false)}
         PaperProps={{
-          sx: { width: { xs: "100%", sm: 360 }, background: "#FFFFFF" },
+          sx: { width: { xs: "100%", sm: 360 }, background: themeColors.cardBg },
         }}
       >
         <Box
           sx={{
             p: 1.5,
-            borderBottom: "1px solid #E2E8F0",
+            borderBottom: "1px solid " + themeColors.border,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -633,7 +621,7 @@ export default function MeetingRoomModal({
             height: "calc(100% - 122px)",
             p: 1.5,
             overflowY: "auto",
-            bgcolor: "#F8FAFC",
+            bgcolor: themeColors.hover,
           }}
           spacing={1}
         >
@@ -650,11 +638,11 @@ export default function MeetingRoomModal({
                 <Paper
                   sx={{
                     p: 1.1,
-                    borderRadius: 1.5,
+                    borderRadius: "4px",
                     bgcolor:
-                      item.userId === currentUserId ? "#E6F7F8" : "#FFFFFF",
+                      item.userId === currentUserId ? themeColors.primarySoft : themeColors.cardBg,
                     boxShadow: "none",
-                    border: "1px solid #E2E8F0",
+                    border: "1px solid " + themeColors.border,
                   }}
                 >
                   <Typography sx={{ fontSize: 11, fontWeight: 800, mb: 0.35 }}>
@@ -667,7 +655,7 @@ export default function MeetingRoomModal({
               </Box>
             ))
           ) : (
-            <Box sx={{ textAlign: "center", mt: 6, color: "#64748B" }}>
+            <Box sx={{ textAlign: "center", mt: 6, color: themeColors.textMuted }}>
               <ChatRounded sx={{ fontSize: 36, color: "none" }} />
               <Typography sx={{ fontSize: 12, mt: 1 }}>
                 No meeting messages yet.
@@ -678,7 +666,7 @@ export default function MeetingRoomModal({
         <Stack
           direction="row"
           spacing={1}
-          sx={{ p: 1.5, borderTop: "1px solid #E2E8F0" }}
+          sx={{ p: 1.5, borderTop: "1px solid " + themeColors.border }}
         >
           <TextField
             fullWidth
@@ -696,7 +684,7 @@ export default function MeetingRoomModal({
           <IconButton
             onClick={sendMeetingChat}
             disabled={!chatDraft.trim()}
-            sx={{ borderRadius: 1, bgcolor: "#E6F7F8", color: "#0A5C67" }}
+            sx={{ borderRadius: "4px", bgcolor: themeColors.primarySoft, color: themeColors.secondaryDark }}
           >
             <SendRounded />
           </IconButton>
@@ -715,9 +703,9 @@ function DialogShell({ open, onClose, title, children }) {
       maxWidth="xl"
       PaperProps={{
         sx: {
-          bgcolor: "#0F172A",
-          color: "#FFFFFF",
-          borderRadius: 1,
+          bgcolor: themeColors.navyDark,
+          color: themeColors.cardBg,
+          borderRadius: "4px",
           overflow: "hidden",
         },
       }}
@@ -729,18 +717,18 @@ function DialogShell({ open, onClose, title, children }) {
           justifyContent: "space-between",
           py: 1,
           px: 1.5,
-          background: "#0F172A",
-          color: "#FFFFFF",
+          background: themeColors.navyDark,
+          color: themeColors.cardBg,
           fontSize: 15,
           fontWeight: 800,
         }}
       >
         {title}
-        <IconButton onClick={onClose} size="small" sx={{ color: "#FFFFFF" }}>
+        <IconButton onClick={onClose} size="small" sx={{ color: themeColors.cardBg }}>
           <CloseRounded fontSize="small" />
         </IconButton>
       </DialogTitle>
-      <DialogContent sx={{ p: 0, background: "#0F172A" }}>
+      <DialogContent sx={{ p: 0, background: themeColors.navyDark }}>
         {children}
       </DialogContent>
     </Dialog>
@@ -755,10 +743,10 @@ function ControlButton({ children, title, onClick, active }) {
         sx={{
           width: 46,
           height: 46,
-          borderRadius: 999,
-          bgcolor: active ? "#475569" : "#334155",
-          color: "#FFFFFF",
-          "&:hover": { bgcolor: "#475569" },
+          borderRadius: "4px",
+          bgcolor: active ? themeColors.textMuted : themeColors.secondaryDark,
+          color: themeColors.cardBg,
+          "&:hover": { bgcolor: themeColors.textMuted },
         }}
       >
         {children}
@@ -773,8 +761,8 @@ function CircularPulse() {
       sx={{
         width: 42,
         height: 42,
-        border: "3px solid #475569",
-        borderTopColor: "#26A8B3",
+        border: "3px solid " + themeColors.textMuted,
+        borderTopColor: themeColors.info,
         borderRadius: "50%",
         animation: "hrms-spin 1s linear infinite",
         "@keyframes hrms-spin": {

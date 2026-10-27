@@ -1,5 +1,6 @@
+import { Skeleton } from "../../components/common/UI";
 import React from "react";
-import { Box, LinearProgress, Skeleton, Typography } from "@mui/material";
+import { Box, LinearProgress, Typography } from "@mui/material";
 import { RadialBar, RadialBarChart, ResponsiveContainer } from "recharts";
 import {
   ChartCard,
@@ -15,12 +16,12 @@ const AttendanceSummaryBar = ({ kpis, loading }) => {
   const total = kpis?.totalEmployees || 1;
   const rate = Math.round((present / total) * 100);
   const stats = [
-    { label: "Present", value: present, color: c.primary },
-    { label: "Absent", value: absent, color: c.error },
-    { label: "Late", value: late, color: c.warning },
-  ].map((stat) => ({ ...stat, pct: Math.round((stat.value / total) * 100) }));
+    { label: "Present", key: "todayPresent", value: present, color: c.primary },
+    { label: "Absent", key: "todayAbsent", value: absent, color: c.error },
+    { label: "Late", key: "todayLate", value: late, color: c.warning },
+  ].filter(stat => loading || Object.hasOwn(kpis || {}, stat.key)).map((stat) => ({ ...stat, pct: Math.round((stat.value / total) * 100) }));
   return (
-    <ChartCard tone="teal">
+    <ChartCard tone="primary">
       <ChartHeading
         title="Today's Attendance"
         subtitle={new Date().toLocaleDateString("en-IN", {

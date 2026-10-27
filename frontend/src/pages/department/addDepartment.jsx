@@ -1,12 +1,7 @@
+import { Input as TextField, Button, IconButton } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, Grid } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
   Save as SaveIcon,
@@ -55,34 +50,34 @@ const AddDepartment = () => {
   // Light theme input styles
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#0F172A",
-      backgroundColor: "#FFFFFF",
+      color: themeColors.navyDark,
+      backgroundColor: themeColors.cardBg,
       borderRadius: "4px",
 
       "& fieldset": {
-        borderColor: "#E2E8F0",
+        borderColor: themeColors.border,
       },
 
       "&:hover fieldset": {
-        borderColor: "#CBD5E1",
+        borderColor: themeColors.border,
       },
 
       "&.Mui-focused fieldset": {
-        borderColor: "#8b5cf6",
+        borderColor: themeColors.purple,
         borderWidth: "2px",
       },
     },
 
     "& .MuiInputLabel-root": {
-      color: "#64748B",
+      color: themeColors.textMuted,
     },
 
     "& .MuiInputLabel-root.Mui-focused": {
-      color: "#8b5cf6",
+      color: themeColors.purple,
     },
 
     "& textarea": {
-      color: "#0F172A",
+      color: themeColors.navyDark,
     },
   };
 
@@ -90,9 +85,9 @@ const AddDepartment = () => {
     <Box
       sx={{
         p: { xs: 2, md: 3 },
-        background: "#F8FAFC",
+        background: themeColors.hover,
         minHeight: "100vh",
-        color: "#0F172A",
+        color: themeColors.navyDark,
         display: "flex",
         justifyContent: "center",
       }}
@@ -107,11 +102,11 @@ const AddDepartment = () => {
         <Box display="flex" alignItems="center" mb={4}>
           <IconButton
             sx={{
-              color: "#64748B",
+              color: themeColors.textMuted,
               mr: 2,
               "&:hover": {
-                background: "#F1F5F9",
-                color: "#0F172A",
+                background: themeColors.tableHeader,
+                color: themeColors.navyDark,
               },
             }}
             onClick={() => navigate("/dashboard/departments")}
@@ -119,9 +114,7 @@ const AddDepartment = () => {
             <ArrowBackIcon />
           </IconButton>
 
-          <Typography fontSize={24} fontWeight={600} color="#0F172A">
-            Add Department
-          </Typography>
+
         </Box>
 
         {/* Form Card */}
@@ -133,14 +126,14 @@ const AddDepartment = () => {
             borderRadius: "4px",
 
             // Same soft gradient style as Department cards
-            background: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
+            background: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.infoSoft + ")",
 
-            border: "1px solid #E2E8F0",
+            border: "1px solid " + themeColors.border,
 
-            boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+            boxShadow: "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
           }}
         >
-          <Typography fontSize={18} fontWeight={600} mb={3} color="#0F172A">
+          <Typography fontSize={18} fontWeight={600} mb={3} color={themeColors.navyDark}>
             Department Details
           </Typography>
 
@@ -191,17 +184,17 @@ const AddDepartment = () => {
               variant="outlined"
               onClick={() => navigate("/dashboard/departments")}
               sx={{
-                color: "#475569",
-                borderColor: "#E2E8F0",
-                background: "#FFFFFF",
+                color: themeColors.textMuted,
+                borderColor: themeColors.border,
+                background: themeColors.cardBg,
                 textTransform: "none",
                 fontWeight: 600,
                 borderRadius: "4px",
                 px: 2.5,
 
                 "&:hover": {
-                  borderColor: "#CBD5E1",
-                  background: "#F8FAFC",
+                  borderColor: themeColors.border,
+                  background: themeColors.hover,
                 },
               }}
             >
@@ -213,7 +206,7 @@ const AddDepartment = () => {
               type="submit"
               startIcon={<SaveIcon />}
               sx={{
-                background: "#8b5cf6",
+                background: themeColors.purple,
                 textTransform: "none",
                 fontWeight: 600,
                 borderRadius: "4px",
@@ -221,8 +214,8 @@ const AddDepartment = () => {
                 boxShadow: "none",
 
                 "&:hover": {
-                  background: "#8B5CF6",
-                  boxShadow: "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+                  background: themeColors.purple,
+                  boxShadow: "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2,
                 },
               }}
             >

@@ -9,12 +9,8 @@ const addAsset = async (req, res) => {
             return res.status(400).json({ message: "Asset Name, ID, and Type are required" });
         }
 
-        const newAsset = new Asset({
-            assetName,
-            assetId,
-            type,
-            status: "Available"
-        });
+        const fields = Object.fromEntries(Object.entries(req.body).filter(([key]) => !["_id", "__v", "createdAt", "updatedAt"].includes(key) && Asset.schema.path(key)));
+        const newAsset = new Asset({ ...fields, assetName, assetId, type, status: req.body.status || (fields.assignedTo ? "Assigned" : "Available") });
 
         await newAsset.save();
         res.status(201).json({ message: "Asset added successfully", data: newAsset });

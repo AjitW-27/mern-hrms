@@ -94,6 +94,55 @@ const registerUser = async (req, res) => {
 };
 
 // ─── LOGIN ───────────────────────────────────────────────────────────────────
+const completeLogin = async (user, res) => {
+        const accessToken = generateAccessToken(user._id, user.role);
+        const refreshToken = generateRefreshToken(user._id, user.refreshTokenVersion || 0);
+
+        // ── Save refresh token & update login info ──
+        user.refreshToken = refreshToken;
+        user.lastLogin = new Date();
+        user.loginCount = (user.loginCount || 0) + 1;
+        user.failedLoginAttempts = 0;
+        user.lockUntil = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        // ── Get linked Employee & Role info if exists ──
+        const employee = await Employee.findOne({ userId: user._id }).select(
+            "employeeId department designation avatar"
+        );
+
+        const normalizedRole = String(user.role || "employee").trim().toLowerCase();
+        const roleDoc = await Role.findOne({
+            $or: [{ code: normalizedRole }, { name: normalizedRole }]
+        }).lean({ flattenMaps: true });
+
+        res.status(200).json({
+            success: true,
+            message: "Login successful",
+            accessToken,
+            refreshToken,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                mobileNo: user.mobileNo,
+                department: employee?.department || user.department,
+                organization: user.organization || null,
+                avatar: employee?.avatar || user.avatar || null,
+                employeeId: employee?.employeeId || null,
+                designation: employee?.designation || null,
+                rolePermissions: roleDoc?.permissions || null,
+                roleMeta: roleDoc ? {
+                    id: roleDoc._id,
+                    code: roleDoc.code,
+                    name: roleDoc.name,
+                    level: roleDoc.level
+                } : null
+            },
+        });
+};
+
 const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -146,52 +195,7 @@ const loginUser = async (req, res) => {
             });
         }
 
-        const accessToken = generateAccessToken(user._id, user.role);
-        const refreshToken = generateRefreshToken(user._id, user.refreshTokenVersion || 0);
-
-        // ── Save refresh token & update login info ──
-        user.refreshToken = refreshToken;
-        user.lastLogin = new Date();
-        user.loginCount = (user.loginCount || 0) + 1;
-        user.failedLoginAttempts = 0;
-        user.lockUntil = undefined;
-        await user.save({ validateBeforeSave: false });
-
-        // ── Get linked Employee & Role info if exists ──
-        const employee = await Employee.findOne({ userId: user._id }).select(
-            "employeeId department designation avatar"
-        );
-
-        const normalizedRole = String(user.role || "employee").trim().toLowerCase();
-        const roleDoc = await Role.findOne({
-            $or: [{ code: normalizedRole }, { name: normalizedRole }]
-        }).lean({ flattenMaps: true });
-
-        res.status(200).json({
-            success: true,
-            message: "Login successful",
-            accessToken,
-            refreshToken,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                mobileNo: user.mobileNo,
-                department: employee?.department || user.department,
-                organization: user.organization || null,
-                avatar: employee?.avatar || user.avatar || null,
-                employeeId: employee?.employeeId || null,
-                designation: employee?.designation || null,
-                rolePermissions: roleDoc?.permissions || null,
-                roleMeta: roleDoc ? {
-                    id: roleDoc._id,
-                    code: roleDoc.code,
-                    name: roleDoc.name,
-                    level: roleDoc.level
-                } : null
-            },
-        });
+        return completeLogin(user, res);
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -457,6 +461,7 @@ const resendVerificationEmail = async (req, res) => {
 };
 
 module.exports = {
+    completeLogin,
     registerUser,
     loginUser,
     refreshToken,

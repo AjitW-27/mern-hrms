@@ -66,11 +66,13 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Organization",
         default: null,
+        set: value => value === "" ? null : value,
     },
 
     employeeRef: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Employee",
+        set: value => value === "" ? null : value,
     },
 
     avatar: {

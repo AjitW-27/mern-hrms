@@ -1,19 +1,7 @@
+import { Input as TextField, Button, Badge as Chip } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  MenuItem,
-  CircularProgress,
-  ToggleButtonGroup,
-  ToggleButton,
-  Stepper,
-  Step,
-  StepLabel,
-  Chip,
-} from "@mui/material";
+import { Box, Typography, Grid, MenuItem, CircularProgress, ToggleButtonGroup, ToggleButton, Stepper, Step, StepLabel } from "@mui/material";
 import {
   Save as SaveIcon,
   Devices as DevicesIcon,
@@ -441,31 +429,31 @@ const AddEmployee = () => {
 
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#0F172A",
-      backgroundColor: "#FFFFFF",
-      borderRadius: "8px",
+      color: themeColors.navyDark,
+      backgroundColor: themeColors.cardBg,
+      borderRadius: "4px",
       fontSize: "14px",
       "&.Mui-focused fieldset": {
-        borderColor: "#7C3AED",
+        borderColor: themeColors.purple,
         borderWidth: "1.5px",
       },
     },
-    "& .MuiInputLabel-root": { color: "#64748B", fontSize: "14px" },
-    "& .MuiInputLabel-root.Mui-focused": { color: "#7C3AED" },
+    "& .MuiInputLabel-root": { color: themeColors.textMuted, fontSize: "14px" },
+    "& .MuiInputLabel-root.Mui-focused": { color: themeColors.purple },
   };
 
   const selectMenuProps = {
     PaperProps: {
       sx: {
-        bgcolor: "#FFFFFF",
-        color: "#0F172A",
-        border: "1px solid #E2E8F0",
-        boxShadow: "0 10px 15px -3px rgba(15,23,42,.10)",
-        borderRadius: "8px",
-        "& .MuiMenuItem-root:hover": { bgcolor: "#F8FAFC" },
+        bgcolor: themeColors.cardBg,
+        color: themeColors.navyDark,
+        border: "1px solid " + themeColors.border,
+        boxShadow: "0 10px 15px -3px " + themeColors.overlay5,
+        borderRadius: "4px",
+        "& .MuiMenuItem-root:hover": { bgcolor: themeColors.hover },
         "& .Mui-selected": {
-          bgcolor: "#EEF2FF !important",
-          color: "#7C3AED",
+          bgcolor: themeColors.infoSoft + " !important",
+          color: themeColors.purple,
           fontWeight: 600,
         },
       },
@@ -485,8 +473,8 @@ const AddEmployee = () => {
         width: "100%",
         height: "89vh",
         maxHeight: "100vh",
-        background: "#F8FAFC",
-        color: "#0F172A",
+        background: themeColors.hover,
+        color: themeColors.navyDark,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -498,8 +486,8 @@ const AddEmployee = () => {
           flexShrink: 0,
           px: { xs: 2, sm: 4 },
           py: 1.5,
-          borderBottom: "1px solid #E2E8F0",
-          background: "#FFFFFF",
+          borderBottom: "1px solid " + themeColors.border,
+          background: themeColors.cardBg,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -507,19 +495,17 @@ const AddEmployee = () => {
         }}
       >
         <Box>
-          <Typography fontSize={18} fontWeight={700} color="#0F172A">
-            {isEditMode ? "Edit Employee" : "Add New Employee"}
-          </Typography>
-          <Typography fontSize={12} color="#64748B" mt={0.2}>
+
+          <Typography fontSize={12} color={themeColors.textMuted} mt={0.2}>
             Step {activeStep + 1} of {employeeSteps.length} &bull;{" "}
             {employeeSteps[activeStep]?.label} Details
           </Typography>
         </Box>
         <Box sx={{ display: { xs: "none", md: "block" }, textAlign: "right" }}>
-          <Typography fontSize={11} color="#64748B" fontWeight={500}>
+          <Typography fontSize={11} color={themeColors.textMuted} fontWeight={500}>
             Autosaved Just now
           </Typography>
-          <Typography fontSize={12} fontWeight={700} color="#7C3AED" mt={0.2}>
+          <Typography fontSize={12} fontWeight={700} color={themeColors.purple} mt={0.2}>
             {completionPercentage}% Completed
           </Typography>
         </Box>
@@ -531,8 +517,8 @@ const AddEmployee = () => {
           flexShrink: 0,
           px: { xs: 2, sm: 4 },
           py: 2,
-          background: "#FFFFFF",
-          borderBottom: "1px solid #E2E8F0",
+          background: themeColors.cardBg,
+          borderBottom: "1px solid " + themeColors.border,
           overflowX: "auto",
           "&::-webkit-scrollbar": { height: 3 },
         }}
@@ -550,16 +536,16 @@ const AddEmployee = () => {
                   cursor: "pointer",
                   "& .MuiStepLabel-label": {
                     fontSize: "11px",
-                    color: "#64748B",
+                    color: themeColors.textMuted,
                     mt: 0.5,
                     fontWeight: 500,
                   },
                   "& .MuiStepLabel-label.Mui-active": {
-                    color: "#0F172A",
+                    color: themeColors.navyDark,
                     fontWeight: 700,
                   },
                   "& .MuiStepLabel-label.Mui-completed": {
-                    color: "#059669",
+                    color: themeColors.success,
                     fontWeight: 600,
                   },
                 }}
@@ -585,11 +571,11 @@ const AddEmployee = () => {
       >
         <Box
           sx={{
-            background: "#FFFFFF",
-            border: "1px solid #E2E8F0",
-            borderRadius: "12px",
+            background: themeColors.cardBg,
+            border: "1px solid " + themeColors.border,
+            borderRadius: "4px",
             p: { xs: 2.5, sm: 4 },
-            boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.04)",
+            boxShadow: "0 1px 3px 0 " + themeColors.overlay29,
             width: "100%",
             maxWidth: "1200px",
             mb: 2,
@@ -602,13 +588,13 @@ const AddEmployee = () => {
             alignItems="center"
             mb={3}
             pb={2}
-            borderBottom="1px solid #F1F5F9"
+            borderBottom={"1px solid " + themeColors.tableHeader}
           >
             <Box>
-              <Typography fontSize={17} fontWeight={700} color="#0F172A">
+              <Typography fontSize={17} fontWeight={700} color={themeColors.navyDark}>
                 {employeeSteps[activeStep]?.label} Information
               </Typography>
-              <Typography fontSize={12} color="#64748B">
+              <Typography fontSize={12} color={themeColors.textMuted}>
                 Provide accurate information required for employee
                 configuration.
               </Typography>
@@ -618,9 +604,9 @@ const AddEmployee = () => {
               size="small"
               variant="outlined"
               sx={{
-                borderColor: "#E2E8F0",
-                color: "#D97706",
-                background: "#FFFBEB",
+                borderColor: themeColors.border,
+                color: themeColors.primary,
+                background: themeColors.primarySoft,
                 fontWeight: 700,
                 fontSize: "10px",
                 height: "24px",
@@ -1398,9 +1384,9 @@ const AddEmployee = () => {
                 <Box
                   sx={{
                     p: { xs: 2, sm: 3 },
-                    background: "#F8FAFC",
-                    borderRadius: "8px",
-                    border: "1px solid #E2E8F0",
+                    background: themeColors.hover,
+                    borderRadius: "4px",
+                    border: "1px solid " + themeColors.border,
                   }}
                 >
                   <Box
@@ -1411,11 +1397,11 @@ const AddEmployee = () => {
                     gap={2}
                   >
                     <Box display="flex" alignItems="center" gap={1.5}>
-                      <DevicesIcon sx={{ color: "#7C3AED" }} />
+                      <DevicesIcon sx={{ color: themeColors.purple }} />
                       <Typography
                         fontSize={15}
                         fontWeight={600}
-                        color="#0F172A"
+                        color={themeColors.navyDark}
                       >
                         Assign Company Asset?
                       </Typography>
@@ -1427,20 +1413,20 @@ const AddEmployee = () => {
                         if (val) setAssetGiven(val);
                       }}
                       sx={{
-                        background: "#FFFFFF",
-                        border: "1px solid #E2E8F0",
-                        borderRadius: "8px",
+                        background: themeColors.cardBg,
+                        border: "1px solid " + themeColors.border,
+                        borderRadius: "4px",
                       }}
                     >
                       <ToggleButton
                         value="yes"
                         sx={{
                           px: 3,
-                          color: "#64748B",
+                          color: themeColors.textMuted,
                           border: "none",
                           "&.Mui-selected": {
-                            background: "#7C3AED !important",
-                            color: "#FFFFFF !important",
+                            background: themeColors.purple + " !important",
+                            color: themeColors.cardBg + " !important",
                             fontWeight: 600,
                           },
                         }}
@@ -1451,11 +1437,11 @@ const AddEmployee = () => {
                         value="no"
                         sx={{
                           px: 3,
-                          color: "#64748B",
+                          color: themeColors.textMuted,
                           border: "none",
                           "&.Mui-selected": {
-                            background: "#EF4444 !important",
-                            color: "#FFFFFF !important",
+                            background: themeColors.primary + " !important",
+                            color: themeColors.cardBg + " !important",
                             fontWeight: 600,
                           },
                         }}
@@ -1629,9 +1615,9 @@ const AddEmployee = () => {
           flexShrink: 0,
           py: 1.5,
           px: { xs: 2, sm: 4 },
-          background: "#FFFFFF",
-          borderTop: "1px solid #E2E8F0",
-          boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.02)",
+          background: themeColors.cardBg,
+          borderTop: "1px solid " + themeColors.border,
+          boxShadow: "0 -4px 6px -1px " + themeColors.overlay30,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -1641,13 +1627,13 @@ const AddEmployee = () => {
           variant="outlined"
           onClick={() => navigate(-1)}
           sx={{
-            color: "#475569",
-            borderColor: "#CBD5E1",
-            background: "#FFFFFF",
+            color: themeColors.textMuted,
+            borderColor: themeColors.border,
+            background: themeColors.cardBg,
             fontWeight: 600,
             px: 3,
             height: 40,
-            borderRadius: "8px",
+            borderRadius: "4px",
             textTransform: "none",
           }}
         >
@@ -1660,12 +1646,12 @@ const AddEmployee = () => {
               startIcon={<BackIcon />}
               onClick={handleBack}
               sx={{
-                color: "#475569",
-                borderColor: "#CBD5E1",
+                color: themeColors.textMuted,
+                borderColor: themeColors.border,
                 fontWeight: 600,
                 px: 3,
                 height: 40,
-                borderRadius: "8px",
+                borderRadius: "4px",
                 textTransform: "none",
               }}
             >
@@ -1678,13 +1664,13 @@ const AddEmployee = () => {
               onClick={handleNext}
               endIcon={<NextIcon />}
               sx={{
-                background: "#7C3AED",
+                background: themeColors.purple,
                 fontWeight: 600,
                 px: 3,
                 height: 40,
-                borderRadius: "8px",
+                borderRadius: "4px",
                 textTransform: "none",
-                "&:hover": { background: "#6D28D9" },
+                "&:hover": { background: themeColors.purple },
               }}
             >
               Save & Continue
@@ -1696,17 +1682,17 @@ const AddEmployee = () => {
               disabled={loading}
               startIcon={!loading && <SaveIcon />}
               sx={{
-                background: "#059669",
+                background: themeColors.success,
                 fontWeight: 600,
                 px: 3,
                 height: 40,
-                borderRadius: "8px",
+                borderRadius: "4px",
                 textTransform: "none",
-                "&:hover": { background: "#047857" },
+                "&:hover": { background: themeColors.secondaryDark },
               }}
             >
               {loading ? (
-                <CircularProgress size={20} sx={{ color: "#FFFFFF" }} />
+                <CircularProgress size={20} sx={{ color: themeColors.cardBg }} />
               ) : isEditMode ? (
                 "Update Employee"
               ) : (

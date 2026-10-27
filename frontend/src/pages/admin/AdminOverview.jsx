@@ -1,12 +1,7 @@
+import { Badge as Chip } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Box,
-  Chip,
-  InputAdornment,
-  OutlinedInput,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, InputAdornment, OutlinedInput, Stack, Typography } from "@mui/material";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
@@ -52,7 +47,7 @@ const MODULES = [
     "Maintain department masters and reporting structure.",
     ApartmentOutlinedIcon,
     "/dashboard/admin/departments",
-    "teal",
+    "primary",
   ],
   [
     "Organization",
@@ -84,7 +79,7 @@ const MODULES = [
     "Maintain public and optional company holidays.",
     EventOutlinedIcon,
     "/dashboard/admin/holidays",
-    "teal",
+    "primary",
   ],
   [
     "Settings",
@@ -111,18 +106,18 @@ const GROUPS = [
   "Platform",
 ];
 const GRADIENTS = {
-  indigo: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
-  violet: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
-  green: "linear-gradient(135deg,#F0FDF7,#D1F5E4)",
-  teal: "linear-gradient(135deg,#F0FBFC,#D5F1F4)",
-  amber: "linear-gradient(135deg,rgba(255,255,255,.75)B,#FDEBC0)",
+  indigo: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.infoSoft + ")",
+  violet: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.infoSoft + ")",
+  green: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.successSoft + ")",
+  primary: "linear-gradient(135deg," + themeColors.primarySoft + "," + themeColors.primarySoft + ")",
+  amber: "linear-gradient(135deg," + themeColors.overlay15 + "," + themeColors.warningSoft + ")",
 };
 const iconTone = {
-  indigo: "#4F46E5",
-  violet: "#8B5CF6",
-  green: "#10B981",
-  teal: "#0E8F9A",
-  amber: "#F59E0B",
+  indigo: themeColors.info,
+  violet: themeColors.purple,
+  green: themeColors.success,
+  primary: themeColors.primary,
+  amber: themeColors.warning,
 };
 
 const AdminOverview = () => {
@@ -163,10 +158,10 @@ const AdminOverview = () => {
         placeholder="Search administration"
         startAdornment={
           <InputAdornment position="start">
-            <SearchRoundedIcon sx={{ fontSize: 20, color: "#64748B" }} />
+            <SearchRoundedIcon sx={{ fontSize: 20, color: themeColors.textMuted }} />
           </InputAdornment>
         }
-        sx={{ height: 40, borderRadius: 8, mb: 2 }}
+        sx={{ height: 40, borderRadius: "4px", mb: 2 }}
       />
       <Stack direction="row" spacing={1} sx={{ mb: 3, overflowX: "auto" }}>
         {GROUPS.map((item) => (
@@ -176,10 +171,10 @@ const AdminOverview = () => {
             onClick={() => setGroup(item)}
             sx={{
               height: 32,
-              bgcolor: group === item ? "#E6F7F8" : "#FFFFFF",
-              color: group === item ? "#0A5C67" : "#475569",
+              bgcolor: group === item ? themeColors.primarySoft : themeColors.cardBg,
+              color: group === item ? themeColors.secondaryDark : themeColors.textMuted,
               border: "1px solid",
-              borderColor: group === item ? "#8DD8DE" : "#E2E8F0",
+              borderColor: group === item ? themeColors.textLight : themeColors.border,
               fontWeight: 600,
             }}
           />
@@ -188,7 +183,7 @@ const AdminOverview = () => {
       {recent.length > 0 && (
         <Box sx={{ mb: 3 }}>
           <Typography
-            sx={{ fontSize: 14, fontWeight: 600, color: "#1E293B", mb: 1.25 }}
+            sx={{ fontSize: 14, fontWeight: 600, color: themeColors.textPrimary, mb: 1.25 }}
           >
             Recently visited
           </Typography>
@@ -199,19 +194,19 @@ const AdminOverview = () => {
                 component="button"
                 onClick={() => navigate(item.path)}
                 sx={{
-                  border: "1px solid #E2E8F0",
-                  bgcolor: "#FFFFFF",
-                  borderRadius: 1,
+                  border: "1px solid " + themeColors.border,
+                  bgcolor: themeColors.cardBg,
+                  borderRadius: "4px",
                   p: 1.25,
                   minWidth: 180,
                   textAlign: "left",
                   cursor: "pointer",
                   boxShadow:
-                    "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+                    "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
                 }}
               >
                 <Typography
-                  sx={{ fontSize: 13, fontWeight: 600, color: "#0F172A" }}
+                  sx={{ fontSize: 13, fontWeight: 600, color: themeColors.navyDark }}
                 >
                   {item.name}
                 </Typography>
@@ -248,19 +243,19 @@ const AdminOverview = () => {
               sx={{
                 minHeight: 182,
                 p: 2,
-                border: "1px solid #E2E8F0",
-                borderRadius: 1,
+                border: "1px solid " + themeColors.border,
+                borderRadius: "4px",
                 textAlign: "left",
                 cursor: "pointer",
                 background: GRADIENTS[item[5]],
                 boxShadow:
-                  "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+                  "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
                 transition: "180ms ease",
                 "&:hover": {
                   transform: "translateY(-2px)",
-                  borderColor: "#8DD8DE",
+                  borderColor: themeColors.textLight,
                   boxShadow:
-                    "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05), 0 4px 24px -6px rgba(14,143,154,.35)",
+                    "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2 + ", 0 4px 24px -6px " + themeColors.overlay4,
                 },
               }}
             >
@@ -269,10 +264,10 @@ const AdminOverview = () => {
                   sx={{
                     width: 36,
                     height: 36,
-                    borderRadius: 1,
+                    borderRadius: "4px",
                     display: "grid",
                     placeItems: "center",
-                    bgcolor: "#FFFFFF",
+                    bgcolor: themeColors.cardBg,
                     color: iconTone[item[5]],
                   }}
                 >
@@ -280,7 +275,7 @@ const AdminOverview = () => {
                 </Box>
                 <Box>
                   <Typography
-                    sx={{ fontSize: 16, fontWeight: 600, color: "#1E293B" }}
+                    sx={{ fontSize: 16, fontWeight: 600, color: themeColors.textPrimary }}
                   >
                     {item[0]}
                   </Typography>
@@ -299,7 +294,7 @@ const AdminOverview = () => {
                 sx={{
                   fontSize: 13,
                   lineHeight: "20px",
-                  color: "#475569",
+                  color: themeColors.textMuted,
                   mt: 2,
                 }}
               >

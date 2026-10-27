@@ -1,14 +1,7 @@
+import { Input as TextField, Button, IconButton } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  MenuItem,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
+import { Box, Typography, Grid, MenuItem, InputAdornment } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
   AddTask as AddTaskIcon,
@@ -78,20 +71,20 @@ const AddProject = () => {
 
   const inputStyles = {
     "& .MuiOutlinedInput-root": {
-      color: "#0F172A",
-      backgroundColor: "#FFFFFF",
+      color: themeColors.navyDark,
+      backgroundColor: themeColors.cardBg,
       borderRadius: "4px",
 
       "& fieldset": {
-        borderColor: "#E2E8F0",
+        borderColor: themeColors.border,
       },
 
       "&:hover fieldset": {
-        borderColor: "#CBD5E1",
+        borderColor: themeColors.border,
       },
 
       "&.Mui-focused fieldset": {
-        borderColor: "#8b5cf6",
+        borderColor: themeColors.purple,
         borderWidth: "2px",
       },
 
@@ -107,15 +100,15 @@ const AddProject = () => {
     },
 
     "& .MuiInputLabel-root": {
-      color: "#64748B",
+      color: themeColors.textMuted,
     },
 
     "& .MuiInputLabel-root.Mui-focused": {
-      color: "#8b5cf6",
+      color: themeColors.purple,
     },
 
     "& .MuiSelect-icon": {
-      color: "#64748B",
+      color: themeColors.textMuted,
     },
 
     "& input[type='date']::-webkit-calendar-picker-indicator": {
@@ -130,24 +123,24 @@ const AddProject = () => {
   const dropdownStyles = {
     PaperProps: {
       sx: {
-        bgcolor: "#FFFFFF",
-        color: "#0F172A",
-        border: "1px solid #E2E8F0",
+        bgcolor: themeColors.cardBg,
+        color: themeColors.navyDark,
+        border: "1px solid " + themeColors.border,
         borderRadius: "4px",
         boxShadow:
-          "0 10px 15px -3px rgba(15,23,42,.10), 0 4px 6px -4px rgba(15,23,42,.06)",
+          "0 10px 15px -3px " + themeColors.overlay5 + ", 0 4px 6px -4px " + themeColors.overlay1,
 
         "& .MuiMenuItem-root": {
           fontSize: 14,
         },
 
         "& .MuiMenuItem-root:hover": {
-          bgcolor: "#F8FAFC",
+          bgcolor: themeColors.hover,
         },
 
         "& .Mui-selected": {
-          bgcolor: "#EEF0FF !important",
-          color: "#8B5CF6",
+          bgcolor: themeColors.infoSoft + " !important",
+          color: themeColors.purple,
         },
       },
     },
@@ -163,8 +156,8 @@ const AddProject = () => {
           sm: 3,
           md: 4,
         },
-        background: "#F8FAFC",
-        color: "#0F172A",
+        background: themeColors.hover,
+        color: themeColors.navyDark,
       }}
     >
       {/* =========================
@@ -182,12 +175,12 @@ const AddProject = () => {
         <IconButton
           onClick={() => navigate(-1)}
           sx={{
-            color: "#475569",
+            color: themeColors.textMuted,
             mr: 1.5,
 
             "&:hover": {
-              backgroundColor: "#F1F5F9",
-              color: "#0F172A",
+              backgroundColor: themeColors.tableHeader,
+              color: themeColors.navyDark,
             },
           }}
         >
@@ -195,18 +188,9 @@ const AddProject = () => {
         </IconButton>
 
         <Box>
-          <Typography
-            fontSize={{
-              xs: 21,
-              sm: 24,
-            }}
-            fontWeight={600}
-            color="#0F172A"
-          >
-            Create New Project
-          </Typography>
 
-          <Typography fontSize={14} color="#64748B" mt={0.5}>
+
+          <Typography fontSize={14} color={themeColors.textMuted} mt={0.5}>
             Add project details, timeline and project information
           </Typography>
         </Box>
@@ -222,9 +206,9 @@ const AddProject = () => {
         sx={{
           width: "100%",
 
-          background: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
+          background: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.infoSoft + ")",
 
-          border: "1px solid #E2E8F0",
+          border: "1px solid " + themeColors.border,
           borderRadius: "4px",
 
           p: {
@@ -234,14 +218,14 @@ const AddProject = () => {
           },
 
           boxShadow:
-            "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+            "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
         }}
       >
         {/* =========================
             BASIC DETAILS
         ========================= */}
 
-        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
+        <Typography fontSize={18} fontWeight={600} color={themeColors.navyDark} mb={3}>
           Basic Details
         </Typography>
 
@@ -274,7 +258,7 @@ const AddProject = () => {
             TIMELINE & STATUS
         ========================= */}
 
-        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
+        <Typography fontSize={18} fontWeight={600} color={themeColors.navyDark} mb={3}>
           Timeline & Status
         </Typography>
 
@@ -363,7 +347,7 @@ const AddProject = () => {
             METRICS & META
         ========================= */}
 
-        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
+        <Typography fontSize={18} fontWeight={600} color={themeColors.navyDark} mb={3}>
           Metrics & Meta
         </Typography>
 
@@ -380,7 +364,7 @@ const AddProject = () => {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Typography color="#64748B">$</Typography>
+                    <Typography color={themeColors.textMuted}>$</Typography>
                   </InputAdornment>
                 ),
               }}
@@ -422,7 +406,7 @@ const AddProject = () => {
             PROJECT DESCRIPTION
         ========================= */}
 
-        <Typography fontSize={18} fontWeight={600} color="#0F172A" mb={3}>
+        <Typography fontSize={18} fontWeight={600} color={themeColors.navyDark} mb={3}>
           Project Description
         </Typography>
 
@@ -452,7 +436,7 @@ const AddProject = () => {
           gap={2}
           mt={5}
           pt={3}
-          borderTop="1px solid #E2E8F0"
+          borderTop={"1px solid " + themeColors.border}
           sx={{
             "@media (max-width: 500px)": {
               flexDirection: "column-reverse",
@@ -471,17 +455,17 @@ const AddProject = () => {
               height: 44,
               px: 3,
 
-              color: "#475569",
-              borderColor: "#E2E8F0",
-              background: "#FFFFFF",
+              color: themeColors.textMuted,
+              borderColor: themeColors.border,
+              background: themeColors.cardBg,
 
               textTransform: "none",
               fontWeight: 600,
               borderRadius: "4px",
 
               "&:hover": {
-                borderColor: "#CBD5E1",
-                backgroundColor: "#F8FAFC",
+                borderColor: themeColors.border,
+                backgroundColor: themeColors.hover,
               },
             }}
           >
@@ -496,7 +480,7 @@ const AddProject = () => {
               height: 44,
               px: 3,
 
-              background: "#8b5cf6",
+              background: themeColors.purple,
 
               textTransform: "none",
               fontWeight: 600,
@@ -505,9 +489,9 @@ const AddProject = () => {
               boxShadow: "none",
 
               "&:hover": {
-                background: "#8B5CF6",
+                background: themeColors.purple,
                 boxShadow:
-                  "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05)",
+                  "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2,
               },
             }}
           >

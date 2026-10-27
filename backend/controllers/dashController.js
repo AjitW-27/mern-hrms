@@ -192,7 +192,7 @@ exports.getDashboardSummary = async (req, res) => {
         const activeDepartments = await Department.find({ isActive: true }).select("name").lean();
         const departmentCounts = new Map(departmentDist.map((item) => [item._id || "Unassigned", item.count]));
         const departmentDistribution = activeDepartments.map((department) => ({ name: department.name, value: departmentCounts.get(department.name) || 0 }));
-        if (departmentCounts.has("Unassigned")) departmentDistribution.push({ name: "Unassigned", value: departmentCounts.get("Unassigned") });
+        departmentCounts.forEach((value, name) => { if (!departmentDistribution.some(item => item.name === name)) departmentDistribution.push({ name, value }); });
 
         const attendanceRate = totalEmployees > 0
             ? Math.round((todayPresent / totalEmployees) * 100) : 0;
@@ -208,6 +208,7 @@ exports.getDashboardSummary = async (req, res) => {
                 todayAbsent,
                 todayLate,
                 pendingLeaves,
+                totalLeaveRequests: canViewPayroll ? await Leave.countDocuments() : undefined,
                 attendanceRate,
                 newJoineesThisMonth,
             },

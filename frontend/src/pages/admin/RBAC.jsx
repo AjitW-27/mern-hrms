@@ -1,22 +1,11 @@
+import { Button, Card, Select } from "../../components/common/UI";
 import React, { useEffect, useState } from "react";
 
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  FormControl,
-  FormControlLabel,
-  MenuItem,
-  Select,
-  Switch,
-  Typography,
-  Alert,
-} from "@mui/material";
+import { Box, CardContent, CircularProgress, FormControl, FormControlLabel, MenuItem, Switch, Typography, Alert } from "@mui/material";
 
 import PageHeader from "../../components/common/PageHeader";
 import PermissionMatrix from "../../components/common/PermissionMatrix";
+import { fetchCollection } from "../../lib/collections";
 import execReq from "../../lib/execReq";
 
 import useAuthStore from "../../strore/authStore";
@@ -65,9 +54,7 @@ const Access = () => {
       setLoadingRoles(true);
       setError("");
 
-      const response = await execReq("/admin/roles");
-
-      const roleList = response?.data?.data || response?.data?.roles || [];
+      const roleList = await fetchCollection("/admin/roles");
 
       setRoles(roleList);
 

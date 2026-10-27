@@ -13,6 +13,7 @@ router.use("/assets", require("./assetRoutes"));
 router.use("/expenses", require("./expenseRoutes"));
 router.use("/settings", require("./settingRoutes"));
 router.use("/notifications", require("./notificationRoutes"));
+router.use("/ai-assistant", require("./aiAssistantRoutes"));
 router.use("/dashboard", require("./dashboardRoutes"));
 router.use("/onboarding", require("./onboardingRoutes"));
 router.use("/training", require("./trainingRoutes"));

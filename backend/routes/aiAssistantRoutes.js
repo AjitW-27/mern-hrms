@@ -1,0 +1,11 @@
+const express = require("express");
+const rateLimit = require("express-rate-limit");
+const { protect, permit } = require("../middleware/authMiddleware");
+const controller = require("../controllers/aiAssistantController");
+const router = express.Router();
+const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: Number(process.env.AI_RATE_LIMIT_MAX || 20), standardHeaders: true, legacyHeaders: false, message: { success: false, message: "Too many assistant requests. Please try again shortly." } });
+router.use(protect, permit("dashboard", "read"));
+router.get("/status", controller.status);
+router.get("/insights/:name", controller.insight);
+router.post("/chat", limiter, controller.chat);
+module.exports = router;

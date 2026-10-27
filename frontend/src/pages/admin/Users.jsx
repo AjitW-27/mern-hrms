@@ -1,34 +1,25 @@
+import { Button, Card, Badge as Chip, IconButton, Input as TextField } from "../../components/common/UI";
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Drawer,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-  Alert,
-} from "@mui/material";
+import { Box, CardContent, Drawer, DialogActions, DialogContent, DialogTitle, Grid, MenuItem, Stack, Typography, Alert } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { fetchCollection } from "../../lib/collections";
+import { referenceId, roleValue, userPayload, friendlyUserError } from "../../lib/userForm";
 import execReq from "../../lib/execReq";
 import PageHeader from "../../components/common/PageHeader";
 import DataGrid from "../../components/common/DataGrid";
+import LinkEmployeeDialog from "./LinkEmployeeDialog";
+import LinkIcon from "@mui/icons-material/Link";
 
 const Users = () => {
+  const [loading, setLoading] = useState(true);
+  const [linkingUser, setLinkingUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [organizations, setOrganizations] = useState([]);
+  const [employees, setEmployees] = useState([]), [saving, setSaving] = useState(false);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [error, setError] = useState("");
@@ -43,14 +34,12 @@ const Users = () => {
   });
 
   const load = async () => {
-    const [u, r, o] = await Promise.all([
-      execReq("/admin/users"),
-      execReq("/admin/roles"),
-      execReq("/admin/organization"),
+    setLoading(true); setError("");
+    try { const [u, r, o, e] = await Promise.all([
+      fetchCollection("/admin/users"), fetchCollection("/admin/roles"), fetchCollection("/organizations"), fetchCollection("/employees")
     ]);
-    setUsers(u.data.data || []);
-    setRoles(r.data.data || []);
-    setOrganizations(o.data.data ? [o.data.data] : []);
+    setUsers(u.map(item => ({ ...item, roleCode: roleValue(item.role, r) }))); setRoles(r); setOrganizations(o); setEmployees(e);
+    } catch (err) { setError(friendlyUserError(err, "Unable to load users.")); } finally { setLoading(false); }
   };
 
   useEffect(() => {
@@ -70,7 +59,8 @@ const Users = () => {
       email: "",
       mobileNo: "",
       password: "",
-      role: roles.find((item) => item.isActive !== false)?.code || "employee",
+      role: roles.find(item => item.code === "employee")?.code || roles.find(item => item.isActive !== false)?.code || "",
+      employeeRef: "",
       organization: organizations[0]?._id || "",
       status: "active",
     });
@@ -85,25 +75,26 @@ const Users = () => {
       email: item.email || "",
       mobileNo: item.mobileNo || "",
       password: "",
-      role: item.role?.code || item.role || "employee",
-      organization: item.organization?._id || item.organization || "",
-      status: item.status || "active",
+      role: roleValue(item.role, roles),
+      employeeRef: referenceId(item.employeeRef),
+      organization: referenceId(item.organization),
+      status: item.isActive === false ? "inactive" : "active",
     });
     setOpen(true);
   };
 
   const submit = async () => {
+    if (saving) return;
+    setSaving(true); setError("");
     try {
-      const payload = { ...form, isActive: form.status === "active" };
-      delete payload.status;
-      if (!payload.password) delete payload.password;
+      const payload = userPayload(form, editing, roles);
       if (editing?._id) await execReq.put(`/admin/users/${editing._id}`, payload);
       else await execReq.post("/admin/users", payload);
       await load();
       setOpen(false);
     } catch (err) {
-      setError(err?.response?.data?.message || "Unable to save user.");
-    }
+      setError(friendlyUserError(err));
+    } finally { setSaving(false); }
   };
 
   const remove = async (id) => {
@@ -120,25 +111,24 @@ const Users = () => {
       <PageHeader
         title="Users"
         breadcrumbs={["Administration", "People & Access", "Users"]}
-        actionLabel="Add User"
-        onAction={openCreate}
-        actionIcon={AddRoundedIcon}
       />
       {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>{error}</Alert>}
 
       <Card>
         <CardContent sx={{ p: 0 }}>
-          <DataGrid rows={users} columns={[
+          <DataGrid filterFields={[{ field: "roleCode", label: "Role", options: roles.map(role => ({ value: role.code || role._id, label: role.name })) }]} loading={loading} error={!open ? error : ""} onRetry={load} onRefresh={load} addBtn="Add User" onAddClick={openCreate} rows={users} columns={[
             { field: "name", headerName: "Name" }, { field: "email", headerName: "Email" },
             { field: "mobileNo", headerName: "Mobile" }, { field: "department", headerName: "Department" },
-            { field: "role", headerName: "Role", valueGetter: (user) => user.role?.name || user.role || "-" },
+            { field: "role", headerName: "Role", valueGetter: user => roles.find(role => (role.code || role._id) === roleValue(user.role, roles))?.name || roleValue(user.role, roles) || "-" },
             { field: "isActive", headerName: "Status", renderCell: (user) => <Chip label={user.isActive ? "Active" : "Inactive"} size="small" color={user.isActive ? "success" : "error"} /> },
           ]} actions={(user) => <>
+            <IconButton size="small" aria-label="Link employee profile" title="Link employee" onClick={() => setLinkingUser(user)}><LinkIcon fontSize="small" /></IconButton>
             <IconButton color="primary" onClick={() => openEdit(user)} size="small" aria-label="Edit user"><EditRoundedIcon fontSize="small" /></IconButton>
             <IconButton color="error" onClick={() => remove(user._id)} size="small" aria-label="Delete user"><DeleteRoundedIcon fontSize="small" /></IconButton>
           </>} />
         </CardContent>
       </Card>
+      <LinkEmployeeDialog user={linkingUser} onClose={() => setLinkingUser(null)} onLinked={load} />
 
       <Drawer
         anchor="right"
@@ -165,6 +155,7 @@ const Users = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent sx={{ flex: 1, overflowY: "auto" }}>
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           <Grid container spacing={2} sx={{ pt: 1 }}>
             <Grid item xs={12} md={6}>
               <TextField
@@ -217,8 +208,8 @@ const Users = () => {
                   setForm((p) => ({ ...p, role: e.target.value }))
                 }
               >
-                {roles.filter((role) => role.isActive !== false || role.code === form.role).map((role) => (
-                  <MenuItem key={role._id} value={role.code || role._id}>
+                {roles.map((role) => (
+                  <MenuItem key={role._id} value={role.code || role._id} disabled={role.isActive === false && (role.code || role._id) !== form.role}>
                     {role.name}
                   </MenuItem>
                 ))}
@@ -234,11 +225,18 @@ const Users = () => {
                   setForm((p) => ({ ...p, organization: e.target.value }))
                 }
               >
+                <MenuItem value="">Not assigned</MenuItem>
                 {organizations.map((organization) => (
                   <MenuItem key={organization._id} value={organization._id}>
                     {organization.name}
                   </MenuItem>
                 ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField fullWidth select label="Employee Profile" value={form.employeeRef || ""} helperText="Employee accounts need a profile; matching email addresses link automatically." onChange={event => setForm(previous => ({ ...previous, employeeRef: event.target.value }))}>
+                <MenuItem value="">Match by email</MenuItem>
+                {employees.filter(employee => !employee.userId || referenceId(employee.userId) === referenceId(editing) || referenceId(employee) === form.employeeRef).map(employee => <MenuItem key={employee._id} value={employee._id}>{employee.fullName} ({employee.employeeId || employee.email})</MenuItem>)}
               </TextField>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -262,7 +260,7 @@ const Users = () => {
         </DialogContent>
         <DialogActions sx={{ p: 2.5, borderTop: "1px solid", borderColor: "divider" }}>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={submit}>
+          <Button variant="contained" onClick={submit} loading={saving}>
             Save
           </Button>
         </DialogActions>

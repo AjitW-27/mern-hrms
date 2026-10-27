@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const asyncHandler = require("../utils/asyncHandler");
 const Employee = require("../models/employeeModel");
 const Attendance = require("../models/attendanceModel");
@@ -33,6 +34,17 @@ const registry = {
   reportExports: { Model: ReportExport, populate: "requestedBy" }
 };
 
+const resourcePayload = (Model, body) => {
+  const payload = { ...body };
+  if (!Model.schema.path("status") && Model.schema.path("isActive") && payload.status !== undefined) { if (!["Active", "Inactive"].includes(payload.status)) throw Object.assign(new Error("Status must be Active or Inactive."), { statusCode: 400 }); payload.isActive = payload.status === "Active"; delete payload.status; }
+  return payload;
+};
+const resourceView = (Model, item) => {
+  if (!item || Model.schema.path("status") || !Model.schema.path("isActive")) return item;
+  const value = item.toObject ? item.toObject() : item;
+  return { ...value, status: value.isActive === false ? "Inactive" : "Active" };
+};
+
 const getConfig = (resource) => {
   const config = registry[resource];
   if (!config) {
@@ -48,7 +60,7 @@ const list = (resource) => asyncHandler(async (req, res) => {
   const { page = 1, limit = 20, search, status } = req.query;
   const filter = {};
 
-  if (status) filter.status = status;
+  if (status) { if (!Model.schema.path("status") && Model.schema.path("isActive")) filter.isActive = status === "Active"; else filter.status = status; }
   if (search) {
     filter.$or = [
       { name: { $regex: search, $options: "i" } },
@@ -62,19 +74,20 @@ const list = (resource) => asyncHandler(async (req, res) => {
   if (populate) query.populate(populate);
 
   const [data, total] = await Promise.all([query, Model.countDocuments(filter)]);
-  res.json({ success: true, data, total, page: Number(page), totalPages: Math.ceil(total / limit) });
+  res.json({ success: true, data: data.map(item => resourceView(Model, item)), total, page: Number(page), totalPages: Math.ceil(total / limit) });
 });
 
 const create = (resource) => asyncHandler(async (req, res) => {
   const { Model, populate } = getConfig(resource);
-  const payload = { ...req.body };
+  const payload = resourcePayload(Model, req.body);
+  if (resource === "shifts" && !payload.code) payload.code = "SHIFT-" + crypto.randomBytes(6).toString("hex").toUpperCase();
   if (["jobs", "reportExports"].includes(resource)) payload.postedBy = payload.postedBy || req.user._id;
   if (resource === "reportExports") payload.requestedBy = req.user._id;
   if (resource === "payslips") payload.generatedBy = req.user._id;
 
   const item = await Model.create(payload);
   const data = populate ? await item.populate(populate) : item;
-  res.status(201).json({ success: true, message: `${resource} created`, data });
+  res.status(201).json({ success: true, message: `${resource} created`, data: resourceView(Model, data) });
 });
 
 const getById = (resource) => asyncHandler(async (req, res) => {
@@ -83,16 +96,16 @@ const getById = (resource) => asyncHandler(async (req, res) => {
   if (populate) query.populate(populate);
   const item = await query;
   if (!item) return res.status(404).json({ success: false, message: `${resource} not found` });
-  res.json({ success: true, data: item });
+  res.json({ success: true, data: resourceView(Model, item) });
 });
 
 const update = (resource) => asyncHandler(async (req, res) => {
   const { Model, populate } = getConfig(resource);
-  const query = Model.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+  const query = Model.findByIdAndUpdate(req.params.id, resourcePayload(Model, req.body), { new: true, runValidators: true });
   if (populate) query.populate(populate);
   const item = await query;
   if (!item) return res.status(404).json({ success: false, message: `${resource} not found` });
-  res.json({ success: true, message: `${resource} updated`, data: item });
+  res.json({ success: true, message: `${resource} updated`, data: resourceView(Model, item) });
 });
 
 const remove = (resource) => asyncHandler(async (req, res) => {

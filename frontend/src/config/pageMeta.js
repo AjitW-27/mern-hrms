@@ -1,12 +1,13 @@
 const pageMeta = [
   { match: /^\/dashboard$/, title: "Home", crumbs: [] },
   { match: /^\/dashboard\/employees$/, title: "Employees", crumbs: [] },
-  { match: /^\/dashboard\/(add|edit)-employee/, title: "Employee", crumbs: [{ label: "Employees", to: "/dashboard/employees" }] },
+  { match: /^\/dashboard\/add-employee/, title: "Add Employee", crumbs: [{ label: "Employees", to: "/dashboard/employees" }] },
+  { match: /^\/dashboard\/edit-employee/, title: "Edit Employee", crumbs: [{ label: "Employees", to: "/dashboard/employees" }] },
   { match: /^\/dashboard\/employee\//, title: "Employee Details", crumbs: [{ label: "Employees", to: "/dashboard/employees" }] },
   { match: /^\/dashboard\/departments$/, title: "Departments", crumbs: [] },
-  { match: /^\/dashboard\/add-department/, title: "Department", crumbs: [{ label: "Departments", to: "/dashboard/departments" }] },
+  { match: /^\/dashboard\/add-department/, title: "Add Department", crumbs: [{ label: "Departments", to: "/dashboard/departments" }] },
   { match: /^\/dashboard\/projects$/, title: "Projects", crumbs: [] },
-  { match: /^\/dashboard\/add-project/, title: "Project", crumbs: [{ label: "Projects", to: "/dashboard/projects" }] },
+  { match: /^\/dashboard\/add-project/, title: "Add Project", crumbs: [{ label: "Projects", to: "/dashboard/projects" }] },
   { match: /^\/dashboard\/attendance$/, title: "Attendance", crumbs: [] },
   { match: /^\/dashboard\/payroll$/, title: "Payroll", crumbs: [] },
   { match: /^\/dashboard\/leave$/, title: "Leave", crumbs: [] },
@@ -36,7 +37,10 @@ const pageMeta = [
   { match: /^\/dashboard\/admin\/settings$/, title: "Settings", crumbs: [{ label: "Admin", to: "/dashboard/admin" }] },
 ];
 
-export const getPageMeta = (pathname) => pageMeta.find((item) => item.match.test(pathname)) || {
-  title: pathname.split("/").filter(Boolean).pop()?.replace(/-/g, " ") || "Dashboard",
-  crumbs: [],
+const subtitles = { Dashboard: "Your people and work at a glance", Employees: "Manage employee records and reporting relationships", Projects: "Plan, track and manage project delivery", Attendance: "Review daily attendance and working hours", Leave: "Manage leave balances, requests and approvals", Payroll: "Review payroll and payment status", Reports: "Explore authorized operational reports", Users: "Manage accounts and employee profile links", Settings: "Manage your workspace preferences" };
+export const getPageMeta = pathname => {
+  const item = pageMeta.find(item => item.match.test(pathname));
+  const title = item?.title === "Home" ? "Dashboard" : item?.title || pathname.split("/").filter(Boolean).pop()?.replace(/-/g, " ") || "Dashboard";
+  const trail = item?.crumbs || [];
+  return { ...item, title, subtitle: subtitles[title] || "Manage " + title.toLowerCase() + " in your workspace", breadcrumb: [...(pathname === "/dashboard" ? [] : [{ label: "Dashboard", to: "/dashboard" }]), ...trail, { label: title }], crumbs: trail };
 };

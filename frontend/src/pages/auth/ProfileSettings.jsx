@@ -1,5 +1,6 @@
+import { Button, Card, Input as TextField } from "../../components/common/UI";
 import React, { useEffect, useState } from "react";
-import { Alert, Box, Button, Card, CardContent, Grid, TextField, Typography } from "@mui/material";
+import { Alert, Box, CardContent, Grid, Typography } from "@mui/material";
 import SaveRoundedIcon from "@mui/icons-material/SaveRounded";
 import PageHeader from "../../components/common/PageHeader";
 import execReq from "../../lib/execReq";

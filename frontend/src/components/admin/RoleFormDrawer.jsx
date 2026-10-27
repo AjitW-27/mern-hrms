@@ -1,14 +1,7 @@
+import { Input as TextField, Button } from "../common/UI";
 import React, { useEffect, useState } from "react";
 
-import {
-  Drawer,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Stack,
-  Divider,
-} from "@mui/material";
+import { Drawer, Box, Typography, Stack, Divider } from "@mui/material";
 
 import PermissionMatrix from "./permissionMatrix";
 

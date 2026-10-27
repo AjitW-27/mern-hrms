@@ -1,12 +1,7 @@
+import { Card, Skeleton } from "../../components/common/UI";
+import { colors as themeColors } from "../../theme/designTokens";
 import React from "react";
-import {
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Skeleton,
-} from "@mui/material";
+import { Grid, CardContent, Typography, Box } from "@mui/material";
 import {
   PeopleOutline,
   BusinessOutlined,
@@ -20,63 +15,64 @@ import {
 
 const defs = {
   admin: [
-    ["totalEmployees", "Total Employees", PeopleOutline, "teal"],
+    ["totalEmployees", "Total Employees", PeopleOutline, "primary"],
     ["totalDepartments", "Departments", BusinessOutlined, "indigo"],
     ["activeProjects", "Active Projects", WorkOutline, "green"],
     [
       "totalPayroll",
-      "Monthly Payroll",
+      "Recorded Payroll",
       AccountBalanceWalletOutlined,
       "amber",
       (v) => `₹${Number(v || 0).toLocaleString("en-IN")}`,
     ],
-    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
+    ["todayPresent", "Present Today", CheckCircleOutline, "primary"],
     ["todayAbsent", "Absent Today", ScheduleOutlined, "rose"],
     ["pendingLeaves", "Pending Leaves", HourglassEmptyOutlined, "amber"],
     ["newJoineesThisMonth", "New Joinings", PersonAddOutlined, "indigo"],
   ],
   hr: [
-    ["totalEmployees", "Total Employees", PeopleOutline, "teal"],
+    ["totalEmployees", "Total Employees", PeopleOutline, "primary"],
     ["totalDepartments", "Departments", BusinessOutlined, "indigo"],
-    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
+    ["todayPresent", "Present Today", CheckCircleOutline, "primary"],
     ["pendingLeaves", "Pending Leaves", HourglassEmptyOutlined, "amber"],
     ["newJoineesThisMonth", "New Joinings", PersonAddOutlined, "indigo"],
     ["activeProjects", "Active Projects", WorkOutline, "green"],
   ],
   manager: [
-    ["totalEmployees", "Team Members", PeopleOutline, "teal"],
+    ["totalEmployees", "Team Members", PeopleOutline, "primary"],
     ["activeProjects", "Active Projects", WorkOutline, "green"],
-    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
+    ["todayPresent", "Present Today", CheckCircleOutline, "primary"],
     ["pendingLeaves", "Pending Leaves", HourglassEmptyOutlined, "amber"],
   ],
   employee: [
-    ["totalEmployees", "Total Employees", PeopleOutline, "teal"],
+    ["totalEmployees", "Total Employees", PeopleOutline, "primary"],
     ["totalDepartments", "Departments", BusinessOutlined, "indigo"],
     ["activeProjects", "Active Projects", WorkOutline, "green"],
-    ["todayPresent", "Present Today", CheckCircleOutline, "teal"],
+    ["todayPresent", "Present Today", CheckCircleOutline, "primary"],
   ],
 };
 const gradients = {
-  teal: "linear-gradient(135deg,#F0FBFC,#D5F1F4)",
-  indigo: "linear-gradient(135deg,#F5F6FF,#E0E4FF)",
-  green: "linear-gradient(135deg,#F0FDF7,#D1F5E4)",
-  amber: "linear-gradient(135deg,#FFFBEB,#FDEBC0)",
-  rose: "linear-gradient(135deg,#FFF5F6,#FFE0E4)",
+  primary: "linear-gradient(135deg," + themeColors.primarySoft + "," + themeColors.primarySoft + ")",
+  indigo: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.infoSoft + ")",
+  green: "linear-gradient(135deg," + themeColors.pageBg + "," + themeColors.successSoft + ")",
+  amber: "linear-gradient(135deg," + themeColors.primarySoft + "," + themeColors.warningSoft + ")",
+  rose: "linear-gradient(135deg," + themeColors.hover + "," + themeColors.dangerSoft + ")",
 };
 const KpiCard = ({ label, value, Icon, loading, tone, format }) => (
   <Card
     sx={{
       minHeight: 130,
-      borderRadius: 1,
-      background: gradients[tone],
-      border: "1px solid #E2E8F0",
-      boxShadow: "0 1px 2px rgba(15,23,42,.06), 0 1px 3px rgba(15,23,42,.05)",
+      borderRadius: "4px",
+      background: themeColors.cardBg,
+      borderTop: "3px solid " + themeColors.primary,
+      border: "1px solid " + themeColors.border,
+      boxShadow: "0 1px 2px " + themeColors.overlay1 + ", 0 1px 3px " + themeColors.overlay2,
       transition: "180ms ease",
       "&:hover": {
         transform: "translateY(-2px)",
-        borderColor: "#8DD8DE",
+        borderColor: themeColors.textLight,
         boxShadow:
-          "0 4px 6px -1px rgba(15,23,42,.07), 0 2px 4px -2px rgba(15,23,42,.05), 0 4px 24px -6px rgba(14,143,154,.35)",
+          "0 4px 6px -1px " + themeColors.overlay3 + ", 0 2px 4px -2px " + themeColors.overlay2 + ", 0 4px 24px -6px " + themeColors.overlay4,
       },
     }}
   >
@@ -102,7 +98,7 @@ const KpiCard = ({ label, value, Icon, loading, tone, format }) => (
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: ".06em",
-                color: "#64748B",
+                color: themeColors.textMuted,
               }}
             >
               {label}
@@ -113,22 +109,22 @@ const KpiCard = ({ label, value, Icon, loading, tone, format }) => (
                 fontSize: 28,
                 lineHeight: "32px",
                 fontWeight: 700,
-                color: "#0F172A",
+                color: themeColors.navyDark,
                 fontVariantNumeric: "tabular-nums",
               }}
             >
-              {format ? format(value) : (value ?? 0)}
+              {format ? format(value) : (value ?? "—")}
             </Typography>
           </Box>
           <Box
             sx={{
               width: 42,
               height: 42,
-              borderRadius: 1,
-              bgcolor: "#FFFFFF",
+              borderRadius: "4px",
+              background: gradients[tone],
               display: "grid",
               placeItems: "center",
-              color: "#0E8F9A",
+              color: themeColors.primary,
             }}
           >
             <Icon sx={{ fontSize: 20 }} />
@@ -143,7 +139,8 @@ export default function KpiCards({
   loading = false,
   role = "employee",
 }) {
-  const items = defs[String(role).toLowerCase()] || defs.employee;
+  const normalized = ["superadmin", "super_admin"].includes(role) ? "admin" : role;
+  const items = (defs[normalized] || defs.employee).filter(([key]) => loading || Object.hasOwn(data || {}, key));
   return (
     <Grid container spacing={2}>
       {items.map(([key, label, Icon, tone, format]) => (
